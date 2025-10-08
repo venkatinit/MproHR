@@ -1,0 +1,242 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>Job Openings</strong>
+                <a class="btn btn-primary  btn-sm  me-md-2  float-end" (click)="open_fileUpload()" role="button">Import
+                    CSV File</a>
+                <a class="btn btn-primary btn-sm me-md-2 float-end" role="button" data-bs-toggle="modal"
+                    data-bs-target="#newModal">
+                    <i class="fa fa-plus" aria-hidden="true"></i> New </a>
+            </div>
+            <div class="card-body">
+                <table datatable [dtOptions]="dtOptions" class="row-border hover">
+                    <thead>
+                        <tr>
+                            <th>S No</th>
+                            <th>Job Roll</th>
+                            <th>Employment Type</th>
+                            <th>Location</th>
+                            <th>Opening Positions</th>
+                            <th>Applicants</th>
+                            <th>Last Updated</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="applicant_list?.length != 0">
+                        <tr *ngFor="let item of applicant_list;let i=index">
+                            <td>{{i+1}}</td>
+                            <td>{{ item.emp_name }}</td>
+                            <td>{{ item.email }}</td>
+                            <td>{{ item.email }}</td>
+                            <td>{{ item.mbl_no }}</td>
+                            <td>{{ item.dept }}</td>
+                            <td>{{ item.designation }}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton1"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1"
+                                        style="transform: translate3d(-160px, -4px, 0px) !important ;">
+                                        <li><a class="dropdown-item text-primary" href="#">Preview</a>
+                                        </li>
+                                        <li><a class="dropdown-item text-success" (click)="updateEmployee(i)">Update</a>
+                                        </li>
+                                        <li><a class="dropdown-item text-danger" (click)="deleteEmployee(i)">Delete</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                    <tbody *ngIf="applicant_list?.length == 0">
+                        <tr>
+                            <td colspan="8" class="no-data-available">No data!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="newModalLabel">Add New Post</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body ">
+                            <form [formGroup]="addPost" (ngSubmit)="saveaddPost()">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Job Role</label>
+                                        <input type="text" class="form-control form-control-sm" name="job_role"
+                                            id="job_role" formControlName="job_role"
+                                            [ngClass]="{ 'is-invalid': submitted && f.job_role.errors }">
+                                        <div *ngIf="(submitted || f.job_role.touched) && f.job_role.errors?.required"
+                                            class="invalid-feedback">Job
+                                            Role
+                                            is required
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Employement Type</label>
+                                        <select class="form-select form-select-sm" aria-label=".form-select-sm example"
+                                            name="employee_type" id="employee_type" formControlName="employee_type"
+                                            [ngClass]="{ 'is-invalid': submitted && f.employee_type.errors }">
+                                            <option value [selected]="isSelected">Select Employement
+                                                Type</option>
+                                            <option value="Full Time">Full Time</option>
+                                            <option value="Contract">Contract</option>
+                                            <option value="W2 Payroll">W2 Payroll</option>
+                                            <option value="Internal Position">Internal Position</option>
+                                            <option value="Internship">Internship</option>
+                                            <option value="Temporary">Temporary</option>
+                                            <option value="Remote">Remote</option>
+                                            <option value="Contract To Hire">Contract To Hire</option>
+                                            <option value="Onsite Position">Onsite Position</option>
+                                            <option value="Hybrid Position">Hybrid Position</option>
+                                        </select>
+                                        <div *ngIf="(submitted || f.employee_type.touched) && f.employee_type.errors?.required"
+                                            class="invalid-feedback">Employee Type is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Industry Type</label>
+                                        <select class="form-select form-select-sm" name="industry_type"
+                                            id="industry_type" formControlName="industry_type"
+                                            [ngClass]="{ 'is-invalid': submitted && f.industry_type.errors }">
+                                            <option value="" disabled selected>Select Industry Type</option>
+                                            <option value="Information Technology">Information Technology</option>
+                                            <option value="Healthcare">Healthcare</option>
+                                            <option value="Finance">Finance</option>
+                                            <option value="Education">Education</option>
+                                            <option value="Manufacturing">Manufacturing</option>
+                                            <option value="Retail">Retail</option>
+                                            <option value="Real Estate">Real Estate</option>
+                                            <option value="Transportation & Logistics">Transportation & Logistics
+                                            </option>
+                                            <option value="Telecommunications">Telecommunications</option>
+                                            <option value="Construction">Construction</option>
+                                            <option value="Hospitality">Hospitality</option>
+                                            <option value="Legal Services">Legal Services</option>
+                                            <option value="Consulting">Consulting</option>
+                                            <option value="Government">Government</option>
+                                            <option value="Non-Profit">Non-Profit</option>
+                                        </select>
+
+                                        <div *ngIf="(submitted || f.industry_type.touched) && f.industry_type.errors?.required"
+                                            class="invalid-feedback">
+                                            Industry Type is required
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Experience</label>
+                                        <input type="text" class="form-control form-control-sm" name="experience"
+                                            id="experience" formControlName="experience"
+                                            [ngClass]="{ 'is-invalid': submitted && f.experience.errors }">
+                                        <div *ngIf="(submitted || f.experience.touched) && f.experience.errors?.required"
+                                            class="invalid-feedback">Experience
+                                            is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Department</label>
+                                        <input type="text" class="form-control form-control-sm" name="department"
+                                            id="department" formControlName="department"
+                                            [ngClass]="{ 'is-invalid': submitted && f.department.errors }">
+                                        <div *ngIf="(submitted || f.department.touched) && f.department.errors?.required"
+                                            class="invalid-feedback">
+                                            Department
+                                            is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Skills</label>
+                                        <input type="text" class="form-control form-control-sm" name="skills"
+                                            id="skills" formControlName="skills"
+                                            [ngClass]="{ 'is-invalid': submitted && f.skills.errors }">
+                                        <div *ngIf="(submitted || f.skills.touched) && f.skills.errors?.required"
+                                            class="invalid-feedback">
+                                            Skills
+                                            is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Required Experience </label>
+                                        <input type="text" class="form-control form-control-sm" name="experience"
+                                            id="experience" formControlName="experience"
+                                            [ngClass]="{ 'is-invalid': submitted && f.experience.errors }">
+                                        <div *ngIf="(submitted || f.experience.touched) && f.experience.errors?.required"
+                                            class="invalid-feedback">
+                                            Experience
+                                            is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Opening Positions </label>
+                                        <input type="text" class="form-control form-control-sm" name="positions"
+                                            id="positions" formControlName="positions"
+                                            [ngClass]="{ 'is-invalid': submitted && f.positions.errors }">
+                                        <div *ngIf="(submitted || f.positions.touched) && f.positions.errors?.required"
+                                            class="invalid-feedback">
+                                            Positions
+                                            is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label">Responsibilities</label>
+                                        <textarea type="text" class="form-control" name="requirements "
+                                            id="requirements" formControlName="requirements"
+                                            [ngClass]="{ 'is-invalid': submitted && f.requirements.errors }"></textarea>
+                                        <div *ngIf="(submitted || f.requirements.touched) && f.requirements.errors?.required"
+                                            class="invalid-feedback">Requirements
+                                            is required
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <label class="form-label">Position Summary</label>
+                                        <textarea type="text" class="form-control" name="summary " id="summary"
+                                            formControlName="summary"
+                                            [ngClass]="{ 'is-invalid': submitted && f.summary.errors }"></textarea>
+                                        <div *ngIf="(submitted || f.summary.touched) && f.summary.errors?.required"
+                                            class="invalid-feedback">
+                                            Position Summary
+                                            is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <!-- <label class="form-label">Detailed Description</label>
+                                        <div class="editor">
+                                            <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
+                                            <ngx-editor [editor]="editor" formControlName="editorContent"
+                                                placeholder="Write job description here..."></ngx-editor>
+                                        </div>
+                                        <div *ngIf="(submitted || f.editorContent.touched) && f.editorContent.errors?.required" class="invalid-feedback">
+                                            Job description is required
+                                        </div> -->
+                                        <label>Job Summary</label>
+                                        <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
+                                        <ngx-editor [editor]="editor" formControlName="summary"></ngx-editor>
+                                        <div *ngIf="f['summary'].invalid && submitted" class="text-danger">
+                                            Summary is required
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary btn-sm"
+                                data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary btn-sm">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

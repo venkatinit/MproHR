@@ -1,0 +1,19 @@
+<div class="container mt-4">
+    <h3>Salary Components</h3>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mt-3">
+        <li class="nav-item" *ngFor="let tab of salaryTabs">
+            <a class="nav-link" [class.active]="activeTab === tab.name" (click)="setActiveTab(tab.name)">
+                {{ tab.name }}
+            </a>
+        </li>
+    </ul>
+
+    <!-- Load child components -->
+    <div class="mt-3">
+        <app-payroll-allowances *ngIf="activeTab === 'Allowances'"></app-payroll-allowances>
+        <app-payroll-deductions *ngIf="activeTab === 'Deductions'"></app-payroll-deductions>
+        <app-payroll-reimbursement *ngIf="activeTab === 'Reimbursement'"></app-payroll-reimbursement>
+    </div>
+</div>

@@ -1,0 +1,164 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <!-- Title Column -->
+                <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6'">
+                    <strong>Reimbursement List</strong>
+                </div>
+                <!-- Company Filter (shown only if enabled) -->
+                <div class="col-md-4 d-flex flex-row align-items-center" *ngIf="isCompanyFilterVisible">
+                    <form [formGroup]="filterForm" (ngSubmit)="getReimbursement()">
+                        <label for=""><strong>Select Company</strong></label>
+                        <div>
+                            <select id="companyFilter" class="form-control form-control-sm ml-2"
+                                formControlName="company" [ngClass]="{ 'is-invalid': submitted && f.company.errors }">
+                                <option value="">-- Select Company --</option>
+                                <option *ngFor="let comp of companyList" [value]="comp.Id">
+                                    {{ comp.CompanyName }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-2" style="margin-top: 2rem;">
+                            <button type="submit" class="bg-success text-white rounded save"
+                                [disabled]="filterForm.invalid">Search</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- Buttons Column -->
+                <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6 text-end'" class="text-end">
+                    <a class="btn btn-primary btn-sm me-2 text-white" data-bs-toggle="modal"
+                        data-bs-target="#reimbursement">
+                        <i class="fa fa-plus" aria-hidden="true"></i> New
+                    </a>
+                    <a class="btn btn-primary btn-sm me-2 text-white" role="button" (click)="toggleCompanyFilter()">
+                        <i class="fa-solid fa-filter"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table   table-hover"
+                    id="bankTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Reimbursement Name</th>
+                            <th>Reimbursement Type</th>
+                            <th>Value</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="allowance_list?.length != 0">
+                        <tr *ngFor="let item of allowance_list; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ item.name || '-'}}</td>
+                            <td>
+                                <button class="btn btn-sm" [ngClass]="{
+                                  'btn-success': item.type === 'Percent',
+                                  'btn-primary': item.type === 'Flat',
+                                  'btn-secondary': item.type !== 'Percent' && item.type !== 'Flat'
+                                }">
+                                    {{ item.type || '-' }}
+                                </button>
+                            </td>
+                            <td>{{ item.value || '-' }}</td>
+                            <td>{{ item.status || 'Active' }}</td>
+                            <td>
+                                <button class="btn btn-sm" type="button" (click)="updateById(item.id)"
+                                    data-bs-toggle="modal" data-bs-target="#reimbursement" title="Edit">
+                                    <i class="bi bi-pencil-square text-success"></i> </button>
+                                <button class="btn  btn-sm " type="button" data-toggle="tooltip" data-placement="top"
+                                    (click)="deleteReimbursement(item.id)" title="Delete"><i
+                                        class="bi bi-trash3-fill text-danger"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="allowance_list?.length == 0">
+                        <tr>
+                            <td colspan="12" class="no-data-available">No data!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade" id="reimbursement" tabindex="-1" aria-labelledby="reimbursementLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header" *ngIf="this.action !== 'update'">
+                            <strong>Add Reimbursement</strong>
+                        </div>
+                        <div class="modal-header" *ngIf="this.action === 'update'">
+                            <strong>Update Reimbursement</strong>
+                        </div>
+                        <div class="modal-body ">
+                            <form [formGroup]="addReimbursement"
+                                (ngSubmit)="action === 'update' ? updateReimbursement() : saveReimbursement()">
+                                <div class="row">
+                                    <!-- <div class="col-md-12">
+                                        <label class="form-label">Select Company</label>
+                                        <select class="form-control form-control-sm" formControlName="company"
+                                            [ngClass]="{ 'is-invalid': submitted && f.company.errors }">
+                                            <option value="">-- Select Company --</option>
+                                            <option *ngFor="let comp of companyList" [value]="comp.Id">
+                                                {{ comp.CompanyName }}
+                                            </option>
+                                        </select>
+                                        <div *ngIf="(submitted || f.company.touched) && f.company.errors?.required"
+                                            class="invalid-feedback">
+                                            Company Name is required
+                                        </div>
+                                    </div> -->
+                                    <div class="col-md-12">
+                                        <label class="form-label">Reimbursement Name </label>
+                                        <input type="text" class="form-control form-control-sm" name="allowance_name"
+                                            id="allowance_name" formControlName="allowance_name"
+                                            [ngClass]="{ 'is-invalid': submitted && f.allowance_name.errors }">
+                                        <!-- <div *ngIf="(submitted || f.allowance_name.touched) && f.allowance_name.errors?.required"
+                                            class="invalid-feedback">
+                                            Bank Name is
+                                            required
+                                        </div> -->
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label">Reimbursement Type</label>
+                                        <select class="form-control form-control-sm" formControlName="type"
+                                            [ngClass]="{ 'is-invalid': submitted && f.type.errors }">
+                                            <option value="">-- Select type --</option>
+                                            <option value="Flat">Flat</option>
+                                            <option value="Percentage">Percentage</option>
+
+                                        </select>
+                                        <!-- <input type="text" class="form-control form-control-sm" name="type" id="type"
+                                            formControlName="type"
+                                            [ngClass]="{ 'is-invalid': submitted && f.type.errors }"> 
+                                             <div *ngIf="(submitted || f.type.touched) && f.type.errors?.required"
+                                            class="invalid-feedback">Branch Name is
+                                            required
+                                        </div> -->
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <label class="form-label">Value</label>
+                                        <input type="text" class="form-control form-control-sm" name="value" id="value"
+                                            formControlName="value" numbersOnly
+                                            [ngClass]="{ 'is-invalid': submitted && f.value.errors }">
+                                        <!-- <div *ngIf="(submitted || f.value.touched) && f.value.errors?.required"
+                                            class="invalid-feedback">Account Number is required
+                                        </div> -->
+                                    </div>
+                                </div>
+                                <div class="mt-2 col-md-12 d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-success btn-sm"
+                                        *ngIf="action !== 'update'">Submit</button>
+                                    <button type="submit" class="btn btn-primary btn-sm"
+                                        *ngIf="action === 'update'">Update</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

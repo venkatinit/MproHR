@@ -1,0 +1,36 @@
+.list-group-item.active {
+    border-bottom: #0d6efd solid 4px;
+    padding-bottom: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.menu_list {
+    display: flex;
+    flex-direction: row;
+    cursor: pointer;
+}
+
+.email,
+.phone,
+.mobile {
+    padding-left: 30px;
+    background-size: 20px;
+}
+
+.email {
+    background: url("../../../../assets/img/flaticons/email.png") no-repeat 5px 5px;
+}
+
+.phone {
+    background: url("../../../../assets/img/flaticons/telephone.png") no-repeat 5px 5px;
+}
+
+.mobile {
+    background: url("../../../../assets/img/flaticons/mobile.png") no-repeat 5px 5px;
+}
+
+.header_customer {
+    padding: 10px 30px;
+    background-color: rgb(221, 246, 246);
+}

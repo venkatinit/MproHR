@@ -1,0 +1,21 @@
+<div class="modal-header">
+    <h5 class="text-center">Upload files</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+</div>
+<div class="modal-body">
+    <div class="row g-3">
+        <div class="exam-block">
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="file-upload-button">
+                        <input type="file" #fileInput (change)="onFileSelect(fileInput)" accept=".xlsx, .xls, .csv" />
+                    </button>
+                    <span>Please upload file</span>
+                    <span class="file-info">{{ fileInfo }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+    </div>
+</div>

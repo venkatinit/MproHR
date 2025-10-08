@@ -1,0 +1,147 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <!-- Title Column -->
+                <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6'">
+                    <strong>Your EPFO Settings</strong><a class="btn   btn-sm me-2 text-white" data-bs-toggle="modal"
+                        data-bs-target="#newModal">
+                        <i class="bi bi-pencil-square text-success"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul style="list-style-type: none;">
+                            <li> <strong> EPF Number </strong> </li>
+                            <li> <strong> Filing Cycle </strong> </li>
+                            <li> <strong> Employee contribution Rate </strong> </li>
+                            <li> <strong> Employer contribution rate </strong> </li>
+                            <li> <strong> Employer contribution Deducts from </strong> </li>
+                            <li> <strong> Employer IDLE contribution Deducts from </strong> </li>
+                            <li> <strong> Admin charges Deducts from </strong> </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul style="list-style-type: none;">
+                            <li>EPF Number</li>
+                            <li>Monthly</li>
+                            <li>No of Working Days in a week</li>
+                            <li>Payment on</li>
+                            <li>First Payment on (Month)</li>
+                            <li>First Payment on (Date)</li>
+                            <li>EPF Number</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <strong>EPF Contribution Details</strong>
+                        </div>
+                        <div class="modal-body ">
+                            <form [formGroup]="epfForm" (ngSubmit)="onSubmit()">
+
+                                <!-- EPF Number -->
+                                <div class="mb-3">
+                                    <label for="epfNumber" class="form-label">EPF Number</label>
+                                    <input type="text" id="epfNumber" class="form-control" formControlName="epfNumber">
+                                </div>
+
+                                <!-- Deduction Cycle -->
+                                <div class="mb-3">
+                                    <label for="deductionCycle" class="form-label">Deduction Cycle</label>
+                                    <select id="deductionCycle" class="form-select" formControlName="deductionCycle">
+                                        <option value="monthly">Monthly</option>
+                                    </select>
+                                </div>
+
+                                <!-- Employee Contribution Rate -->
+                                <div class="mb-3">
+                                    <label class="form-label">Employee Contribution Rate</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="actual"
+                                            formControlName="empContributionActual">
+                                        <label class="form-check-label">12% of actual PF wage</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="restricted"
+                                            formControlName="empContributionRestricted">
+                                        <label class="form-check-label">Restrict to 15000 of PF Wage</label>
+                                    </div>
+                                </div>
+
+                                <!-- Employer Contribution Rate -->
+                                <div class="mb-3">
+                                    <label class="form-label">Employer Contribution Rate</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="actual"
+                                            formControlName="employerContributionActual">
+                                        <label class="form-check-label">12% of actual PF wage</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="restricted"
+                                            formControlName="employerContributionRestricted">
+                                        <label class="form-check-label">Restrict to 15000 of PF Wage</label>
+                                    </div>
+                                </div>
+
+                                <!-- Employer Contribution Deducts -->
+                                <div class="mb-3">
+                                    <label class="form-label">Employer Contribution Deducts From</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="employer"
+                                            formControlName="employerDeductsEmployer">
+                                        <label class="form-check-label">Employer</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="employee"
+                                            formControlName="employerDeductsEmployee">
+                                        <label class="form-check-label">Employee Salary Structure</label>
+                                    </div>
+                                </div>
+
+                                <!-- Employer IDLE Contribution Deducts -->
+                                <div class="mb-3">
+                                    <label class="form-label">Employer IDLE Contribution Deducts From</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="employer"
+                                            formControlName="idleDeductsEmployer">
+                                        <label class="form-check-label">Employer</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="employee"
+                                            formControlName="idleDeductsEmployee">
+                                        <label class="form-check-label">Employee Salary Structure</label>
+                                    </div>
+                                </div>
+
+                                <!-- Admin Charges Deducts -->
+                                <div class="mb-3">
+                                    <label class="form-label">Admin Charges Deducts From</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="employer"
+                                            formControlName="adminDeductsEmployer">
+                                        <label class="form-check-label">Employer</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="employee"
+                                            formControlName="adminDeductsEmployee">
+                                        <label class="form-check-label">Employee Salary Structure</label>
+                                    </div>
+                                </div>
+                                <!-- Submit -->
+                                <div class="col-lg-12 mt-3 d-flex justify-content-end ">
+                                    <button type="submit" class="btn btn-success btn-sm">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

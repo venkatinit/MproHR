@@ -1,0 +1,85 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <!-- Title Column -->
+                <div [ngClass]="isStudentFilterVisible ? 'col-md-4' : 'col-md-6'">
+                    <strong>Pending Leaves</strong>
+                </div>
+
+                <!-- Company Filter (shown only if enabled) -->
+                <div class="col-md-4 d-flex flex-row align-items-center" *ngIf="isStudentFilterVisible">
+                    <form class="d-flex" [formGroup]="form" (ngSubmit)="balanceLeaves()">
+                        <label class="form-label">Employee </label>
+                        <select class="form-control form-control-sm ml-2" formControlName="employee"
+                            [ngClass]="{ 'is-invalid': submitted && f.employee.errors }">
+                            <option value="">-- Select Employee --</option>
+                            <option *ngFor="let emp of employee_List" [value]="emp.id">
+                                {{ emp.full_Name }}
+                            </option>
+                        </select>
+                        <div class="col-md-2">
+                            <button type="submit" class="bg-success text-white rounded save"
+                                [disabled]="form.invalid">Search</button>
+                        </div>
+                    </form>
+                </div>
+
+
+                <!-- Buttons Column -->
+                <div [ngClass]="isStudentFilterVisible ? 'col-md-4' : 'col-md-6 text-end'" class="text-end">
+                    <a class="btn btn-primary btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal">
+                        <i class="fa fa-plus" aria-hidden="true"></i> New
+                    </a>
+
+                    <a class="btn btn-primary btn-sm me-2 text-white" role="button" (click)="toggleCompanyFilter()">
+                        <i class="fa-solid fa-filter"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table   table-hover"
+                    id="bankTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Leave Type</th>
+                            <th>Conducted Leaves</th>
+                            <th>Used Leaves</th>
+                            <th>Remaining Leaves</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="leave_list?.length != 0">
+                        <tr *ngFor="let item of leave_list; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{item.leaveTypeName || '-'}}</td>
+                            <td>{{item.allottedDays || '-'}}</td>
+                            <td>{{item.usedDays || '-'}}</td>
+                            <td>{{item.remainingDays || '-'}}</td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="leave_list?.length == 0">
+                        <tr>
+                            <td colspan="12" class="no-data-available">No data!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header" *ngIf="this.action !== 'update'">
+                            <strong>Add Bank</strong>
+                        </div>
+                        <div class="modal-header" *ngIf="this.action === 'update'">
+                            <strong>Update Bank</strong>
+                        </div>
+                        <div class="modal-body ">
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+</div>

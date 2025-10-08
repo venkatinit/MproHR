@@ -1,0 +1,594 @@
+<div class="dashboard">
+    <div class="row d-flex flex-row justify-content-between">
+        <div class=" profile">
+            <div class="employee grid-cols-6 rounded-2xl shadow-md p-6 d-flex items-center justify-between">
+                <div>
+                    <img src="../../../../assets/img/profile-img.jpg" style="width: 75px;" alt="profile"
+                        class="rounded-circle" />
+                </div>
+                <div class="ml-2">
+                    <h2 class="text-xl font-bold">{{employeeDetails?.full_Name}}</h2>
+                    <p class="text-gray-500"> {{employeeDetails?.designation}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="row d-flex flex-row details ">
+            <div class="details_brief" data-bs-toggle="modal" data-bs-target="#offerLetter"
+                (click)="getEmployeeDetails()">
+                <h5>Offer Letter
+                </h5>
+            </div>
+            <div class="details_brief" data-bs-toggle="modal" data-bs-target="#attendance"
+                (click)="getEmployeeDetails()">
+                <h5>Attendance</h5>
+            </div>
+            <div class="details_brief" data-bs-toggle="modal" data-bs-target="#payslip" (click)="getEmployeeDetails()">
+                <h5>Payslip</h5>
+            </div>
+            <div class="details_brief" data-bs-toggle="modal" data-bs-target="#relieving"
+                (click)="getEmployeeDetails()">
+                <h5>Reliving Letter
+                </h5>
+            </div>
+            <div class="details_brief" data-bs-toggle="modal" data-bs-target="#service" (click)="getEmployeeDetails()">
+                <h5>Service Letter</h5>
+            </div>
+            <div class="details_brief" (click)="toggleUpdates()">
+                <h5>Updates</h5>
+            </div>
+        </div>
+    </div>
+    <div class="updates d-flex flex-row justify-content-between align-items-center" style="margin-top:20px"
+        [@slideToggle]="showUpdates ? 'visible' : 'hidden'">
+        <div class="card slides  p-2 " style="margin-left: 15px" data-bs-toggle="modal" data-bs-target="#qualification"
+            (click)="getEmployeeDetails()">
+            Qualification </div>
+        <div class="card slides  p-2 ">Experience </div>
+        <div class="card slides  p-2 ">KYC </div>
+        <div class="card slides  p-2 " data-bs-toggle="modal" data-bs-target="#leaveRequest"
+            (click)="getEmployeeDetails()">Leave Request </div>
+        <div class="card slides  p-2 ">CTC Update</div>
+    </div>
+    <!-- charts start -->
+    <div class="d-flex flex-row mt-2">
+        <div class="col-md-6 stat-card big">
+            <canvas id="pieChart"></canvas>
+        </div>
+
+        <canvas id="attendanceChart"></canvas>
+        <div class="filter-buttons d-flex flex-column g-2">
+            <button (click)="changeFilter('daily')" [class.active]="filterType === 'daily'">Daily</button>
+            <button (click)="changeFilter('monthly')" [class.active]="filterType === 'monthly'">Monthly</button>
+            <button (click)="changeFilter('yearly')" [class.active]="filterType === 'yearly'">Yearly</button>
+        </div>
+    </div>
+    <div class="stats-row mt-2">
+        <div class="stat-cards " *ngFor="let item of [
+        {label:'Checked In',value:stats.checkedIn,color:'#4da3ff'},
+        {label:'Not Checked In',value:stats.notCheckedIn,color:'#ff5c5c'},
+        {label:'On Leave',value:stats.onLeave,color:'#4caf50'},
+        {label:'Weekly Off',value:stats.weeklyOff,color:'#999'},
+        {label:'Holiday',value:stats.holiday,color:'#ff9800'},
+        {label:'Checked Out',value:stats.checkedOut,color:'#ffca28'}
+      ]" [style.borderColor]="item.color">
+            <h4>{{ item.label }}</h4>
+            <p>{{ item.value }}</p>
+        </div>
+    </div>
+    <!-- charts end -->
+</div>
+<div class="modal fade" id="offerLetter" tabindex="-1" aria-labelledby="offerLetterLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <strong>Generate Offer Letter</strong>
+            </div>
+            <div class="modal-body ">
+                <form [formGroup]="generateOL" (ngSubmit)="Offer_generatePDF()">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control form-control-sm" name="full_name" id="full_name"
+                                formControlName="full_name"
+                                [ngClass]="{ 'is-invalid': submitted && f.full_name.errors }">
+                            <div *ngIf="(submitted||f.full_name)&&f.full_name.errors?.required"
+                                class="invalid-feedback">Full Name is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Candidate Address</label>
+                            <input type="text" class="form-control form-control-sm" name="permanent_address"
+                                id="permanent_address" formControlName="permanent_address"
+                                [ngClass]="{ 'is-invalid': submitted && f.permanent_address.errors }">
+                            <div *ngIf="(submitted||f.permanent_address)&&f.permanent_address.errors?.required"
+                                class="invalid-feedback">
+                                Candidate Address is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Mobile Number</label>
+                            <input type="text" class="form-control form-control-sm" name="mobileNumber"
+                                id="mobileNumber" formControlName="mobileNumber"
+                                [ngClass]="{ 'is-invalid': submitted && f.mobileNumber.errors }">
+                            <div *ngIf="(submitted||f.mobileNumber)&&f.mobileNumber.errors?.required"
+                                class="invalid-feedback">Mobile Number is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Email Id</label>
+                            <input type="text" class="form-control form-control-sm" name="email" id="email"
+                                formControlName="email" [ngClass]="{ 'is-invalid': submitted && f.email.errors }">
+                            <div *ngIf="(submitted||f.email)&&f.email.errors?.required" class="invalid-feedback">Email
+                                Id is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Designation</label>
+                            <input type="text" class="form-control form-control-sm" name="designation" id="designation"
+                                formControlName="designation"
+                                [ngClass]="{ 'is-invalid': submitted && f.designation.errors }">
+                            <div *ngIf="(submitted||f.designation)&&f.designation.errors?.required"
+                                class="invalid-feedback">Designation is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Department</label>
+                            <input type="text" class="form-control form-control-sm" name="department" id="department"
+                                formControlName="department"
+                                [ngClass]="{ 'is-invalid': submitted && f.department.errors }">
+                            <div *ngIf="(submitted||f.department)&&f.department.errors?.required"
+                                class="invalid-feedback">Department is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Reporting To</label>
+                            <input type="text" class="form-control form-control-sm" name="reportingTo" id="reportingTo"
+                                formControlName="reportingTo"
+                                [ngClass]="{ 'is-invalid': submitted && f.reportingTo.errors }">
+                            <div *ngIf="(submitted||f.reportingTo)&&f.reportingTo.errors?.required"
+                                class="invalid-feedback">reportingTo is
+                                required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Work Location</label>
+                            <input type="text" class="form-control form-control-sm" name="location" id="location"
+                                formControlName="location" [ngClass]="{ 'is-invalid': submitted && f.location.errors }">
+                            <div *ngIf="(submitted||f.location)&&f.location.errors?.required" class="invalid-feedback">
+                                location is
+                                required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Date of Joining</label>
+                            <input type="date" class="form-control form-control-sm" name="doj" id="doj"
+                                formControlName="doj" [ngClass]="{ 'is-invalid': submitted && f.doj.errors }">
+                            <div *ngIf="(submitted||f.doj)&&f.doj.errors?.required" class="invalid-feedback">doj is
+                                required
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Employment Type</label>
+                            <input type="text" class="form-control form-control-sm" name="employmentType"
+                                id="employmentType" formControlName="employmentType"
+                                [ngClass]="{ 'is-invalid': submitted && f.employmentType.errors }">
+                            <div *ngIf="(submitted||f.employmentType)&&f.employmentType.errors?.required"
+                                class="invalid-feedback">employmentType is
+                                required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Gross Salary</label>
+                            <input type="text" class="form-control form-control-sm" name="gross" id="gross"
+                                formControlName="gross" [ngClass]="{ 'is-invalid': submitted && f.gross.errors }">
+                            <div *ngIf="(submitted||f.gross)&&f.gross.errors?.required" class="invalid-feedback">
+                                Salary is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Probition Period(months)</label>
+                            <input type="text" class="form-control form-control-sm" name="probition" id="probition"
+                                formControlName="probition"
+                                [ngClass]="{ 'is-invalid': submitted && f.probition.errors }">
+                            <div *ngIf="(submitted||f.probition)&&f.probition.errors?.required"
+                                class="invalid-feedback">
+                                Probition is
+                                required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Report On</label>
+                            <input type="date" class="form-control form-control-sm" name="reportDate" id="reportDate"
+                                formControlName="reportDate"
+                                [ngClass]="{ 'is-invalid': submitted && f.reportDate.errors }">
+                            <div *ngIf="(submitted||f.reportDate)&&f.reportDate.errors?.required"
+                                class="invalid-feedback">
+                                Date is
+                                required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Notice Period</label>
+                            <input type="text" class="form-control form-control-sm" name="noticePeriod"
+                                id="noticePeriod" formControlName="noticePeriod"
+                                [ngClass]="{ 'is-invalid': submitted && f.noticePeriod.errors }">
+                            <div *ngIf="(submitted||f.noticePeriod)&&f.noticePeriod.errors?.required"
+                                class="invalid-feedback">
+                                Notice Period is
+                                required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Date of Issue</label>
+                            <input type="date" class="form-control form-control-sm" name="issueDate" id="issueDate"
+                                formControlName="issueDate"
+                                [ngClass]="{ 'is-invalid': submitted && f.issueDate.errors }">
+                            <div *ngIf="(submitted||f.issueDate)&&f.issueDate.errors?.required"
+                                class="invalid-feedback">
+                                Issue Date is
+                                required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Authoriser Name</label>
+                            <input type="text" class="form-control form-control-sm" name="authoriserName"
+                                id="authoriserName" formControlName="authoriserName"
+                                [ngClass]="{ 'is-invalid': submitted && f.authoriserName.errors }">
+                            <div *ngIf="(submitted||f.authoriserName)&&f.authoriserName.errors?.required"
+                                class="invalid-feedback">
+                                Authoriser Name is
+                                required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-2 col-md-12 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-success btn-sm">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="attendance" tabindex="-1" aria-labelledby="attendanceLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <strong>Generate Attendance</strong>
+            </div>
+            <div class="modal-body ">
+                <form [formGroup]="attendance" (ngSubmit)="Payslip_generatePDF()">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="form-label"> Date </label>
+                            <input type="date" class="form-control form-control-sm" name="attendance_date"
+                                id="attendance_date" formControlName="attendance_date"
+                                [ngClass]="{ 'is-invalid': submitted && f.attendance_date?.errors }">
+                            <div *ngIf="(submitted || f.attendance_date?.touched) && f.attendance_date?.errors?.required"
+                                class="invalid-feedback"> Date is
+                                required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-2 col-md-12 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-success btn-sm">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="payslip" tabindex="-1" aria-labelledby="payslipLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <strong>Generate Payslip</strong>
+            </div>
+            <div class="modal-body ">
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="relieving" tabindex="-1" aria-labelledby="relievingLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <strong>Generate Relieving Letter</strong>
+            </div>
+            <div class="modal-body ">
+                <form [formGroup]="relievingForm" (ngSubmit)="Reliving_generatePDF()">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-label"> Employee ID </label>
+                            <input type="text" class="form-control form-control-sm" name="employee_id" id="employee_id"
+                                formControlName="employee_id"
+                                [ngClass]="{ 'is-invalid': submitted && f.employee_id?.errors }">
+                            <!-- <div *ngIf="(submitted || f.employee_id?.touched) && f.employee_id?.errors?.required"
+                                class="invalid-feedback"> Date is
+                                required
+                            </div> -->
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label"> Employee Name </label>
+                            <input type="text" class="form-control form-control-sm" name="full_name" id="full_name"
+                                formControlName="full_name"
+                                [ngClass]="{ 'is-invalid': submitted && f.full_name?.errors }">
+                            <!-- <div *ngIf="(submitted || f.full_name?.touched) && f.full_name?.errors?.required"
+                                class="invalid-feedback"> Name is
+                                required
+                            </div> -->
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label"> Date of Join</label>
+                            <input type="date" class="form-control form-control-sm" name="doj" id="doj"
+                                formControlName="doj" [ngClass]="{ 'is-invalid': submitted && f.doj?.errors }">
+                            <!-- <div *ngIf="(submitted || f.doj?.touched) && f.doj?.errors?.required"
+                                class="invalid-feedback"> Date is
+                                required
+                            </div> -->
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label"> Date of Relieving </label>
+                            <input type="date" class="form-control form-control-sm" name="doe" id="doe"
+                                formControlName="doe" [ngClass]="{ 'is-invalid': submitted && f.doe?.errors }">
+                            <!-- <div *ngIf="(submitted || f.doe?.touched) && f.doe?.errors?.required"
+                                class="invalid-feedback"> Date is
+                                required
+                            </div> -->
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label"> Designation</label>
+                            <input type="text" class="form-control form-control-sm" name="designation" id="designation"
+                                formControlName="designation"
+                                [ngClass]="{ 'is-invalid': submitted && f.designation?.errors }">
+                            <!-- <div *ngIf="(submitted || f.designation?.touched) && f.designation?.errors?.required"
+                                                        class="invalid-feedback"> Date is
+                                                        required
+                                                    </div> -->
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label"> HR mail </label>
+                            <input type="text" class="form-control form-control-sm" name="hr_mail" id="hr_mail"
+                                formControlName="hr_mail" [ngClass]="{ 'is-invalid': submitted && f.hr_mail?.errors }">
+                            <!-- <div *ngIf="(submitted || f.hr_mail?.touched) && f.hr_mail?.errors?.required"
+                                                                                class="invalid-feedback"> Date is
+                                                                                required
+                                                                            </div> -->
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label"> HR Conatct Number </label>
+                            <input type="text" class="form-control form-control-sm" name="hr_number" id="hr_number"
+                                formControlName="hr_number"
+                                [ngClass]="{ 'is-invalid': submitted && f.hr_number?.errors }">
+                            <!-- <div *ngIf="(submitted || f.hr_number?.touched) && f.hr_number?.errors?.required"
+                                                                                                        class="invalid-feedback"> Date is
+                                                                                                        required
+                                                                                                    </div> -->
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label"> Authoriser Name </label>
+                            <input type="text" class="form-control form-control-sm" name="auth_name" id="auth_name"
+                                formControlName="auth_name"
+                                [ngClass]="{ 'is-invalid': submitted && f.auth_name?.errors }">
+                            <!-- <div *ngIf="(submitted || f.auth_name?.touched) && f.auth_name?.errors?.required"
+                                                                                                        class="invalid-feedback"> Date is
+                                                                                                        required
+                                                                                                    </div> -->
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label"> Authoriser Designation </label>
+                            <input type="text" class="form-control form-control-sm" name="auth_designation"
+                                id="auth_designation" formControlName="auth_designation"
+                                [ngClass]="{ 'is-invalid': submitted && f.auth_designation?.errors }">
+                            <!-- <div *ngIf="(submitted || f.auth_designation?.touched) && f.auth_designation?.errors?.required"
+                            class="invalid-feedback"> Date is required</div> -->
+                        </div>
+
+                    </div>
+                    <div class="mt-2 col-md-12 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-success btn-sm">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="service" tabindex="-1" aria-labelledby="serviceLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <strong>Generate Service Letter</strong>
+            </div>
+            <div class="modal-body ">
+                <form [formGroup]="serviceForm" (ngSubmit)="Payslip_generatePDF()">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control form-control-sm" name="full_name" id="full_name"
+                                formControlName="full_name"
+                                [ngClass]="{ 'is-invalid': submitted && f.full_name.errors }">
+                            <div *ngIf="(submitted||f.full_name)&&f.full_name.errors?.required"
+                                class="invalid-feedback">Full Name is required
+                            </div>
+                        </div>
+                        <!-- <div class="col-md-4">
+                            <label class="form-label">Date of Issue</label>
+                            <input type="date" class="form-control form-control-sm" name="issueDate" id="issueDate"
+                                formControlName="issueDate"
+                                [ngClass]="{ 'is-invalid': submitted && f.issueDate.errors }">
+                            <div *ngIf="(submitted||f.issueDate)&&f.issueDate.errors?.required"
+                                class="invalid-feedback">
+                                Issue Date is
+                                required
+                            </div>
+                        </div> -->
+                        <div class="col-md-4">
+                            <label class="form-label">Work Location</label>
+                            <input type="text" class="form-control form-control-sm" name="location" id="location"
+                                formControlName="location" [ngClass]="{ 'is-invalid': submitted && f.location.errors }">
+                            <div *ngIf="(submitted||f.location)&&f.location.errors?.required" class="invalid-feedback">
+                                location is
+                                required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Designation</label>
+                            <input type="text" class="form-control form-control-sm" name="designation" id="designation"
+                                formControlName="designation"
+                                [ngClass]="{ 'is-invalid': submitted && f.designation.errors }">
+                            <div *ngIf="(submitted||f.designation)&&f.designation.errors?.required"
+                                class="invalid-feedback">Designation is
+                                required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Date of Joining</label>
+                            <input type="date" class="form-control form-control-sm" name="doj" id="doj"
+                                formControlName="doj" [ngClass]="{ 'is-invalid': submitted && f.doj.errors }">
+                            <div *ngIf="(submitted||f.doj)&&f.doj.errors?.required" class="invalid-feedback">doj is
+                                required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label"> Date of Relieving </label>
+                            <input type="date" class="form-control form-control-sm" name="doe" id="doe"
+                                formControlName="doe" [ngClass]="{ 'is-invalid': submitted && f.doe?.errors }">
+                            <div *ngIf="(submitted || f.doe?.touched) && f.doe?.errors?.required"
+                                class="invalid-feedback"> Date is
+                                required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-2 col-md-12 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-success btn-sm">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="qualification" tabindex="-1" aria-labelledby="qualificationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <strong>Add qualification </strong>
+            </div>
+            <div class="modal-body ">
+                <form [formGroup]="qualificationForm" (ngSubmit)="newQualification()">
+                    <div class="mb-3">
+                        <label>Employee Id</label>
+                        <input type="text" formControlName="employeeId" class="form-control" />
+                    </div>
+                    <div class="col-md-12" formArrayName="qualifications">
+                        <div *ngFor="let qualification of qualifications.controls; let i = index" [formGroupName]="i"
+                            class="card p-3 mb-2">
+                            <h5>Qualification {{ i + 1 }}</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Class</label>
+                                    <input type="text" formControlName="class" class="form-control" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Institute</label>
+                                    <input type="text" formControlName="institute" class="form-control" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Board / University</label>
+                                    <input type="text" formControlName="board_University" class="form-control" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Year of Passing</label>
+                                    <input type="number" formControlName="year_Of_Passing" class="form-control" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Marks / Grade</label>
+                                    <input type="text" formControlName="marks_Grade" class="form-control" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Attachment</label>
+                                    <input type="file" (change)="onFileChange($event, i)" class="form-control" />
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger col-md-2 mt-2" (click)="removeQualification(i)"
+                                *ngIf="qualifications.length > 1">
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-row justify-content-between">
+                        <button type="button" class="btn btn-primary mt-3" (click)="addQualification()">+ More</button>
+                        <button type="submit" class="btn btn-success mt-3">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="leaveRequest" tabindex="-1" aria-labelledby="leaveRequestLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <strong>Raise a Request</strong>
+            </div>
+
+            <div class="modal-body ">
+                <form [formGroup]="leaveRequest" (ngSubmit)="saveRequest()">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label"> From Date </label>
+                            <input type="date" class="form-control form-control-sm" name="fromDate" id="fromDate"
+                                formControlName="fromDate"
+                                [ngClass]="{ 'is-invalid': submitted && f.fromDate?.errors }">
+                            <div *ngIf="(submitted || f.fromDate?.touched) && f.fromDate?.errors?.required"
+                                class="invalid-feedback"> Date is
+                                required
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label"> To Date </label>
+                            <input type="date" class="form-control form-control-sm" name="toDate" id="toDate"
+                                formControlName="toDate" [ngClass]="{ 'is-invalid': submitted && f.toDate?.errors }">
+                            <div *ngIf="(submitted || f.toDate?.touched) && f.toDate?.errors?.required"
+                                class="invalid-feedback"> Date is
+                                required
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label"> Leave Type </label>
+                        <select class="form-control form-control-sm ml-2" formControlName="leaveType"
+                            [ngClass]="{ 'is-invalid': submitted && f.leaveType?.errors }">
+                            <option value="">-- Select Type --</option>
+                            <option *ngFor="let comp of LeaveTypeList" [value]="comp.id">
+                                {{ comp.name }}
+                            </option>
+                        </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label"> Remarks </label>
+                            <input type="text" class="form-control form-control-sm" name="remarks" id="remarks"
+                                formControlName="remarks" [ngClass]="{ 'is-invalid': submitted && f.remarks?.errors }">
+                            <div *ngIf="(submitted || f.remarks?.touched) && f.remarks?.errors?.required"
+                                class="invalid-feedback"> Date is
+                                required
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Reason for Leave </label>
+                            <textarea type="text" class="form-control form-control-sm" name="reason" id="reason"
+                                formControlName="reason"
+                                [ngClass]="{ 'is-invalid': submitted && f.reason?.errors }"></textarea>
+                            <div *ngIf="(submitted || f.reason?.touched) && f.reason?.errors?.required"
+                                class="invalid-feedback"> Date is
+                                required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-2 col-md-12 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-success btn-sm">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

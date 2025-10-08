@@ -1,0 +1,57 @@
+.sidebar {
+    width: 20%;
+    float: left;
+    transition: all 0.3s ease;
+    min-height: 100vh;
+    background: #dfecf8;
+    overflow-y: auto;
+}
+
+.header {
+    z-index: 10;
+    position: fixed;
+    top: 0;
+    right: 0;
+}
+
+.sidebar:not(.collapsed-sidebar)~.main .header {
+    left: 20%;
+}
+
+.sidebar.collapsed-sidebar~.main .header {
+    left: 0;
+}
+
+.main {
+    width: 80%;
+    float: right;
+    transition: all 0.3s ease;
+    min-height: 100vh;
+}
+
+.collapsed-sidebar {
+    width: 0;
+    padding: 0;
+}
+
+.expanded-main {
+    width: 100%;
+}
+
+ul li a {
+    border-radius: 4px;
+}
+
+#nav .nav-item {
+    margin-top: 4px;
+}
+
+.dropdown-content {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.4s ease-in-out;
+}
+
+.dropdown-content.show {
+    max-height: 1000px;
+}

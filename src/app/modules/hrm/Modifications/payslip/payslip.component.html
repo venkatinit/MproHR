@@ -1,0 +1,97 @@
+<div class="container border p-4 mt-3">
+    <h2 class="text-center">ampleLogic</h2>
+    <h5 class="text-center">{{ payslip.company.name }}</h5>
+    <p class="text-center">{{ payslip.company.address }}</p>
+    <h6 class="text-center my-3">PAY SLIP FOR THE MONTH OF {{ payslip.month }}</h6>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <p><strong>NAME:</strong> {{ payslip.employee.name }}</p>
+            <p><strong>Date Of Joining:</strong> {{ payslip.employee.doj }}</p>
+            <p><strong>Employee ID:</strong> {{ payslip.employee.id }}</p>
+            <p><strong>Designation:</strong> {{ payslip.employee.designation }}</p>
+            <p><strong>Location/Office:</strong> {{ payslip.employee.office }}</p>
+            <p><strong>Gender:</strong> {{ payslip.employee.gender }}</p>
+            <p><strong>PAN:</strong> {{ payslip.employee.pan }}</p>
+            <p><strong>EPF No:</strong> {{ payslip.employee.epf }}</p>
+        </div>
+        <div class="col-sm-6">
+            <p><strong>Date:</strong> {{ payslip.date }}</p>
+            <p><strong>Standard Days:</strong> {{ payslip.days.standard }}</p>
+            <p><strong>Days Accounted:</strong> {{ payslip.days.accounted }}</p>
+            <p><strong>Payment Mode:</strong> {{ payslip.employee.paymentMode }}</p>
+            <p><strong>Bank Name:</strong> {{ payslip.employee.bank }}</p>
+            <p><strong>Bank A/C No:</strong> {{ payslip.employee.accNo }}</p>
+            <p><strong>UAN No:</strong> {{ payslip.employee.uan }}</p>
+        </div>
+    </div>
+
+    <table class="table table-bordered mt-3">
+        <thead class="table-light">
+            <tr>
+                <th>EARNINGS</th>
+                <th>AMOUNT</th>
+                <th>DEDUCTIONS</th>
+                <th>AMOUNT</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Basic</td>
+                <td>{{ payslip.earnings.basic }}</td>
+                <td>Professional Tax</td>
+                <td>{{ payslip.deductions.professionalTax }}</td>
+            </tr>
+            <tr>
+                <td>HRA</td>
+                <td>{{ payslip.earnings.hra }}</td>
+                <td>Income Tax</td>
+                <td>{{ payslip.deductions.incomeTax }}</td>
+            </tr>
+            <tr>
+                <td>Medical Allowance</td>
+                <td>{{ payslip.earnings.medical }}</td>
+                <td>EPF Contribution</td>
+                <td>{{ payslip.deductions.epf }}</td>
+            </tr>
+            <tr>
+                <td>Conveyance Allowance</td>
+                <td>{{ payslip.earnings.conveyance }}</td>
+                <td>Health Insurance</td>
+                <td>{{ payslip.deductions.healthInsurance }}</td>
+            </tr>
+            <tr>
+                <td>Special Allowance</td>
+                <td>{{ payslip.earnings.special }}</td>
+                <td>ESI Employee</td>
+                <td>{{ payslip.deductions.esi }}</td>
+            </tr>
+            <tr>
+                <td>Arrears</td>
+                <td>{{ payslip.earnings.arrears }}</td>
+                <td>Advance</td>
+                <td>{{ payslip.deductions.advance }}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>Staff Welfare</td>
+                <td>{{ payslip.deductions.welfare }}</td>
+            </tr>
+            <tr class="fw-bold">
+                <td>Gross Earnings</td>
+                <td>{{ grossEarnings }}</td>
+                <td>Gross Deductions</td>
+                <td>{{ grossDeductions }}</td>
+            </tr>
+            <tr class="fw-bold">
+                <td colspan="2" class="text-end">NET PAY</td>
+                <td colspan="2">{{ netPay }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p><strong>In Words:</strong> Rupees {{ netPay | number }} Only</p>
+    <p class="fst-italic">Computer generated pay slip, Signature not required.</p>
+</div>
+  

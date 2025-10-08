@@ -1,0 +1,89 @@
+<div class="container">
+    <div class="form-container sign-in-container">
+        <form [formGroup]="loginForm" (ngSubmit)="saveNewMember()" action="index.html" method="POST">
+            <h1>Sign in</h1>
+            <div class="social-container">
+                <a href="#" class="social bg-primary text-white"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social text-white bg-danger"><i class="fab fa-google-plus-g"></i></a>
+                <a href="#" class="social text-white bg-info"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <span>or use your account</span>
+            <div class="col-md-12">
+                <input type="email" class="email" placeholder="Email" formControlName="email" name="email" id="email"
+                    [ngClass]="{ 'is-invalid': submitted && f.email?.errors }" required>
+                <div *ngIf="submitted && f.email?.errors" class="invalid-feedback">
+                    <div *ngIf="f.email?.errors.required">Username is required</div>
+                </div>
+                <div *ngIf="f.email.touched && f.email.invalid" class="invalid-feedback">Email is required</div>
+            </div>
+            <div class="col-md-12">
+                <input [type]="show ? 'text' : 'password'" name="password" class="password" placeholder="Password"
+                    class="form-control" id="yourPassword" formControlName="password"
+                    [ngClass]="{ 'is-invalid': submitted && f.password?.errors }" required>
+                <span class="input-group-text cursor-pointer eye" (click)="onClick()">
+                    <i class="fa fa-eye" aria-hidden="true" *ngIf="!show"></i>
+                    <i class="fa fa-eye-slash" aria-hidden="true" *ngIf="show"></i>
+                </span>
+                <div *ngIf="submitted && f.password?.errors" class="invalid-feedback">
+                    <div *ngIf="f.password?.errors.required">Password is required</div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary m-2" [disabled]="loginForm.invalid">Sign In</button>
+            <span style="margin-top: 20px;cursor: pointer;" class="text-primary"><a
+                    (click)="openForgotPasswordModal()"><strong>Forgot
+                        password?</strong></a></span>
+            <span>If you don't have an Account ? <a (click)="onClick()" routerLink="/register"><strong>Sign Up</strong>
+                </a></span>
+        </form>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordLabel" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content forget-psw">
+            <div class="modal-header">
+                <h5 class="modal-title" id="forgotPasswordLabel">Reset Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- <form [formGroup]="forgotPasswordForm">
+            <div class="row">
+              <div class="col-12" style="display: flex;align-items: start; flex-direction: column;">
+                <label for="password">New Password</label>
+                <input [type]="show ? 'text' : 'password'" formControlName="password" placeholder="Password"
+                  class="form-control" id="password" [ngClass]="{ 'is-invalid': submitted && f.password.errors }"
+                  required>
+                <span class="input-group-text cursor-pointer eye" (click)="onClick()">
+                  <i class="fa fa-eye" *ngIf="!show"></i>
+                  <i class="fa fa-eye-slash" *ngIf="show"></i>
+                </span>
+                <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                  <div *ngIf="f.password.errors.required">Password is required</div>
+                </div>
+              </div>
+              <div class="col-12" style="display: flex;align-items: start; flex-direction: column;">
+                <label for="confirmPassword">Confirm Password</label>
+                <input [type]="show ? 'text' : 'password'" formControlName="confirmPassword"
+                  placeholder="Confirm Password" class="form-control" id="confirmPassword"
+                  [ngClass]="{ 'is-invalid': submitted && (f.confirmPassword.errors || passwordMismatch) }" required>
+                <span class="input-group-text cursor-pointer eye" (click)="onClick()">
+                  <i class="fa fa-eye" *ngIf="!show"></i>
+                  <i class="fa fa-eye-slash" *ngIf="show"></i>
+                </span>
+                <div *ngIf="submitted && f.confirmPassword.errors?.required" class="invalid-feedback">
+                  Confirm Password is required
+                </div>
+                <div *ngIf="submitted && passwordMismatch" class="invalid-feedback">
+                  Passwords do not match
+                </div>
+              </div>
+            </div>
+          </form> -->
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" (click)="submitForgotPassword()">Submit</button>
+            </div>
+        </div>
+    </div>
+    </div>

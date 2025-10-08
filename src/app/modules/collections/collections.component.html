@@ -1,0 +1,198 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>Receipts </strong>
+                <!-- <a class="btn btn-primary  btn-sm  me-md-2  float-end" (click)="open_fileUpload()" role="button">Import
+                    CSV File</a> -->
+                <a class="btn btn-primary btn-sm me-md-2 float-end text-white" role="button" data-bs-toggle="modal"
+                    data-bs-target="#newModal">
+                    <i class="fa fa-plus " aria-hidden="true"></i> New </a>
+            </div>
+            <div class="card-body">
+                <!-- <div class="row g-3">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body"> -->
+                                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+                                    class="table   table-hover" id="collectionTable">
+                                    <thead>
+                                        <tr>
+                                            <th>S.No</th>
+                                            <th>Date</th>
+                                            <th>Receipt No </th>
+                                            <th>customer Name</th>
+                                            <th>collected By </th>
+                                            <th>Bill</th>
+                                            <!-- <th>Opening Balance</th> -->
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody *ngIf="receipt_list?.length != 0">
+                                        <tr *ngFor="let item of receipt_list; let i = index">
+                                            <td>{{ i + 1 }}</td>
+                                            <td>{{ item.created_At | date:'dd-MM-YYYY' }}</td>
+                                            <td>{{ item.state_title || '-' }}</td>
+                                            <td>{{ item.branch || '-' }}</td>
+                                            <td>{{ item.account_Number || '-' }}</td>
+                                            <td>{{ item.opening_Balance || 0 }}</td>
+                                            <td>
+                                                <button class="btn btn-sm" type="button" (click)="updateById(item.id)"
+                                                    data-bs-toggle="modal" data-bs-target="#newModal" title="Edit">
+                                                    <i class="bi bi-pencil-square text-success"></i> </button>
+                                                <button class="btn  btn-sm " type="button" data-toggle="tooltip"
+                                                    data-placement="top" (click)="deleteReceipt(item.id)"
+                                                    title="Delete"><i
+                                                        class="bi bi-trash3-fill text-danger"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+                                    <tbody *ngIf="receipt_list?.length == 0">
+                                        <tr>
+                                            <td colspan="12" class="no-data-available">No data!</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            <!-- </div>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+            <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header" *ngIf="this.action !== 'update'">
+                            <strong>Add Receipt</strong>
+                        </div>
+                        <div class="modal-header" *ngIf="this.action === 'update'">
+                            <strong>Update Receipt</strong>
+                        </div>
+                        <div class="modal-body ">
+                            <form [formGroup]="addReceipt"
+                                (ngSubmit)="action === 'update' ? updateReceipt() : saveReceipt()">
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <label class="form-label">Date </label>
+                                        <input type="date" class="form-control form-control-sm" name="dateOfReceipt"
+                                            id="dateOfReceipt" formControlName="dateOfReceipt"
+                                            [ngClass]="{ 'is-invalid': submitted && f.dateOfReceipt.errors }">
+                                        <!-- <div *ngIf="(submitted || f.dateOfReceipt.touched) && f.dateOfReceipt.errors?.required"
+                                            class="invalid-feedback">Date is equired
+                                        </div> -->
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label class="form-label">Receipt Number</label>
+                                        <input type="text" class="form-control form-control-sm" name="rec_num" id="rec_num" numbersOnly
+                                            formControlName="rec_num" [ngClass]="{ 'is-invalid': submitted && f.rec_num.errors }">
+                                        <!-- <div *ngIf="(submitted || f.rec_num.touched) && f.rec_num.errors?.required"
+                                                                                class="invalid-feedback">rec_num is
+                                                                                required
+                                                                            </div> -->
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <label class="form-label"> Company Name</label>
+                                        <select class="form-control form-control-sm" formControlName="company"
+                                            [ngClass]="{ 'is-invalid': submitted && f.company.errors }">
+                                            <option value="">-- Select Company --</option>
+                                            <option *ngFor="let comp of companyList" [value]="comp.Id">
+                                                {{ comp.CompanyName }}
+                                            </option>
+                                        </select>
+                                        <!-- <div *ngIf="(submitted || f.company.touched) && f.company.errors?.required" class="invalid-feedback">
+                                            Company Name is required
+                                        </div> -->
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label class="form-label"> Invoice Number </label>
+                                        <select class="form-control form-control-sm" name="invoice_id" id="invoice_id"
+                                            formControlName="invoice_id"
+                                            [ngClass]="{ 'is-invalid': submitted && f.invoice_id.errors }">
+                                            <option value="" disabled selected>Select a Customer</option>
+                                            <option *ngFor="let invoice of invoices" [value]="invoice.id">{{
+                                                invoice.invoice_No }} - {{invoice.customer_Name}}
+                                            </option>
+                                        </select>
+                                        <!-- <div *ngIf="(submitted || f.invoice_id?.touched) && f.invoice_id.errors?.required"
+                                            class="invalid-feedback">
+                                            Invoice Number
+                                            is required
+                                        </div> -->
+
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <label class="form-label">Mode</label>
+                                        <select class="form-control form-control-sm" name="mode" id="mode"
+                                            formControlName="mode"
+                                            [ngClass]="{ 'is-invalid': submitted && f.mode.errors }"
+                                            (change)="onModeChange($event)">
+                                            <option value="" disabled selected>Select a mode</option>
+                                            <option value="C">Cash</option>
+                                            <option value="B">Online/UPI</option>
+                                        </select>
+                                        <!-- <div *ngIf="(submitted || f.mode?.touched) && f.mode.errors?.required"
+                                            class="invalid-feedback">
+                                            Mode is required
+                                        </div> -->
+                                    </div>
+
+                                    <div class="col-lg-6" *ngIf="showBankField">
+                                        <label class="form-label">Bank Name</label>
+                                        <select class="form-control form-control-sm" name="bank_id" id="bank_id"
+                                            formControlName="bank_id"
+                                            [ngClass]="{ 'is-invalid': submitted && f.bank_id.errors }">
+                                            <option value="" disabled selected>Select a Bank</option>
+                                            <option *ngFor="let bank of banks" [value]="bank.id">
+                                                {{ bank.bank_Name }}
+                                            </option>
+                                        </select>
+                                        <!-- <div *ngIf="(submitted || f.bank_id?.touched) && f.bank_id.errors?.required"
+                                            class="invalid-feedback">
+                                            Bank Name is required
+                                        </div> -->
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label class="form-label">Service Name</label>
+                                        <select class="form-control form-control-sm" formControlName="service_id"
+                                            [ngClass]="{ 'is-invalid': submitted && f.service_id.errors }">
+                                            <option value="" disabled selected>Select a Service</option>
+                                            <ng-container *ngFor="let group of services">
+                                                <option *ngFor="let service of group.services" [value]="service.id">
+                                                    {{ group.group_Name }} - {{ service.ledger_Name }}
+                                                </option>
+                                            </ng-container>
+                                        </select>
+
+                                        <!-- <div *ngIf="(submitted || f.service_id.touched) && f.service_id.errors?.required"
+                                            class="invalid-feedback">
+                                            Service is required
+                                        </div> -->
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label class="form-label">Amount</label>
+                                        <input type="text" class="form-control form-control-sm" name="amount"
+                                            id="amount" numbersOnly formControlName="amount"
+                                            [ngClass]="{ 'is-invalid': submitted && f.amount.errors }">
+                                        <!-- <div *ngIf="(submitted || f.amount.touched) && f.amount.errors?.required"
+                                            class="invalid-feedback">Amount is
+                                            required
+                                        </div> -->
+                                    </div>
+
+                                    <div class="col-lg-12 mt-3 d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-success btn-sm"
+                                            *ngIf="action !== 'update'">Submit</button>
+                                        <button type="submit" class="btn btn-primary btn-sm"
+                                            *ngIf="action === 'update'">Update</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,467 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header"><strong>New Customer</strong></div>
+            <div class="card-body">
+                <form [formGroup]="addCustomer" (ngSubmit)="action === 'update' ? updateBank() : onSubmit()">
+                    <div class="row g-3">
+                        <div class="col-md-12 d-flex flex-row align-items-center ">
+                            <label class="form-label col-md-2" style="margin-top: 8px;">Customer Type</label>
+                            <div class="col-md-2 d-flex flex-column">
+                                <div class="col-md-3 d-flex">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" formControlName="customer_type"
+                                            id="inlineRadio1" value="option1">
+                                        <label class="form-check-label" for="inlineRadio1">Business</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" formControlName="customer_type"
+                                            id="inlineRadio2" value="option2">
+                                        <label class="form-check-label" for="inlineRadio2">Individual</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 d-flex">
+                            <label class="form-label col-md-2">Primary Contact</label>
+                            <div class="col-md-2 d-flex flex-column">
+                                <select class="form-control form-control-sm " name="salutation" id="salutation"
+                                    formControlName="salutation"
+                                    [ngClass]="{ 'is-invalid': submitted && f.salutation?.errors }">
+                                    <option value="" disabled selected>Salutation</option>
+                                    <option *ngFor="let salutation of salutations" [value]="salutation.value">{{
+                                        salutation.name }}
+                                    </option>
+                                </select>
+                                <div *ngIf="(submitted||f.salutation)&&f.salutation.errors?.required"
+                                    class="invalid-feedback">Salutation is required
+                                </div>
+                            </div>
+
+                            &nbsp;<div class="col-md-2 d-flex flex-column">
+                                <input type="text" class="form-control form-control-sm " name="first_name"
+                                    id="first_name" formControlName="first_name" placeholder="First Name"
+                                    [ngClass]="{ 'is-invalid': submitted && f.first_name.errors }">
+                                <div *ngIf="(submitted||f.first_name)&&f.first_name.errors?.required"
+                                    class="invalid-feedback">First Name is required
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div class="col-md-2 d-flex flex-column">
+                                <input type="text" class="form-control form-control-sm  " name="last_name"
+                                    id="last_name" formControlName="last_name" placeholder="Last Name"
+                                    [ngClass]="{ 'is-invalid': submitted && f.last_name.errors }">
+                                <div *ngIf="(submitted||f.last_name)&&f.last_name.errors?.required"
+                                    class="invalid-feedback">Last Name is required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 d-flex">
+                            <label class="form-label col-md-2">Company Name</label>
+                            <div class="col-md-3 d-flex flex-column">
+                                <input type="text" class="form-control form-control-sm  " name="company_name"
+                                    id="company_name" formControlName="company_name"
+                                    [ngClass]="{ 'is-invalid': submitted && f.company_name.errors }">
+                                <div *ngIf="(submitted||f.company_name)&&f.company_name.errors?.required"
+                                    class="invalid-feedback">Company Name is required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 d-flex">
+                            <label class="form-label col-md-2">Display Name</label>
+                            <div class="col-md-3 d-flex flex-column">
+                                <input type="text" class="form-control form-control-sm " name="display_name"
+                                    id="display_name" formControlName="display_name"
+                                    [ngClass]="{ 'is-invalid': submitted && f.display_name.errors }">
+                                <div *ngIf="(submitted||f.display_name)&&f.display_name.errors?.required"
+                                    class="invalid-feedback">Display Name
+                                    is required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 d-flex">
+                            <label class="form-label col-md-2">Email Address</label>
+                            <div class="col-md-3 d-flex flex-column">
+                                <input type="text" class="form-control email form-control-sm  " name="email" id="email"
+                                    formControlName="email" [ngClass]="{ 'is-invalid': submitted && f.email.errors }">
+                                <div *ngIf="(submitted||f.email)&&f.email.errors?.required" class="invalid-feedback">
+                                    Email
+                                    is required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 d-flex">
+                            <label class="form-label col-md-2">Phone</label>
+                            <div class="col-md-2 d-flex flex-column">
+                                <input type="text" class="form-control phone form-control-sm  " maxlength="10"
+                                    name="work_phone" id="work_phone" formControlName="work_phone"
+                                    [ngClass]="{ 'is-invalid': submitted && f.work_phone.errors }" numbersOnly>
+                                <div *ngIf="(submitted||f.work_phone)&&f.work_phone.errors?.required"
+                                    class="invalid-feedback">
+                                    Work Phone is required
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div class="col-md-2 d-flex flex-column">
+                                <input type="text" class="form-control mobile form-control-sm  " maxlength="10"
+                                    name="mbl_no" id="mbl_no" formControlName="mbl_no"
+                                    [ngClass]="{ 'is-invalid': submitted && f.mbl_no.errors }" numbersOnly>
+                                <div *ngIf="(submitted||f.mbl_no)&&f.mbl_no.errors?.required" class="invalid-feedback">
+                                    Mobile No is required
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Section Toggle List -->
+                        <ul class="menu_list mb-1" style="border-bottom:solid 1px rgb(107, 106, 106); width: 70%;">
+                            <li class="list-group-item  cursor-pointer"
+                                [ngClass]="{ 'active': activeSection === 'details' }" (click)="showData('details')">
+                                Other Details
+                            </li> &nbsp; &nbsp; &nbsp;
+                            <li class="list-group-item  cursor-pointer"
+                                [ngClass]="{ 'active': activeSection === 'address' }" (click)="showData('address')">
+                                Address
+                            </li> &nbsp; &nbsp; &nbsp;
+                            <li class="list-group-item  cursor-pointer"
+                                [ngClass]="{ 'active': activeSection === 'remarks' }" (click)="showData('remarks')">
+                                Remarks
+                            </li>
+                        </ul>
+                        <!-- Show details -->
+                        <div *ngIf="activeSection === 'details'" class="row g-3">
+                            <div class="col-md-12 d-flex">
+                                <label class="form-label col-md-2">GST Treatment *</label>
+                                <div class="col-md-3 d-flex flex-column">
+                                    <input type="text" class="form-control form-control-sm " name="GST_treatment"
+                                        id="GST_treatment" formControlName="GST_treatment"
+                                        [ngClass]="{ 'is-invalid': submitted && f.GST_treatment.errors }">
+                                    <div *ngIf="(submitted||f.GST_treatment)&&f.GST_treatment.errors?.required"
+                                        class="invalid-feedback">GST_treatment is
+                                        required
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 d-flex">
+                                <label class="form-label col-md-2">Place Of Supply</label>
+                                <div class="col-md-3 d-flex flex-column">
+                                    <input type="text" class="form-control form-control-sm " name="supply_place"
+                                        id="supply_place" formControlName="supply_place"
+                                        [ngClass]="{ 'is-invalid': submitted && f.supply_place.errors }">
+                                    <div *ngIf="(submitted||f.supply_place)&&f.supply_place.errors?.required"
+                                        class="invalid-feedback">Place Of Supply is
+                                        required
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 d-flex">
+                                <label class="form-label col-md-2">PAN</label>
+                                <div class="col-md-3 d-flex flex-column">
+                                    <input type="text" class="form-control form-control-sm  " name="pan" id="pan"
+                                        formControlName="pan" [ngClass]="{ 'is-invalid': submitted && f.pan.errors }">
+                                    <div *ngIf="(submitted||f.pan)&&f.pan.errors?.required" class="invalid-feedback">PAN
+                                        is
+                                        required
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12  d-flex flex-row align-items-center ">
+                                <label class="form-label col-md-2" style="margin-top: 8px;">Tax
+                                    Preference</label>
+                                <div class="col-md-3 d-flex flex-column">
+                                    <div class=" d-flex">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" formControlName="tax"
+                                                id="inlineRadio1" value="option1">
+                                            <label class="form-check-label" for="inlineRadio1">Taxable</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" formControlName="tax"
+                                                id="inlineRadio2" value="option2">
+                                            <label class="form-check-label" for="inlineRadio2">Tax
+                                                Exempt</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 d-flex">
+                                <label class="form-label col-md-2">Opening
+                                    Balance</label>
+                                <div class="col-md-3 d-flex flex-column">
+                                    <input type="text" class="form-control form-control-sm " name="opening_balance"
+                                        id="opening_balance" formControlName="opening_balance"
+                                        [ngClass]="{ 'is-invalid': submitted && f.opening_balance.errors }">
+                                    <div *ngIf="(submitted||f.opening_balance)&&f.opening_balance.errors?.required"
+                                        class="invalid-feedback">Opening Balance
+                                        is
+                                        required
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 d-flex">
+                                <label class="form-label col-md-2">Payment
+                                    Terms</label>
+                                <div class="col-md-3 d-flex flex-column">
+                                    <input type="text" class="form-control form-control-sm " name="payment_terms"
+                                        id="payment_terms" formControlName="payment_terms"
+                                        [ngClass]="{ 'is-invalid': submitted && f.payment_terms.errors }">
+                                    <div *ngIf="(submitted||f.payment_terms)&&f.payment_terms.errors?.required"
+                                        class="invalid-feedback">Payment
+                                        Terms
+                                        is
+                                        required
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 d-flex">
+                                <label class="form-label col-md-2">Documents</label>
+                                <div class="col-md-3 d-flex flex-column">
+                                    <input type="file" class="form-control form-control-sm " name="documents"
+                                        id="documents" formControlName="documents"
+                                        [ngClass]="{ 'is-invalid': submitted && f.documents.errors }">
+                                    <div *ngIf="(submitted||f.documents)&&f.documents.errors?.required"
+                                        class="invalid-feedback">
+                                        Documents
+                                        is
+                                        required
+                                    </div>
+                                </div>
+                            </div>
+                            <ul class=" mt-3">
+                                <li class="list-group-item text-primary " style="cursor: pointer;"
+                                    (click)="subView === 'add_more' ? subView = '' : subView = 'add_more'">
+                                    ➕ Add More Details
+                                </li>
+                            </ul>
+                            <li class="list-group-item" *ngIf="subView === 'add_more'">
+                                <!-- Subform Starts Here -->
+                                <div class="row g-3">
+                                    <div class="col-md-12 d-flex">
+                                        <label class="form-label col-md-2">Website
+                                            URL </label>
+                                        <div class="col-md-3 d-flex flex-column">
+                                            <input type="text" class="form-control form-control-sm "
+                                                formControlName="Website" name="Website" id="Website"
+                                                [ngClass]="{ 'is-invalid': submitted && f.Website.errors }">
+                                            <div *ngIf="(submitted || f.Website) && f.Website.errors?.required"
+                                                class="invalid-feedback">
+                                                Website URL is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 d-flex">
+                                        <label class="form-label col-md-2">Department
+                                        </label>
+                                        <div class="col-md-3 d-flex flex-column">
+                                            <input type="text" class="form-control form-control-sm "
+                                                formControlName="department" name="department" id="department"
+                                                [ngClass]="{ 'is-invalid': submitted && f.department.errors }">
+                                            <div *ngIf="(submitted || f.department) && f.department.errors?.required"
+                                                class="invalid-feedback">
+                                                Department is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 d-flex">
+                                        <label class="form-label col-md-2">Designation
+                                        </label>
+                                        <div class="col-md-3 d-flex flex-column">
+                                            <input type="text" class="form-control form-control-sm "
+                                                formControlName="designation" name="designation" id="designation"
+                                                [ngClass]="{ 'is-invalid': submitted && f.designation.errors }">
+                                            <div *ngIf="(submitted || f.designation) && f.designation.errors?.required"
+                                                class="invalid-feedback">
+                                                Designation
+                                                is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 d-flex">
+                                        <label class="form-label col-md-2">Twitter
+                                        </label>
+                                        <div class="col-md-3 d-flex flex-column">
+                                            <input type="text" class="form-control form-control-sm  "
+                                                formControlName="twitter" name="twitter" id="twitter"
+                                                [ngClass]="{ 'is-invalid': submitted && f.twitter.errors }">
+                                            <div *ngIf="(submitted || f.twitter) && f.twitter.errors?.required"
+                                                class="invalid-feedback">
+                                                Twitter
+                                                is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 d-flex">
+                                        <label class="form-label col-md-2">Skype
+                                            Name /
+                                            Number</label>
+                                        <div class="col-md-3 d-flex flex-column">
+                                            <input type="text" class="form-control form-control-sm  "
+                                                formControlName="skype" name="skype" id="skype"
+                                                [ngClass]="{ 'is-invalid': submitted && f.skype.errors }">
+                                            <div *ngIf="(submitted || f.skype) && f.skype.errors?.required"
+                                                class="invalid-feedback">
+                                                skype
+                                                ID
+                                                is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 d-flex">
+                                        <label class="form-label col-md-2">Facebook
+                                        </label>
+                                        <div class="col-md-3 d-flex flex-column">
+                                            <input type="text" class="form-control form-control-sm  "
+                                                formControlName="facebook" name="facebook" id="facebook"
+                                                [ngClass]="{ 'is-invalid': submitted && f.facebook.errors }">
+                                            <div *ngIf="(submitted || f.facebook) && f.facebook.errors?.required"
+                                                class="invalid-feedback">
+                                                Facebook
+                                                is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </div>
+                        <!-- Show address -->
+                        <div *ngIf="activeSection === 'address'" class="row g-3">
+                            <div class="col-md-12 d-flex">
+                                <label class="form-label col-md-2">Attention</label>
+                                <div class="col-md-3 d-flex flex-column">
+                                    <input type="text" class="form-control form-control-sm " name="attention"
+                                        id="attention" formControlName="attention"
+                                        [ngClass]="{ 'is-invalid': submitted && f.attention.errors }">
+                                    <div *ngIf="(submitted||f.attention)&&f.attention.errors?.required"
+                                        class="invalid-feedback">
+                                        Attention
+                                        is
+                                        required
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 d-flex">
+                                <label class="form-label col-md-2">Country/Region</label>
+                                <div class="col-md-3 d-flex flex-column">
+                                    <input type="text" class="form-control form-control-sm " name="country" id="country"
+                                        formControlName="country"
+                                        [ngClass]="{ 'is-invalid': submitted && f.country.errors }">
+                                    <div *ngIf="(submitted||f.country)&&f.country.errors?.required"
+                                        class="invalid-feedback">
+                                        Country/Region
+                                        is
+                                        required
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 d-flex">
+                                <label class="form-label col-md-2">Address</label>
+                                <div class="col-md-3 d-flex flex-column">
+                                    <textarea type="textarea" class="form-control form-control-sm  " name="address"
+                                        id="address" formControlName="address" placeholder="Street 1"
+                                        [ngClass]="{ 'is-invalid': submitted && f.address.errors }"></textarea>
+                                    <div *ngIf="(submitted||f.address)&&f.address.errors?.required"
+                                        class="invalid-feedback">
+                                        Address is
+                                        required
+                                    </div>
+                                </div> &nbsp;
+                                <div class="col-md-3 d-flex flex-column">
+                                    <textarea type="textarea" class="form-control form-control-sm " name="address_2"
+                                        id="address_2" formControlName="address_2" placeholder="Street 2"
+                                        [ngClass]="{ 'is-invalid': submitted && f.address_2.errors }"></textarea>
+                                    <div *ngIf="(submitted||f.address_2)&&f.address_2.errors?.required"
+                                        class="invalid-feedback">
+                                        Address is
+                                        required
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-12 d-flex">
+                                <label class="form-label col-md-2">City</label>
+                                <div class="col-md-3 d-flex flex-column">
+                                    <input type="text" class="form-control form-control-sm " name="city" id="city"
+                                        formControlName="city" [ngClass]="{ 'is-invalid': submitted && f.city.errors }">
+                                    <div *ngIf="(submitted||f.city)&&f.city.errors?.required" class="invalid-feedback">
+                                        City
+                                        is
+                                        required
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 d-flex">
+                                <label class="form-label col-md-2">State</label>
+                                <div class="col-md-3 d-flex flex-column">
+                                    <input type="text" class="form-control form-control-sm " name="state" id="state"
+                                        formControlName="state"
+                                        [ngClass]="{ 'is-invalid': submitted && f.state.errors }">
+                                    <div *ngIf="(submitted||f.state)&&f.state.errors?.required"
+                                        class="invalid-feedback">
+                                        State
+                                        is
+                                        required
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 d-flex">
+                                <label class="form-label col-md-2">Pincode</label>
+                                <div class="col-md-3 d-flex flex-column">
+                                    <input type="text" class="form-control form-control-sm " name="pincode" id="pincode"
+                                        formControlName="pincode"
+                                        [ngClass]="{ 'is-invalid': submitted && f.pincode.errors }">
+                                    <div *ngIf="(submitted||f.pincode)&&f.pincode.errors?.required"
+                                        class="invalid-feedback">
+                                        Pincode
+                                        is
+                                        required
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 d-flex">
+                                <label class="form-label col-md-2">Fax
+                                    Number</label>
+                                <div class="col-md-3 d-flex flex-column">
+                                    <input type="text" class="form-control form-control-sm " name="fax" id="fax"
+                                        formControlName="fax" [ngClass]="{ 'is-invalid': submitted && f.fax.errors }">
+                                    <div *ngIf="(submitted||f.fax)&&f.fax.errors?.required" class="invalid-feedback">
+                                        Fax
+                                        Number
+                                        is
+                                        required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Show remarks -->
+                        <div *ngIf="activeSection === 'remarks'">
+                            <div class="col-md-12 ">
+                                <label class="form-label">Remarks</label>
+                                <div class="col-md-6 d-flex flex-column">
+                                    <textarea type="text" class="form-control form-control-sm " name="remarks"
+                                        id="remarks" formControlName="remarks"
+                                        [ngClass]="{ 'is-invalid': submitted && f.remarks.errors }"></textarea>
+                                    <div *ngIf="(submitted||f.remarks)&&f.remarks.errors?.required"
+                                        class="invalid-feedback">
+                                        Remarks
+                                        are
+                                        required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer ">
+                            <button type="botton" class="btn btn-outline-dark  me-md-2 btn-sm">Close</button>
+                            <app-save-button [spin]="spinLoader"></app-save-button>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

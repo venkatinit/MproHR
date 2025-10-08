@@ -1,0 +1,134 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <!-- Title Column -->
+                <div class="col-md-6">
+                    <strong>Plans List</strong>
+                </div>
+                <!-- Buttons Column -->
+                <div ngClass="col-md-6 text-end">
+                    <a class="btn btn-primary btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal" (click)="openNewModal()">
+                        <i class="fa fa-plus" aria-hidden="true"></i> New
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table   table-hover"
+                    id="planTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Plan Name</th>
+                            <th>Monthly Fee</th>
+                            <th>Quarterly Fee</th>
+                            <th>Halfyearly Fee</th>
+                            <th>Annual Fee</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="plan_list?.length != 0">
+                        <tr *ngFor="let item of plan_list; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ item.planName ||'-' }}</td>
+                            <td>{{ item.monthly || 0}}</td>
+                            <td>{{ item.quarterly || 0}}</td>
+                            <td>{{ item.halfYearly || 0}}</td>
+                            <td>{{ item.yearly || 0 }}</td>
+                            <td>
+                                <button class="btn btn-sm" type="button" (click)="updateById(item.id)"
+                                    data-bs-toggle="modal" data-bs-target="#newModal" title="Edit">
+                                    <i class="bi bi-pencil-square text-success"></i> </button>
+                                <button class="btn  btn-sm " type="button" data-toggle="tooltip" data-placement="top"
+                                    (click)="deletePlan(item.id)" title="Delete"><i
+                                        class="bi bi-trash3-fill text-danger"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                    <tbody *ngIf="plan_list?.length == 0">
+                        <tr>
+                            <td colspan="12" class="no-data-available">No data!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header" *ngIf="this.action !== 'update'">
+                            <strong>Add Plan</strong>
+                        </div>
+                        <div class="modal-header" *ngIf="this.action === 'update'">
+                            <strong>Update Plan</strong>
+                        </div>
+                        <div class="modal-body ">
+                            <form [formGroup]="addPlan" (ngSubmit)="action === 'update' ? updatePlan() : savePlan()">
+                                <div class="row">
+
+                                    <div class="col-md-12">
+                                        <label class="form-label">Plan Name </label>
+                                        <input type="text" class="form-control form-control-sm" name="plan_name"
+                                            id="plan_name" formControlName="plan_name"
+                                            [ngClass]="{ 'is-invalid': submitted && f.plan_name.errors }">
+                                        <!-- <div *ngIf="(submitted || f.plan_name.touched) && f.plan_name.errors?.required"
+                                            class="invalid-feedback">
+                                            Bank Name is
+                                            required
+                                        </div> -->
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label">Monthly Fee</label>
+                                        <input type="text" class="form-control form-control-sm" name="monthly"
+                                            id="monthly" formControlName="monthly" numbersOnly
+                                            [ngClass]="{ 'is-invalid': submitted && f.monthly.errors }">
+                                        <!-- <div *ngIf="(submitted || f.monthly.touched) && f.monthly.errors?.required"
+                                            class="invalid-feedback">Monthly Fee is
+                                            required
+                                        </div> -->
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label">Quarterly Fee</label>
+                                        <input type="text" class="form-control form-control-sm" name="quarterly"
+                                            id="quarterly" formControlName="quarterly" numbersOnly
+                                            [ngClass]="{ 'is-invalid': submitted && f.quarterly.errors }">
+                                        <!-- <div *ngIf="(submitted || f.quarterly.touched) && f.quarterly.errors?.required"
+                                                                                class="invalid-feedback">Quarterly Fee is
+                                                                                required
+                                                                            </div> -->
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label">Halfyearly Fee</label>
+                                        <input type="text" class="form-control form-control-sm" name="halfyearly"
+                                            id="halfyearly" formControlName="halfyearly" numbersOnly
+                                            [ngClass]="{ 'is-invalid': submitted && f.halfyearly.errors }">
+                                        <!-- <div *ngIf="(submitted || f.halfyearly.touched) && f.halfyearly.errors?.required"
+                                                                                                                    class="invalid-feedback">HalfYearly Fee is
+                                                                                                                    required
+                                                                                                                </div> -->
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label">Annual Fee</label>
+                                        <input type="text" class="form-control form-control-sm" name="annaully"
+                                            id="annaully" formControlName="annaully" numbersOnly
+                                            [ngClass]="{ 'is-invalid': submitted && f.annaully.errors }">
+                                        <!-- <div *ngIf="(submitted || f.annaully.touched) && f.annaully.errors?.required"
+                                                                                                                    class="invalid-feedback">Annual Fee is
+                                                                                                                    required
+                                                                                                                </div> -->
+                                    </div>
+                                </div>
+                                <div class="mt-2 col-md-12 d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-success btn-sm"
+                                        *ngIf="action !== 'update'">Submit</button>
+                                    <button type="submit" class="btn btn-primary btn-sm"
+                                        *ngIf="action === 'update'">Update</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

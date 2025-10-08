@@ -1,0 +1,69 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>Companies List</strong>
+                <a class="btn btn-primary  btn-sm  me-md-2  float-end" (click)="open_fileUpload()" role="button"><i
+                        class="fa fa-arrow-down" aria-hidden="true"></i> Import
+                    CSV File</a>
+                <a class="btn btn-primary  btn-sm  me-md-2  float-end" (click)="open_fileUpload()" role="button"><i
+                        class="fa fa-arrow-up" aria-hidden="true"></i> Export
+                    Excel</a>
+                <a class="btn btn-primary  btn-sm me-md-2  float-end" routerLink="/register" role="button"><i
+                        class="fa fa-plus" aria-hidden="true"></i> New</a>
+            </div>
+            <div class="card-body">
+                <form>
+                    <!-- <div class="row g-3">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header-secondary">
+                                </div> -->
+                    <div class="card-body">
+                        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table   table-hover"
+                            id="bankTable">
+                            <thead>
+                                <tr>
+                                    <th>S No</th>
+                                    <th>Company Name</th>
+                                    <th>Contact Person</th>
+                                    <th>Contact Number</th>
+                                    <th>Email id</th>
+                                    <th>Established On</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngIf="company_list?.length != 0">
+                                <tr *ngFor="let item of company_list;let i=index">
+                                    <td>{{ i + 1 }}</td>
+                                    <td>{{ item.CompanyName }}</td>
+                                    <td>{{ item.ContactPerson }}</td>
+                                    <td>{{ item.MobileNumber }}</td>
+                                    <td>{{ item.Email }}</td>
+                                    <td>{{ item.EstablishedDate.value | date:'dd-MM-yyyy' }}</td>
+                                    <td>
+
+                                        <button class="btn btn-sm " type="button" data-toggle="tooltip" cls
+                                            data-placement="top" (click)="updateCompany(i)" title="Edit"><i
+                                                class="bi bi-pencil-square text-success"></i></button>
+                                        <button class="btn  btn-sm " type="button" data-toggle="tooltip"
+                                            data-placement="top" (click)="deleteCompany(item.Id)" title="Delete"><i
+                                                class="bi bi-trash3-fill text-danger"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tbody *ngIf="company_list?.length == 0">
+                                <tr>
+                                    <td colspan="12" class="no-data-available">No data!</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- </div>
+                        </div>
+                    </div> -->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

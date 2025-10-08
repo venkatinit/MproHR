@@ -1,0 +1,159 @@
+/* Calendar container (same as before) */
+.calendar-container {
+    position: fixed;
+    top: 70px;
+    right: -350px;
+    /* Hidden by default */
+    width: 320px;
+    max-height: 90vh;
+    overflow-y: auto;
+    transition: right 0.3s ease;
+    z-index: 999;
+}
+
+.arrow {
+    border: solid 1px #b8b4b4;
+    border-radius: 4px;
+    background: white;
+    padding: 3px 10px;
+}
+
+ 
+ 
+/* Slide in */
+.calendar-container.show {
+    right: 20px;
+}
+
+/* Toggle button (default outside position) */
+.toggle-btn {
+    position: fixed;
+    top: 70px;
+    right: 0px;
+    z-index: 1000;
+    padding: 5px 12px;
+    border: none;
+    font-size: 25px;
+    background: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px 0px 0px 4px;
+}
+
+/* When inside the calendar */
+.calendar-container .toggle-btn.inside {
+    position: fixed;
+    top: 70px;
+    right: 340px;
+    z-index: 1001;
+}
+
+.datepicker {
+    max-width: 320px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 6px;
+    background: #fff;
+}
+
+.datepicker-top {
+    text-align: center;
+}
+
+// .btn-group,
+// .filter-group {
+//     display: flex;
+//     justify-content: center;
+//     gap: 5px;
+// }
+
+// .tag {
+//     padding: 5px 10px;
+//     border: 1px solid #ccc;
+//     background: #f5f5f5;
+//     cursor: pointer;
+// }
+
+// .tag.active {
+//     background: #007bff;
+//     color: #fff;
+// }
+
+.month-selector {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    gap: 10px;
+}
+
+.datepicker-calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.date {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    background: #eee;
+    cursor: pointer;
+}
+
+.date:hover:not(:disabled) {
+    background: white;
+    color: #007bff;
+}
+
+.date.faded {
+    opacity: 0.5;
+}
+
+.date.selected {
+    background: #007bff;
+    color: white;
+}
+
+.date:disabled {
+    cursor: not-allowed;
+    opacity: 0.3;
+}
+
+.day {
+    font-weight: bold;
+    text-align: center;
+}
+
+.month-quick-jump {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.arrow-group {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 5px 2px;
+}
+
+.arrow-btn {
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.arrow-btn:hover {
+    background: #e0e0e0;
+}

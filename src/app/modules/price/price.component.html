@@ -1,0 +1,37 @@
+<div class="billing-container">
+    <h2>Choose Billing Cycle</h2>
+
+    <div class="billing-toggle">
+        <button [class.active]="billingCycle === 'custom'" (click)="selectBilling('custom')">Custom</button>
+        <button [class.active]="billingCycle === 'monthly'" (click)="selectBilling('monthly')">Monthly</button>
+        <button [class.active]="billingCycle === 'yearly'" (click)="selectBilling('yearly')">Yearly</button>
+    </div>
+
+    <div class="slider-container" *ngIf="billingCycle === 'custom'">
+        <div class="slider">
+            <div class="duration" *ngFor="let d of durations" [class.selected]="selectedDuration === d"
+                (click)="selectDuration(d)">
+                {{ d }}
+            </div>
+        </div>
+    </div>
+
+    <div class="plans">
+        <div class="plan-card" *ngFor="let plan of plans" [ngClass]="plan.color">
+            <h3>{{ plan.name }}</h3>
+            <h1>\${{ plan.price }}</h1>
+
+            <ul>
+                <li *ngFor="let f of plan.features">
+                    <span [class.available]="f.available" [class.unavailable]="!f.available">
+                        {{ f.available ? '✔' : '✖' }}
+                    </span>
+                    {{ f.text }}
+                </li>
+            </ul>
+
+            <button class="select-btn">Select</button>
+        </div>
+    </div>
+</div>
+  

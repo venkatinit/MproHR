@@ -1,0 +1,160 @@
+
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+
+            <div class="card-body">
+
+                <form [formGroup]="addEmployee" (ngSubmit)="saveaddEmpolyee()">
+                    <h5><strong>Background Verification</strong></h5>
+                   
+                    <hr>
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto">
+                          <label for="inputPassword6" class="col-form-label">Employee Id*</label>
+                        </div>
+                        <div class="col-auto">
+                          <input type="type" id="inputPassword6" class="form-control" aria-describedby="passwordHelpInline" name="emp_id" id="emp_id"
+                          formControlName="emp_id"
+                          [ngClass]="{ 'is-invalid': submitted && f.emp_id.errors }">
+                          <div *ngIf="(submitted||f.emp_id)&&f.emp_id.errors?.required"
+                          class="invalid-feedback">Employee Id is required
+                      </div>
+                        </div>
+                    <div class="col-auto">
+                        <label for="inputPassword6" class="col-form-label">Employee Name</label>
+                      </div>
+                      <div class="col-auto">
+                        <input type="type" id="inputPassword6" class="form-control" aria-describedby="passwordHelpInline" >
+                      </div>
+                    
+                        <div class="col-auto">
+                            <a  class="button me-md-2 "(click)="showMe()">Search</a>
+                          </div>                      
+            </div>                 
+                    <div class="row g-3" [hidden]="isDisplayed">
+
+                        <div class="col-md-4">
+                            <label class="form-label">Full Name*</label>
+                            <input type="text" class="form-control form-control-sm" name="full_name" id="full_name"
+                                formControlName="full_name"
+                                [ngClass]="{ 'is-invalid': submitted && f.full_name.errors }">
+                            
+                                <div *ngIf="(submitted||f.full_name)&&f.full_name.errors?.required"
+                                class="invalid-feedback">Full Name is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Mobile Number*</label>
+                            <input type="text" class="form-control form-control-sm" maxlength="10" name="mbl_no" id="mbl_no"
+                                formControlName="mbl_no"
+                                [ngClass]="{ 'is-invalid': submitted && f.mbl_no.errors }" numbersOnly>
+                                <div *ngIf="(submitted||f.mbl_no)&&f.mbl_no.errors?.required"
+                                class="invalid-feedback">Mobile No is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Email Id*</label>
+                            <input type="text" class="form-control form-control-sm" name="email" id="email"
+                                formControlName="email"
+                                [ngClass]="{ 'is-invalid': submitted && f.email.errors }">
+                                <div *ngIf="(submitted||f.email)&&f.email.errors?.required"
+                                class="invalid-feedback">Email is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Date of Joining</label>
+                            <input type="text" class="form-control form-control-sm" name="date_of_join"
+                                id="date_of_join" formControlName="date_of_join"
+                                [ngClass]="{ 'is-invalid': submitted && f.date_of_join.errors }"bsDatepicker [minDate]="minDate" placeholder="Please Select Date"
+                                [bsConfig]="{isAnimated:true,dateInputFormat: 'DD-MM-YYYY'}"
+                                >
+                           
+                            <div *ngIf="(submitted||f.date_of_join)&&f.date_of_join.errors?.required"
+                            class="invalid-feedback">Date of Joining is required
+                        </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                        <label class="form-label">Joining  CTC*</label>
+                        <input type="text" class="form-control form-control-sm" name="joining_ctc"
+                            id="joining_ctc" formControlName="joining_ctc"
+                            [ngClass]="{ 'is-invalid': submitted && f.joining_ctc.errors }">
+                            <div *ngIf="(submitted||f.current_ctc)&&f.joining_ctc.errors?.required"
+                            class="invalid-feedback">Joining CTC is required
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Joining Designation*</label>
+                        <input type="text" class="form-control form-control-sm" name="joining_designation"
+                            id="joining_designation" formControlName="joining_designation"
+                            [ngClass]="{ 'is-invalid': submitted && f.joining_designation.errors }">
+                            <div *ngIf="(submitted||f.joining_designation)&&f.joining_designation.errors?.required"
+                            class="invalid-feedback">Joining Designation is required
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Technology*</label>
+                    
+                    <input type="text" class="form-control form-control-sm" name="technology" id="technology"
+                    formControlName="technology"
+                    [ngClass]="{ 'is-invalid': submitted && f.technology.errors }">
+                    <div *ngIf="(submitted||f.technology)&&f.technology.errors?.required"
+                    class="invalid-feedback">Technology is required
+                </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Reliving Date*</label>
+                        <input type="text" class="form-control form-control-sm" name="reliving_date" bsDatepicker [minDate]="minDate" placeholder="Please Select Date"
+                        [bsConfig]="{isAnimated:true,dateInputFormat: 'DD-MM-YYYY'}"
+                            id="reliving_date" formControlName="reliving_date"
+                            [ngClass]="{ 'is-invalid': submitted && f.reliving_date.errors }">
+                            <div *ngIf="(submitted||f.reliving_date)&&f.reliving_date.errors?.required"
+                            class="invalid-feedback">Reliving Date is required
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Reliving CTC*</label>
+                        <input type="text" class="form-control form-control-sm" name="reliving_ctc"
+                            id="reliving_ctc" formControlName="reliving_ctc"
+                            [ngClass]="{ 'is-invalid': submitted && f.reliving_ctc.errors }">
+                            <div *ngIf="(submitted||f.reliving_ctc)&&f.reliving_ctc.errors?.required"
+                            class="invalid-feedback">Reliving CTC is required
+                        </div>
+                    </div>
+                       
+                    
+                        <div class="col-md-4">
+                            <label class="form-label">Reliving Designation*</label>
+                            <input type="text" class="form-control form-control-sm" name="reliving_designation"
+                                id="reliving_designation" formControlName="reliving_designation"
+                                [ngClass]="{ 'is-invalid': submitted && f.reliving_designation.errors }">
+                                <div *ngIf="(submitted||f.reliving_designation)&&f.reliving_designation.errors?.required"
+                                class="invalid-feedback">Reliving Designation is required
+                            </div>
+                        </div> 
+                        
+                        <div class="col-md-4">
+                            <label class="form-label">Reason for leaving*</label>
+                            <input type="text" class="form-control form-control-sm" name="reason_for_leaving"
+                                id="reason_for_leaving" formControlName="reason_for_leaving"
+                                [ngClass]="{ 'is-invalid': submitted && f.reason_for_leaving.errors }">
+                                <div *ngIf="(submitted||f.reason_for_leaving)&&f.reason_for_leaving.errors?.required"
+                                class="invalid-feedback">Reason for Leaving is required
+                            </div>
+                        </div>  
+                    
+                   
+                                  
+                     <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-dark  me-md-2 btn-sm">Clear</button>
+                            <!-- <app-save-button [spin]="spinLoader"></app-save-button> -->
+                         
+                        </div> 
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

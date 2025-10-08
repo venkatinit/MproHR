@@ -1,0 +1,21 @@
+<div class="container mt-4">
+    <h3>Statutory Components</h3>
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mt-3">
+        <li class="nav-item" *ngFor="let tab of statutoryTabs">
+            <a class="nav-link" [class.active]="activeTab === tab.name" (click)="setActiveTab(tab.name)"
+                style="cursor: pointer;">
+                {{ tab.name }}
+            </a>
+        </li>
+    </ul>
+    <!-- Load child components -->
+    <div class="mt-3">
+        <app-epfo *ngIf="activeTab === 'EPFO'"></app-epfo>
+        <app-esic *ngIf="activeTab === 'ESIC'"></app-esic>
+        <app-lwf *ngIf="activeTab === 'LWF'"></app-lwf>
+        <!-- Optional components if you create them later -->
+        <app-professional-tax *ngIf="activeTab === 'PT'"></app-professional-tax>
+        <app-statutory-bonus *ngIf="activeTab === 'Bonus'"></app-statutory-bonus>
+    </div>
+</div>

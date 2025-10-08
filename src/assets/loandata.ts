@@ -1,0 +1,47 @@
+export interface loan{
+  max_age:number,
+    interest_calculation:string,
+    type_of_security:string,
+    is_fixed:number,
+    is_property_loan:number,
+    v_type:string,
+    is_nonEMI:number,
+    loan_share_capital:number,
+    MISC_income:number
+
+}
+export const loandata=[
+    {
+      max_age:60,
+      interest_calculation:'FLAT',
+      type_of_security:'HYPOTHETICAT..',
+      is_fixed:0,
+      is_property_loan:2,
+      v_type:'',
+      is_nonEMI:0,
+      loan_share_capital:10,
+      MISC_income:1
+  },
+  {
+    max_age:80,
+    interest_calculation:'FLAT',
+    type_of_security:'HYPOTHETICAT..',
+    is_fixed:0,
+    is_property_loan:2,
+    v_type:'',
+    is_nonEMI:0,
+    loan_share_capital:0,
+    MISC_income:1
+  },
+  {
+    max_age:70,
+    interest_calculation:'FLAT',
+    type_of_security:'HYPOTHETICAT..',
+    is_fixed:0,
+    is_property_loan:2,
+    v_type:'',
+    is_nonEMI:0,
+    loan_share_capital:10,
+    MISC_income:1
+  }
+  ];

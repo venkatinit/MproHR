@@ -1,0 +1,295 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-body">
+                <form [formGroup]="addEmployee" (ngSubmit)="saveNewEmpolyee()">
+                    <h5><strong>Employee Information</strong></h5>
+                    <hr>
+                    <div class="row g-3">
+                        <!-- <div class="col-md-4">
+                            <label for=""><strong>Select Company</strong></label>
+                            <div>
+                                <select id="companyFilter" class="form-control form-control-sm"
+                                    formControlName="company"
+                                    [ngClass]="{ 'is-invalid': submitted && f.company.errors }">
+                                    <option value="">-- Select Company --</option>
+                                    <option *ngFor="let comp of companyList" [value]="comp.Id">
+                                        {{ comp.CompanyName }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div> -->
+                        <div class="col-md-4">
+                            <label class="form-label">Employee Id*</label>
+                            <input type="text" class="form-control form-control-sm" name="employee_Id" id="employee_Id"
+                                formControlName="employee_Id"
+                                [ngClass]="{ 'is-invalid': submitted && f.employee_Id.errors }">
+
+                            <div *ngIf="(submitted||f.employee_Id)&&f.employee_Id.errors?.required"
+                                class="invalid-feedback">ID is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Full Name*</label>
+                            <input type="text" class="form-control form-control-sm" name="full_name" id="full_name"
+                                formControlName="full_name"
+                                [ngClass]="{ 'is-invalid': submitted && f.full_name.errors }">
+                            <div *ngIf="(submitted||f.full_name)&&f.full_name.errors?.required"
+                                class="invalid-feedback">Full Name is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Date of Birth*</label>
+                            <input type="date" class="form-control form-control-sm" name="date_of_birth"
+                                placeholder="Please Select Date" id="date_of_birth" formControlName="date_of_birth"
+                                [ngClass]="{ 'is-invalid': submitted && f.date_of_birth.errors }">
+                            <div *ngIf="(submitted||f.date_of_birth)&&f.date_of_birth.errors?.required"
+                                class="invalid-feedback">DOB is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" style="margin-top: 8px;">Gender*</label>
+                            <div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" formControlName="gender" name="gender"
+                                        id="inlineRadio1" value="male">
+                                    <label class="form-check-label" for="inlineRadio1">Male</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" formControlName="gender" name="gender"
+                                        id="inlineRadio2" value="female">
+                                    <label class="form-check-label" for="inlineRadio2">Female</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Father Name*</label>
+                            <input type="text" class="form-control form-control-sm" name="father_Name" id="father_Name"
+                                formControlName="father_Name"
+                                [ngClass]="{ 'is-invalid': submitted && f.father_Name.errors }">
+                            <div *ngIf="(submitted||f.father_Name)&&f.father_Name.errors?.required"
+                                class="invalid-feedback">Father Name is
+                                required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Mother Name*</label>
+                            <input type="text" class="form-control form-control-sm" name="mother_Name" id="mother_Name"
+                                formControlName="mother_Name"
+                                [ngClass]="{ 'is-invalid': submitted && f.mother_Name.errors }">
+                            <div *ngIf="(submitted||f.mother_Name)&&f.mother_Name.errors?.required"
+                                class="invalid-feedback">Mother Name is
+                                required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Email Id*</label>
+                            <input type="text" class="form-control form-control-sm" name="email" id="email"
+                                formControlName="email" [ngClass]="{ 'is-invalid': submitted && f.email.errors }">
+                            <div *ngIf="(submitted||f.email)&&f.email.errors?.required" class="invalid-feedback">Email
+                                is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Mobile Number*</label>
+                            <input type="text" class="form-control form-control-sm" maxlength="10" name="mbl_no"
+                                id="mbl_no" formControlName="mbl_no"
+                                [ngClass]="{ 'is-invalid': submitted && f.mbl_no.errors }" numbersOnly>
+                            <div *ngIf="(submitted||f.mbl_no)&&f.mbl_no.errors?.required" class="invalid-feedback">
+                                Mobile No is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Employee Type*</label>
+                            <input type="text" class="form-control form-control-sm" name="employee_type"
+                                id="employee_type" formControlName="employee_type"
+                                [ngClass]="{ 'is-invalid': submitted && f.employee_type.errors }">
+                            <div *ngIf="(submitted||f.employee_type)&&f.employee_type.errors?.required"
+                                class="invalid-feedback">Employee Type
+                                is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Department*</label>
+                            <input type="text" class="form-control form-control-sm" name="department" id="department"
+                                formControlName="department"
+                                [ngClass]="{ 'is-invalid': submitted && f.department.errors }">
+                            <div *ngIf="(submitted||f.department)&&f.department.errors?.required"
+                                class="invalid-feedback">Department is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Technology*</label>
+                            <input type="text" class="form-control form-control-sm" name="technology" id="technology"
+                                formControlName="technology"
+                                [ngClass]="{ 'is-invalid': submitted && f.technology.errors }">
+                            <div *ngIf="(submitted||f.technology)&&f.technology.errors?.required"
+                                class="invalid-feedback">Technology is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Offer Date*</label>
+                            <input type="text" class="form-control form-control-sm" name="offer_date" id="offer_date"
+                                bsDatepicker [minDate]="minDate" placeholder="Please Select Date"
+                                [bsConfig]="{isAnimated:true,dateInputFormat: 'DD-MM-YYYY'}"
+                                formControlName="offer_date"
+                                [ngClass]="{ 'is-invalid': submitted && f.offer_date.errors }">
+                            <div *ngIf="(submitted||f.offer_date)&&f.offer_date.errors?.required"
+                                class="invalid-feedback">Offer Date is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Join Date*</label>
+                            <input type="text" class="form-control form-control-sm" name="join_date" id="join_date"
+                                bsDatepicker [minDate]="minDate" placeholder="Please Select Date"
+                                [bsConfig]="{isAnimated:true,dateInputFormat: 'DD-MM-YYYY'}" formControlName="join_date"
+                                [ngClass]="{ 'is-invalid': submitted && f.join_date.errors }">
+                            <div *ngIf="(submitted||f.join_date)&&f.join_date.errors?.required"
+                                class="invalid-feedback">Join Date is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label"> Offer Designation*</label>
+
+                            <input type="text" class="form-control form-control-sm" name="offer_designation"
+                                id="offer_designation" formControlName="offer_designation"
+                                [ngClass]="{ 'is-invalid': submitted && f.offer_designation.errors }">
+                            <div *ngIf="(submitted||f.offer_designation)&&f.offer_designation.errors?.required"
+                                class="invalid-feedback">Offer Designation is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Offer CTC (INR)*</label>
+                            <input type="text" class="form-control form-control-sm" name="offer_ctc" id="offer_ctc"
+                                formControlName="offer_ctc"
+                                [ngClass]="{ 'is-invalid': submitted && f.offer_ctc.errors }" numbersOnly>
+                            <div *ngIf="(submitted||f.offer_ctc)&&f.offer_ctc.errors?.required"
+                                class="invalid-feedback">Offer CTC is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Current Designation*</label>
+                            <input type="text" class="form-control form-control-sm" name="current_designation"
+                                id="current_designation" formControlName="current_designation"
+                                [ngClass]="{ 'is-invalid': submitted && f.current_designation.errors }">
+                            <div *ngIf="(submitted||f.current_designation)&&f.current_designation.errors?.required"
+                                class="invalid-feedback">Current Designation is required
+                            </div>
+                        </div>
+                        <!-- <div class="col-md-4">
+                            <label class="form-label">Current CTC (INR)*</label>
+                            <input type="text" class="form-control form-control-sm" name="current_ctc" id="current_ctc"
+                                formControlName="current_ctc"
+                                [ngClass]="{ 'is-invalid': submitted && f.current_ctc.errors }">
+                            <div *ngIf="(submitted||f.current_ctc)&&f.current_ctc.errors?.required"
+                                class="invalid-feedback">Current CTC is required
+                            </div>
+                        </div> -->
+
+                        <div class="col-md-4">
+                            <label class="form-label">UAN Number</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="uan_no"
+                                name="uan_no" numbersOnly minlength="12" maxlength="12">
+
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">PF Number</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="pf_no"
+                                name="pf_no">
+
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Adhar Number*</label>
+                            <input type="text" class="form-control form-control-sm" name="adhar_no" id="adhar_no"
+                                formControlName="adhar_no" [ngClass]="{ 'is-invalid': submitted && f.adhar_no.errors }"
+                                numbersOnly minlength="12" maxlength="12">
+                            <div *ngIf="(submitted||f.adhar_no)&&f.adhar_no.errors?.required" class="invalid-feedback">
+                                Adhar No is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">PAN Number*</label>
+                            <input type="text" class="form-control form-control-sm" name="pan_no" id="pan_no"
+                                (input)="convertToUppercase('pan_no')" formControlName="pan_no" minlength="10"
+                                maxlength="10" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
+                                [ngClass]="{ 'is-invalid': submitted && f.pan_no.errors }">
+                            <div *ngIf="(submitted||f.pan_no)&&f.pan_no.errors?.required" class="invalid-feedback">Pan
+                                No is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Reference Person Name*</label>
+                            <input type="text" class="form-control form-control-sm" name="ref_name" id="ref_name"
+                                formControlName="ref_name" [ngClass]="{ 'is-invalid': submitted && f.ref_name.errors }">
+                            <div *ngIf="(submitted||f.ref_name)&&f.ref_name.errors?.required" class="invalid-feedback">
+                                Reference Person Name is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Reference Person Contact No*</label>
+                            <input type="text" class="form-control form-control-sm" name="ref_contact_no"
+                                id="ref_contact_no" formControlName="ref_contact_no" minlength="10" maxlength="10"
+                                [ngClass]="{ 'is-invalid': submitted && f.ref_contact_no.errors }" numbersOnly>
+                            <div *ngIf="(submitted||f.ref_contact_no)&&f.ref_contact_no.errors?.required"
+                                class="invalid-feedback">Reference Person Contact No is required
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Present Address*</label>
+                            <textarea type="text" class="form-control form-control-sm" name="present_address"
+                                id="present_address" formControlName="present_address"
+                                [ngClass]="{ 'is-invalid': submitted && f.present_address.errors }"></textarea>
+                            <div *ngIf="(submitted||f.present_address)&&f.present_address.errors?.required"
+                                class="invalid-feedback">
+                                Present Addr is required
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Permanent Address*</label>
+                            <textarea type="text" class="form-control form-control-sm" name="permanent_address"
+                                id="permanent_address" formControlName="permanent_address"
+                                [ngClass]="{ 'is-invalid': submitted && f.permanent_address.errors }"></textarea>
+                            <div *ngIf="(submitted||f.permanent_address)&&f.permanent_address.errors?.required"
+                                class="invalid-feedback">
+                                Permanent Addr is required
+                            </div>
+                        </div>
+                        <h5><strong>Bank Information</strong></h5>
+                        <hr style="width: 99%;">
+                        <div class="col-md-4">
+                            <label class="form-label">Bank Name*</label>
+                            <input type="text" class="form-control form-control-sm" name="bank_name" id="bank_name"
+                                formControlName="bank_name" (input)="convertToUppercase('bank_name')"
+                                [ngClass]="{ 'is-invalid': submitted && f.bank_name.errors }">
+                            <div *ngIf="(submitted||f.bank_name)&&f.bank_name.errors?.required"
+                                class="invalid-feedback">Bank Name is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Account Number*</label>
+                            <input type="text" name="account_no" id="account_no" formControlName="account_no"
+                                class="form-control form-control-sm"
+                                [ngClass]="{ 'is-invalid': submitted && f.account_no.errors }" numbersOnly>
+                            <div *ngIf="(submitted||f.account_no)&&f.account_no.errors?.required"
+                                class="invalid-feedback">Account No is
+                                required </div>
+                        </div>
+                        <div class="col-md-4"><label class="form-label">BSR
+                                /IFSC Code*</label><input type="text" name="ifsc" id="ifsc" formControlName="ifsc"
+                                class="form-control form-control-sm"
+                                [ngClass]="{ 'is-invalid': submitted && f.ifsc.errors }"
+                                (input)="convertToUppercase('ifsc')">
+                            <div *ngIf="(submitted||f.ifsc)&&f.ifsc.errors?.required" class="invalid-feedback">IFSC is
+                                required </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-dark  me-md-2 btn-sm">Close</button>
+                            <button type="submit" [disabled]="addEmployee.invalid"
+                                class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

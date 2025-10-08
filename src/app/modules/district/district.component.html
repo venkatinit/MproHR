@@ -1,0 +1,110 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+
+                <!-- Title Column -->
+                <div [ngClass]="isStateFilterVisible ? 'col-md-4' : 'col-md-6'">
+                    <strong>District List</strong>
+                </div>
+                <!-- State Filter (shown only if enabled) -->
+                <div class="col-md-4 d-flex flex-row align-items-center" *ngIf="isStateFilterVisible">
+                    <form class="d-flex" [formGroup]="form">
+                        <label for="stateFilter"><strong>Select State</strong></label>
+                        <div>
+                            <select id="stateFilter" class="form-control form-control-sm" formControlName="state">
+                                <option value="">-- Select State --</option>
+                                <option *ngFor="let item of states" [value]="item.state_id">
+                                    {{ item.state_title }}
+                                </option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <!-- Buttons Column -->
+                <div [ngClass]="isStateFilterVisible ? 'col-md-4' : 'col-md-6 text-end'" class="text-end">
+                    <a class="btn btn-primary btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal">
+                        <i class="fa fa-plus" aria-hidden="true"></i> New
+                    </a>
+                    <a class="btn btn-primary btn-sm me-2 text-white" role="button" (click)="toggleStateFilter()">
+                        <i class="fa-solid fa-filter"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table   table-hover"
+                    id="districtTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>District Name</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="district_list?.length != 0">
+                        <tr *ngFor="let item of district_list; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ item.district_title || '-' }}</td>
+                            <td>
+                                <button class="btn btn-sm" type="button" (click)="updateById(item.districtid)"
+                                    data-bs-toggle="modal" data-bs-target="#newModal" title="Edit">
+                                    <i class="bi bi-pencil-square text-success"></i> </button>
+                                <button class="btn  btn-sm " type="button" data-toggle="tooltip" data-placement="top"
+                                    (click)="deleteDistrict(item.id)" title="Delete"><i
+                                        class="bi bi-trash3-fill text-danger"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                    <tbody *ngIf="district_list?.length == 0">
+                        <tr>
+                            <td colspan="12" class="no-data-available">No data!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header" *ngIf="this.action !== 'update'">
+                            <strong>Add District</strong>
+                        </div>
+                        <div class="modal-header" *ngIf="this.action === 'update'">
+                            <strong>Update District</strong>
+                        </div>
+                        <div class="modal-body ">
+                            <form [formGroup]="addDistrict"
+                                (ngSubmit)="action === 'update' ? updateDistrict() : saveDistrict()">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label for=""><strong>State</strong></label>
+                                        <select class="form-control form-control-sm" formControlName="state"
+                                            [ngClass]="{ 'is-invalid': submitted && f.state.errors }">
+                                            <option value="">-- Select State --</option>
+                                            <option *ngFor="let item of states" [value]="item.state_id">
+                                                {{ item.state_title }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label">New District</label>
+                                        <input type="text" class="form-control form-control-sm" name="district"
+                                            id="district" formControlName="district"
+                                            [ngClass]="{ 'is-invalid': submitted && f.district.errors }">
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer col-md-12 d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-success btn-sm"
+                                        *ngIf="action !== 'update'">Submit</button>
+                                    <button type="submit" class="btn btn-primary btn-sm"
+                                        *ngIf="action === 'update'">Update</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

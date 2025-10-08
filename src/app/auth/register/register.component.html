@@ -1,0 +1,197 @@
+<div class="log_form " style="margin-top:40px">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-6 top-bg active align-self-center" id="signup">
+            <div class="card mb-3">
+                <h5 class="card-title text-center pb-0 fs-4">Register Your Company</h5>
+                <!-- <a href="#"><button type="button" class="btn-close"></button></a> -->
+                <div class="card-body">
+                    <div class="pb-2">
+                        <form class="row g-3 needs-validation" [formGroup]="RegisterForm"
+                            (ngSubmit)="SaveRegisterForm()">
+                            <div class="col-md-6 col-sm-12">
+                                <label for="yourUsername" class="form-label">Company Name</label>
+                                <div class="has-validation">
+                                    <input type="text" name="company_name" class="form-control"
+                                        formControlName="company_name"
+                                        [ngClass]="{ 'is-invalid': submitted && f.company_name.errors }">
+                                    <!-- <div *ngIf="(submitted || f.company_name.touched) && f.company_name.errors?.required"
+                                        class="invalid-feedback">
+                                        Company Name is required
+                                    </div> -->
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <label for="yourUsername" class="form-label">Contact Person</label>
+                                <div class="has-validation">
+                                    <input type="text" name="contact_person" class="form-control"
+                                        formControlName="contact_person"
+                                        [ngClass]="{ 'is-invalid': submitted && f.contact_person.errors }">
+                                    <!-- <div *ngIf="(submitted || f.contact_person.touched) && f.contact_person.errors?.required"
+                                                                    class="invalid-feedback">
+                                                                    Contact Person is required
+                                                                </div> -->
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <label for="yourUsername" class="form-label">Mobile No</label>
+                                <div class="has-validation">
+                                    <input type="text" name="mobile_no" class="form-control" maxlength="10"
+                                        formControlName="mobile_no"
+                                        [ngClass]="{ 'is-invalid': submitted && f.mobile_no.errors }" numbersOnly>
+
+                                    <!-- <div *ngIf="(submitted || f.mobile_no.touched) && f.mobile_no.errors?.required"
+                                                                    class="invalid-feedback">
+                                                                    Mobile Number is
+                                                                    required
+                            
+                                                                </div> -->
+
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <label for="yourUsername" class="form-label">GST Number</label>
+                                <div class=" has-validation">
+                                    <input type="text" name="gst" class="form-control" formControlName="gst"
+                                        [ngClass]="{ 'is-invalid': submitted && f.gst.errors }">
+                                    <!-- <div *ngIf="(submitted || f.gst.touched) && f.gst.errors?.required"
+                                        class="invalid-feedback">
+                                        Register Number is required
+                                    </div> -->
+                                </div>
+                            </div>
+                            <!-- <div class="col-md-6 col-sm-12">
+                                <label for="yourUsername" class="form-label">Business Type</label>
+                                <div class="input-group has-validation">
+                                    <select type="text" name="business_type" class="form-control"
+                                        formControlName="business_type"
+                                        [ngClass]="{ 'is-invalid': submitted && f.business_type.errors }">
+                                        <option value="" [selected]="isSelected">Select Business Type
+                                        </option>
+                                        <option value="1">Corporative</option>
+                                        <option value="2">Health</option>
+                                        <option value="3">Retailers</option>
+                                        <option value="3">Schools/Institutions</option>
+                                    </select>
+                                    <div *ngIf="(submitted || f.business_type.touched) && f.business_type.errors?.required"
+                                        class="invalid-feedback">
+                                        Business Type is required
+                                    </div>
+                                </div>
+                            </div> -->
+                            <div class="col-md-6 col-sm-12">
+                                <label for="yourUsername" class="form-label">Established Date</label>
+                                <div class=" has-validation">
+                                    <input type="date" name="established_date" class="form-control"
+                                        formControlName="established_date"
+                                        [ngClass]="{ 'is-invalid': submitted && f.established_date.errors }">
+
+                                    <!-- <div *ngIf="(submitted || f.established_date.touched) && f.established_date.errors?.required"
+                                        class="invalid-feedback">
+                                        Established Date is required
+
+                                    </div> -->
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-sm-12">
+                                <label for="yourUsername" class="form-label">Website Link</label>
+                                <div class=" has-validation">
+                                    <input type="text" name="website" class="form-control" formControlName="website"
+                                        [ngClass]="{ 'is-invalid': submitted && f.website.errors }" >
+                                    <!-- <div *ngIf="(submitted || f.website.touched) && f.website.errors?.required"
+                                                        class="invalid-feedback">
+                                                        Office Contact
+                                                        Number is required
+                                                    </div> -->
+                                </div>
+                            </div>
+                            <!-- <div class="col-md-6 col-sm-12">
+                                                <label for="yourUsername" class="form-label">CEO</label>
+                                                <div class=" has-validation">
+                                                    <input type="text" name="ceo" class="form-control"
+                                                        formControlName="ceo"
+                                                        [ngClass]="{ 'is-invalid': submitted && f.ceo.errors }">
+                                                    <div *ngIf="(submitted || f.ceo.touched) && f.ceo.errors?.required"
+                                                        class="invalid-feedback">
+                                                        CEO is required
+                                                    </div>
+                                                </div>
+                                            </div> -->
+                            <!-- <div class="col-12">
+                                <label for="yourUsername" class="form-label">Address</label>
+                                <div class=" has-validation">
+                                    <textarea type="text" name="address" class="form-control" formControlName="address"
+                                        [ngClass]="{ 'is-invalid': submitted && f.address.errors }"></textarea>
+                                    <div *ngIf="(submitted || f.address.touched) && f.address.errors?.required"
+                                        class="invalid-feedback">
+                                        Address is required
+                                    </div>
+
+                                </div>
+                            </div> -->
+                            <!-- <div class="col-md-6 col-sm-12">
+                                <label for="yourUsername" class="form-label">Username</label>
+                                <div class="has-validation">
+                                    <input type="text" name="username" class="form-control" id="yourUsername"
+                                        formControlName="username"
+                                        [ngClass]="{ 'is-invalid': submitted && f.username.errors }" required>
+
+                                    <div *ngIf="(submitted || f.username.touched) && f.username.errors?.required"
+                                        class="invalid-feedback">
+                                        Username is required
+                                    </div>
+                                </div>
+                            </div> -->
+                            <div class="col-md-6 col-sm-12">
+                                <label for="yourUsername" class="form-label"> Mail Id</label>
+                                <div class=" has-validation">
+                                    <input type="email" name="office_mail" class="form-control"
+                                        formControlName="office_mail"
+                                        [ngClass]="{ 'is-invalid': submitted && f.office_mail.errors }">
+                                    <!-- <div *ngIf="(submitted || f.office_mail.touched) && f.office_mail.errors?.required"
+                                                                    class="invalid-feedback">
+                                                                    Office Mail is required
+                                                                </div> -->
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <label class="form-label"> Create Password</label>
+                                <div class=" input-group input-group-merge">
+                                    <input [type]="show ? 'text' : 'password'" name="password" class="form-control"
+                                        id="yourPassword" formControlName="password"
+                                        [ngClass]="{ 'is-invalid': submitted && f.password.errors }" required>
+                                    <span class="input-group-text cursor-pointer" (click)="onClick()">
+                                        <i class="fa fa-eye" aria-hidden="true" *ngIf="!show"></i>
+                                        <i class="fa fa-eye-slash" aria-hidden="true" *ngIf="show"></i>
+                                    </span>
+                                    <!-- <div *ngIf="(submitted || f.password.touched) && f.password.errors?.required"
+                                        class="invalid-feedback">
+                                        Password is required
+                                    </div> -->
+                                </div>
+                            </div>
+
+                            <div class="col-12 d-flex flex-row justify-content-between">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="remember" value="true"
+                                        id="rememberMe">
+                                    <label class="form-check-label" for="rememberMe">Agree our Terms and
+                                        Conditions</label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label" for="rememberMe">Already have an
+                                        account? <a style="text-decoration: none;" routerLink="/login">Login</a>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-secondary" type="reset">Clear</button>
+                                <button class="btn btn-primary" type="submit">Register</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

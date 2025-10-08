@@ -1,0 +1,36 @@
+<div class="modal-header">
+  <h5 class="text-center">PaySlip</h5>
+  <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+</div>
+<div class="modal-body">
+  <div class="row g-3">
+    <div class="exam-block">
+      <form [formGroup]="Payslip" (ngSubmit)="saveaddPayslip()">
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <label class="form-label">Valid Up To</label>
+            <input type="text" class="form-control" autocomplete="off" placeholder="Month And Year" name="valid_upto "
+              id="valid_upto" bsDatepicker [minDate]="minDate" [bsConfig]="{isAnimated:true,dateInputFormat: 'MM-YYYY'}"
+              formControlName="valid_upto" [ngClass]="{ 'is-invalid': submitted && f.valid_upto.errors }">
+            <div *ngIf="(submitted || f.valid_upto.touched) && f.valid_upto.errors?.required" class="invalid-feedback">
+              Valid Up To
+              is required
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Count</label>
+            <input type="text" class="form-control" autocomplete="off" name="count " id="count" formControlName="count"
+              [ngClass]="{ 'is-invalid': submitted && f.count.errors }">
+            <div *ngIf="(submitted || f.count.touched) && f.count.errors?.required" class="invalid-feedback">Count
+              is required
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark  me-md-2 btn-sm" (click)="closeModal()">Close</button>
+    <app-save-button></app-save-button>
+  </div>
+</div>

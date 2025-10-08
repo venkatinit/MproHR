@@ -1,0 +1,154 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+
+                <!-- Title Column -->
+                <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6'">
+                    <strong>Deduction List</strong>
+                </div>
+
+                <!-- Company Filter (shown only if enabled) -->
+                <div class="col-md-4 d-flex flex-row align-items-center" *ngIf="isCompanyFilterVisible">
+                    <label for=""><strong>Select Company</strong></label>
+                    <div>
+                        <select id="companyFilter" [(ngModel)]="companyId" class="form-control form-control-sm"
+                            formControlName="company" [ngClass]="{ 'is-invalid': submitted && f.company.errors }">
+                            <option value="">-- Select Company --</option>
+                            <option *ngFor="let comp of companyList" [value]="comp.Id">
+                                {{ comp.CompanyName }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Buttons Column -->
+                <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6 text-end'" class="text-end">
+                    <a class="btn btn-primary btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal">
+                        <i class="fa fa-plus" aria-hidden="true"></i> New
+                    </a>
+
+                    <a class="btn btn-primary btn-sm me-2 text-white" role="button" (click)="toggleCompanyFilter()">
+                        <i class="fa-solid fa-filter"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+        
+                                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+                                    class="table   table-hover" id="bankTable">
+                                    <thead>
+                                        <tr>
+                                            <th>S.No</th>
+                                            <th>Deduction Name</th>
+                                            <th>Deduction Type</th>
+                                            <th>Value</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody *ngIf="deduction_list?.length != 0">
+                                        <tr *ngFor="let item of deduction_list; let i = index">
+                                            <td>{{ i + 1 }}</td>
+                                            <td>{{ item.name || '-'}}</td>
+                                            <td>{{ item.type || '-' }}</td>
+                                            <td>{{ item.value || '-' }}</td>
+                                            <td>
+                                                <button class="btn btn-sm" type="button" (click)="updateById(item.id)"
+                                                    data-bs-toggle="modal" data-bs-target="#newModal" title="Edit">
+                                                    <i class="bi bi-pencil-square text-success"></i> </button>
+                                                <button class="btn  btn-sm " type="button" data-toggle="tooltip"
+                                                    data-placement="top" (click)="deleteDeduction(item.id)"
+                                                    title="Delete"><i
+                                                        class="bi bi-trash3-fill text-danger"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+                                    <tbody *ngIf="deduction_list?.length == 0">
+                                        <tr>
+                                            <td colspan="12" class="no-data-available">No data!</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                           
+            </div>
+            <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header" *ngIf="this.action !== 'update'">
+                            <strong>Add Deduction</strong>
+                        </div>
+                        <div class="modal-header" *ngIf="this.action === 'update'">
+                            <strong>Update Deduction</strong>
+                        </div>
+                        <div class="modal-body ">
+                            <form [formGroup]="addDeductions"
+                                (ngSubmit)="action === 'update' ? updateDeduction() : saveDeduction()">
+                                <div class="row">
+                                    <!-- <div class="col-md-12">
+                                        <label class="form-label">Select Company</label>
+                                        <select class="form-control form-control-sm" formControlName="company"
+                                            [ngClass]="{ 'is-invalid': submitted && f.company.errors }">
+                                            <option value="">-- Select Company --</option>
+                                            <option *ngFor="let comp of companyList" [value]="comp.Id">
+                                                {{ comp.CompanyName }}
+                                            </option>
+                                        </select>
+                                        <div *ngIf="(submitted || f.company.touched) && f.company.errors?.required"
+                                            class="invalid-feedback">
+                                            Company Name is required
+                                        </div>
+                                    </div> -->
+                                    <div class="col-md-12">
+                                        <label class="form-label">Deduction Name </label>
+                                        <input type="text" class="form-control form-control-sm" name="deduction_name"
+                                            id="deduction_name" formControlName="deduction_name"
+                                            [ngClass]="{ 'is-invalid': submitted && f.deduction_name.errors }">
+                                        <!-- <div *ngIf="(submitted || f.deduction_name.touched) && f.deduction_name.errors?.required"
+                                            class="invalid-feedback">
+                                            Bank Name is
+                                            required
+                                        </div> -->
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label">Deduction Type</label>
+                                        <select class="form-control form-control-sm" formControlName="type"
+                                            [ngClass]="{ 'is-invalid': submitted && f.type.errors }">
+                                            <option value="">-- Select type --</option>
+                                            <option value="Flat">Flat</option>
+                                            <option value="Percentage">Percentage</option>
+
+                                        </select>
+                                        <!-- <input type="text" class="form-control form-control-sm" name="type" id="type"
+                                            formControlName="type"
+                                            [ngClass]="{ 'is-invalid': submitted && f.type.errors }"> 
+                                             <div *ngIf="(submitted || f.type.touched) && f.type.errors?.required"
+                                            class="invalid-feedback">Branch Name is
+                                            required
+                                        </div> -->
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <label class="form-label">Value</label>
+                                        <input type="text" class="form-control form-control-sm" name="value" id="value"
+                                            formControlName="value" numbersOnly
+                                            [ngClass]="{ 'is-invalid': submitted && f.value.errors }">
+                                        <!-- <div *ngIf="(submitted || f.value.touched) && f.value.errors?.required"
+                                            class="invalid-feedback">Account Number is required
+                                        </div> -->
+                                    </div>
+                                </div>
+                                <div class="mt-2 col-md-12 d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-success btn-sm"
+                                        *ngIf="action !== 'update'">Submit</button>
+                                    <button type="submit" class="btn btn-primary btn-sm"
+                                        *ngIf="action === 'update'">Update</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

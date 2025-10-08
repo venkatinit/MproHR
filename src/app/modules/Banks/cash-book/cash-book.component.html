@@ -1,0 +1,115 @@
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-7"><strong>Cash Book </strong></div>
+                <div class="col-md-5" style=" display: flex; justify-content: space-between;">
+                    <form [formGroup]="filterForm" (ngSubmit)="getDayBook()">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label class="form-label">From Date</label>
+                                <input type="date" class="form-control form-control-sm" formControlName="from_date"
+                                    name="from_date" id="from_date"
+                                    [ngClass]="{ 'is-invalid': submitted && f.from_date.errors }">
+                                <div *ngIf="(submitted || f.from_date?.touched) && f.from_date.errors?.required"
+                                    class="invalid-feedback">
+                                    From Date is required
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                <label class="form-label">To Date</label>
+                                <input type="date" class="form-control form-control-sm" formControlName="to_date"
+                                    name="to_date" id="to_date"
+                                    [ngClass]="{ 'is-invalid': submitted && f.to_date.errors }">
+                                <div *ngIf="(submitted || f.to_date?.touched) && f.to_date.errors?.required"
+                                    class="invalid-feedback">
+                                    To Date is required
+                                </div>
+                            </div>
+                            <div class="col-md-2" style="margin-top: 2rem;">
+                                <button type="submit" class="bg-success text-white rounded save"
+                                    [disabled]="filterForm.invalid">Search</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row g-3  ">
+                <div class="col-md-12">
+                    <div class="accordion accordion-flush" id="accordionFlushExample">
+                        <div class="accordion-item" *ngFor="let item of cashBook; let i = index">
+                            <h2 class="accordion-header" [id]="'flush-heading' + i">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    [attr.data-bs-target]="'#flush-collapse' + i" aria-expanded="false"
+                                    [attr.aria-controls]="'flush-collapse' + i">
+                                    {{ item.date | date: 'yyyy-MM-dd' }} - Opening: {{ item.openingBalance }} | Closing:
+                                    {{
+                                    item.closingBalance }}
+                                </button>
+                            </h2>
+                            <div [id]="'flush-collapse' + i" class="accordion-collapse collapse"
+                                [attr.aria-labelledby]="'flush-heading' + i" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">
+                                    <div class="card-body dayCard">
+                                        <p><strong>Date:</strong> {{ item.date | date: 'yyyy-MM-dd' }}</p>
+                                        <p><strong>Bank:</strong>NG Cash</p>
+                                        <div class="d-flex flex-row justify-content-between">
+                                            <p><strong>Opening Balance:</strong> ₹{{ item.openingBalance }}/-</p>
+                                            <p><strong>Closing Balance:</strong> ₹{{ item.closingBalance }}/-</p>
+                                        </div>
+
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th colspan="2">Collections</th>
+                                                    <th colspan="2">Expenses</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngIf="!item.receipts.length && !item.payments.length">
+                                                    <td colspan="5" class="text-center text-muted">No transactions
+                                                    </td>
+                                                </tr>
+                                                <tr *ngFor="let _, let i = index of [].constructor(item.maxRows)">
+                                                    <td>{{ i + 1 }}</td>
+
+
+                                                    <td colspan="2">
+                                                        <span *ngIf="item.receipts[i]">
+                                                            {{ item.receipts[i].headOfAccount }} - ₹{{
+                                                            item.receipts[i].amount }}/-
+                                                        </span>
+                                                    </td>
+
+
+                                                    <td colspan="2">
+                                                        <span *ngIf="item.payments[i]">
+                                                            {{ item.payments[i].headOfAccount }} - ₹{{
+                                                            item.payments[i].amount }}/-
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2"><strong>Total Collections:</strong> ₹{{
+                                                        item.dayReceipts }}/-</td>
+                                                    <td colspan="2"><strong>Total Expenses:</strong> ₹{{
+                                                        item.dayPayments }}/-</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

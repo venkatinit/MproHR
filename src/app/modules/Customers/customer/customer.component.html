@@ -1,0 +1,153 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <!-- Title Column -->
+                <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6'">
+                    <strong>Customers List</strong>
+                </div>
+                <!-- Company Filter (shown only if enabled) -->
+                <div class="col-md-4 d-flex flex-row align-items-center" *ngIf="isCompanyFilterVisible">
+                    <form class="d-flex" [formGroup]="form" (ngSubmit)="getCustomers()">
+                        <label for="company"><strong>Company Name</strong></label>
+                        <div>
+                            <select id="companyFilter" class="form-control form-control-sm ml-2"
+                                formControlName="company" [ngClass]="{ 'is-invalid': submitted && f.company.errors }">
+                                <option value="">-- Select Company --</option>
+                                <option *ngFor="let comp of companyList" [value]="comp.Id">
+                                    {{ comp.CompanyName }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="bg-success text-white rounded save"
+                                [disabled]="form.invalid">Search</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- Buttons Column -->
+                <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6 text-end'" class="text-end">
+                    <a class="btn btn-primary btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal">
+                        <i class="fa fa-plus" aria-hidden="true"></i> New
+                    </a>
+                    <!-- <a class="btn btn-primary btn-sm me-2 text-white" role="button" (click)="toggleCompanyFilter()">
+                        <i class="fa-solid fa-filter"></i>
+                    </a> -->
+                    <!-- <a class="btn btn-primary  btn-sm  me-md-2  float-end" (click)="open_fileUpload()" role="button"><i
+                            class="fa fa-arrow-up" aria-hidden="true"></i> Export
+                        Excel</a> -->
+                </div>
+            </div>
+            <div class="card-body">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table   table-hover"
+                    id="customerTable">
+                    <thead>
+                        <tr>
+                            <th>S No</th>
+                            <th>Customer Name</th>
+                            <th>Mobile</th>
+                            <th>Email id</th>
+                            <th>GST Number</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="customer_list?.length != 0">
+                        <tr *ngFor="let item of customer_list;let i=index">
+                            <td>{{i+1}}</td>
+                            <td>{{ item.customer_Name }}</td>
+                            <td>{{ item.contact_No }}</td>
+                            <td>{{ item.email_Id }}</td>
+                            <td>{{ item.gsT_Number }}</td>
+                            <td>
+                                <!-- <button class="btn btn-sm " type="button" data-toggle="tooltip"
+                                                    data-placement="top" title="View"><i
+                                                        class="bi bi-eye-fill text-primary"></i></button> -->
+                                <button class="btn btn-sm" type="button" (click)="updateById(item.id)"
+                                    data-bs-toggle="modal" data-bs-target="#newModal" title="Edit">
+                                    <i class="bi bi-pencil-square text-success"></i> </button>
+                                <button class="btn  btn-sm " type="button" data-toggle="tooltip" data-placement="top"
+                                    (click)="deleteCustomer(item.id)" title="Delete"><i
+                                        class="bi bi-trash3-fill text-danger"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="customer_list?.length == 0">
+                        <tr>
+                            <td colspan="12" class="no-data-available">No Customers available!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header" *ngIf="this.action !== 'update'">
+                            <strong>Add Customer</strong>
+                        </div>
+                        <div class="modal-header" *ngIf="this.action === 'update'">
+                            <strong>Update Customer</strong>
+                        </div>
+                        <div class="modal-body pb-2">
+                            <form [formGroup]="addCustomer"
+                                (ngSubmit)="action === 'update' ? updateCustomer() : saveCustomer()">
+                                <div class="row">
+
+                                    <div class="col-md-12">
+                                        <label class="form-label">Customer Name </label>
+                                        <input type="text" class="form-control form-control-sm" name="customer_name"
+                                            id="customer_name" formControlName="customer_name"
+                                            [ngClass]="{ 'is-invalid': submitted && f.customer_name.errors }">
+                                        <!-- <div *ngIf="(submitted || f.customer_name.touched) && f.customer_name.errors?.required"
+                                            class="invalid-feedback">
+                                            Customer Name is
+                                            required
+                                        </div> -->
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <label class="form-label">Contact Number</label>
+                                        <input type="text" class="form-control form-control-sm" name="mobile"
+                                            id="mobile" formControlName="mobile" maxlength="10" pattern="[0-9]*"
+                                            inputmode="numeric"
+                                            [ngClass]="{ 'is-invalid': submitted && f.mobile.errors }" numbersOnly />
+                                        <!-- <div *ngIf="(submitted || f.mobile.touched) && f.mobile.errors?.required" class="invalid-feedback">
+                                            Manager Contact Number is required
+                                        </div> -->
+                                        <div *ngIf="(submitted || f.mobile.touched) && f.mobile.errors?.pattern"
+                                            class="invalid-feedback">
+                                            Enter a valid 10-digit contact number
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label">Email</label>
+                                        <input type="text" class="form-control form-control-sm" name="email" id="email"
+                                            formControlName="email"
+                                            [ngClass]="{ 'is-invalid': submitted && f.email.errors }">
+                                        <!-- <div *ngIf="(submitted || f.email.touched) && f.email.errors?.required"
+                                            class="invalid-feedback">Email is required
+                                        </div> -->
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label">GST (If Available)</label>
+                                        <input type="text" class="form-control form-control-sm" name="gst" id="gst"
+                                            formControlName="gst"
+                                            [ngClass]="{ 'is-invalid': submitted && f.gst.errors }">
+                                        <!-- <div *ngIf="(submitted || f.gst.touched) && f.gst.errors?.required"
+                                            class="invalid-feedback">GST is required
+                                        </div> -->
+                                    </div>
+                                </div>
+                                <div class="modal-footer col-md-12 d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-success btn-sm"
+                                        *ngIf="action !== 'update'">Submit</button>
+                                    <button type="submit" class="btn btn-primary btn-sm"
+                                        *ngIf="action === 'update'">Update</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,96 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <!-- Title Column -->
+                <div class="col-lg-12">
+                    <strong>Your Professional Tax Settings</strong><a class="btn   btn-sm me-2 text-white"
+                        data-bs-toggle="modal" data-bs-target="#newModal">
+                        <i class="bi bi-pencil-square text-success"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul style="list-style-type: none;">
+                            <li> <strong> PT Number </strong> </li>
+                            <li> <strong> Filing Cycle </strong> </li>
+                            <li> <strong> State </strong> </li>
+                            <li> <strong> PT Slabs </strong> </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul style="list-style-type: none;">
+                            <li>PT Number</li>
+                            <li>Monthly</li>
+                            <li>Andra Pradesh </li>
+                            <li>Depends</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <strong>Professional Tax (PT) Details</strong>
+                        </div>
+                        <div class="modal-body ">
+                            <form [formGroup]="ptForm" (ngSubmit)="onSubmit()">
+                                <!-- PT Number -->
+                                <div class="mb-3">
+                                    <label for="ptNumber" class="form-label">PT Number</label>
+                                    <input type="text" id="ptNumber" class="form-control" formControlName="ptNumber">
+                                    <div *ngIf="f['ptNumber'].touched && f['ptNumber'].invalid"
+                                        class="text-danger small">
+                                        <div *ngIf="f['ptNumber'].errors?.['required']">PT Number is required.</div>
+                                        <div *ngIf="f['ptNumber'].errors?.['pattern']">PT Number must be alphanumeric
+                                            (min 5 chars).</div>
+                                    </div>
+                                </div>
+                                <!-- Filing Cycle -->
+                                <div class="mb-3">
+                                    <label for="filingCycle" class="form-label">Filing Cycle</label>
+                                    <select id="filingCycle" class="form-select" formControlName="filingCycle">
+                                        <option value="">-- Select Filing Cycle --</option>
+                                        <option value="monthly">Monthly</option>
+                                    </select>
+                                    <div *ngIf="f['filingCycle'].touched && f['filingCycle'].invalid"
+                                        class="text-danger small">
+                                        Filing cycle is required.
+                                    </div>
+                                </div>
+                                <!-- State -->
+                                <div class="mb-3">
+                                    <label for="state" class="form-label">State</label>
+                                    <select id="state" class="form-select" formControlName="state">
+                                        <option value="">-- Select State --</option>
+                                        <!-- <option *ngFor="let s of states" [value]="s">{{s}}</option> -->
+                                    </select>
+                                    <div *ngIf="f['state'].touched && f['state'].invalid" class="text-danger small">
+                                        State is required.
+                                    </div>
+                                </div>
+                                <!-- PT Slabs -->
+                                <div class="mb-3">
+                                    <label class="form-label">PT Slabs</label>
+                                    <textarea class="form-control" rows="3"
+                                        placeholder="Example: 0-7500: Nil, 7501-10000: 100, 10001+: 200"
+                                        formControlName="ptSlabs"></textarea>
+                                    <div *ngIf="f['ptSlabs'].touched && f['ptSlabs'].invalid" class="text-danger small">
+                                        PT Slabs are required.
+                                    </div>
+                                </div>
+                                <!-- Submit -->
+                                <div class="col-lg-12 mt-3 d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-success btn-sm">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

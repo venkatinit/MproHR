@@ -1,0 +1,131 @@
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-header  ">
+            <div class="row">
+                <div class="col-md-12" style="display: flex; justify-content: space-between;">
+                    <strong>All transactions </strong>
+                    <button class="btn btn-primary">Export </button>
+                </div>
+                <div class="col-md-12" style=" display: flex; justify-content: space-between;">
+                    <form [formGroup]="filterForm" (ngSubmit)="getDayBook()">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label class="form-label">From Date</label>
+                                <input type="date" class="form-control form-control-sm" formControlName="from_date"
+                                    name="from_date" id="from_date"
+                                    [ngClass]="{ 'is-invalid': submitted && f.from_date.errors }">
+                                <div *ngIf="(submitted || f.from_date?.touched) && f.from_date.errors?.required"
+                                    class="invalid-feedback">
+                                    From Date is required
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label class="form-label">To Date</label>
+                                <input type="date" class="form-control form-control-sm" formControlName="to_date"
+                                    name="to_date" id="to_date"
+                                    [ngClass]="{ 'is-invalid': submitted && f.to_date.errors }">
+                                <div *ngIf="(submitted || f.to_date?.touched) && f.to_date.errors?.required"
+                                    class="invalid-feedback">
+                                    To Date is required
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Transaction Type</label>
+                                <input type="text" class="form-control form-control-sm" formControlName="transType"
+                                    name="transType" id="transType"
+                                    [ngClass]="{ 'is-invalid': submitted && f.transType.errors }">
+                                <div *ngIf="(submitted || f.transType?.touched) && f.transType.errors?.required"
+                                    class="invalid-feedback">
+                                    Name is required
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Service </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="service"
+                                    name="service" id="service"
+                                    [ngClass]="{ 'is-invalid': submitted && f.service.errors }">
+                                <div *ngIf="(submitted || f.service?.touched) && f.service.errors?.required"
+                                    class="invalid-feedback">
+                                    Location is required
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Employee </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="empCode"
+                                    name="empCode" id="empCode"
+                                    [ngClass]="{ 'is-invalid': submitted && f.empCode.errors }">
+                                <div *ngIf="(submitted || f.empCode?.touched) && f.empCode.errors?.required"
+                                    class="invalid-feedback">
+                                    Status is required
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label">Cash/Bank </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="cash_bank"
+                                    name="cash_bank" id="cash_bank"
+                                    [ngClass]="{ 'is-invalid': submitted && f.cash_bank.errors }">
+                                <div *ngIf="(submitted || f.cash_bank?.touched) && f.cash_bank.errors?.required"
+                                    class="invalid-feedback">
+                                    Status is required
+                                </div>
+                            </div>
+                            <div class="col-md-1" style="margin-top: 2rem;">
+                                <button type="submit" class="bg-success text-white rounded save"
+                                    [disabled]="filterForm.invalid">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <table id="dayBookTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Receipts</th>
+                        <th>Payments</th>
+                        <!-- <th>Day Receipts</th>
+                                    <th>Day Payments</th>
+                                    <th>Closing Balance</th> -->
+                    </tr>
+                </thead>
+                <tbody *ngIf="cashBook?.length">
+                    <tr *ngFor="let item of cashBook; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ item.txn_Date | date: 'yyyy-MM-dd' }}</td>
+                        <td>{{ item.txn_type }}</td>
+                        <td>{{ item.receipts }}</td>
+                        <td>{{ item.payments }}</td>
+
+                        <!-- <td>
+                                        <ul *ngIf="item.receipts?.length; else noReceipts">
+                                            <li *ngFor="let receipt of item.receipts">
+                                                {{ receipt.headOfAccount || 'N/A' }} - {{ receipt.amount }}
+                                            </li>
+                                        </ul>
+                                        <ng-template #noReceipts><span>No Receipts</span></ng-template>
+                                    </td>
+                                    <td>
+                                        <ul *ngIf="item.payments?.length; else noPayments">
+                                            <li *ngFor="let payment of item.payments">
+                                                {{ payment.headOfAccount || 'N/A' }} - {{ payment.amount }}
+                                            </li>
+                                        </ul>
+                                        <ng-template #noPayments><span>No Payments</span></ng-template>
+                                    </td> -->
+                        <!-- <td>{{ item.dayReceipts }}</td>
+                                    <td>{{ item.dayPayments }}</td>
+                                    <td>{{ item.closingBalance }}</td> -->
+                    </tr>
+                    <tr *ngIf="cashBook.length === 0">
+                        <td colspan="8" class="text-center text-danger">No data available in table</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

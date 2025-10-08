@@ -1,0 +1,129 @@
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-header d-flex align-items-center">
+            <!-- Title Column -->
+            <div [ngClass]="isCompanyFilterVisible ? 'col-md-2' : 'col-md-6'">
+                <strong>Bank Book</strong>
+            </div>
+            <!-- Company Filter (shown only if enabled) -->
+            <div class="col-md-8 d-flex flex-row align-items-center" *ngIf="isCompanyFilterVisible">
+                <form [formGroup]="filterForm" (ngSubmit)="getDayBook()">
+                    <div class="row ">
+                        <div class="col-md-3">
+                            <label class="form-label">From Date</label>
+                            <input type="date" class="form-control form-control-sm" formControlName="from_date"
+                                name="from_date" id="from_date"
+                                [ngClass]="{ 'is-invalid': submitted && f.from_date.errors }">
+                            <div *ngIf="(submitted || f.from_date?.touched) && f.from_date.errors?.required"
+                                class="invalid-feedback">
+                                From Date is required
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">To Date</label>
+                            <input type="date" class="form-control form-control-sm" formControlName="to_date"
+                                name="to_date" id="to_date" [ngClass]="{ 'is-invalid': submitted && f.to_date.errors }">
+                            <div *ngIf="(submitted || f.to_date?.touched) && f.to_date.errors?.required"
+                                class="invalid-feedback">
+                                To Date is required
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Bank</label>
+                            <select class="form-control form-control-sm" name="bank_id" id="bank_id"
+                                formControlName="bank_id" [ngClass]="{ 'is-invalid': submitted && f.bank_id.errors }">
+                                <option value="" disabled selected>Select a Bank</option>
+                                <option *ngFor="let bank of banks" [value]="bank.id">{{
+                                    bank.bank_Name }}
+                                </option>
+                            </select>
+                            <div *ngIf="(submitted || f.bank_id?.touched) && f.bank_id.errors?.required"
+                                class="invalid-feedback">
+                                To Date is required
+                            </div>
+                        </div>
+                        <div class="col-md-2" style="margin-top: 2rem;">
+                            <button type="submit" class="bg-success text-white rounded save"
+                                [disabled]="filterForm.invalid">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Buttons Column -->
+            <div [ngClass]="isCompanyFilterVisible ? 'col-md-2' : 'col-md-6 text-end'" class="text-end">
+                <a class="btn btn-primary btn-sm me-2 text-white" role="button" (click)="toggleCompanyFilter()">
+                    <i class="fa-solid fa-filter"></i>
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row g-3  ">
+                <div class="col-md-12">
+                    <div class="accordion" id="cashBookAccordion">
+                        <div class="accordion-item" *ngFor="let item of cashBook; let idx = index">
+                            <h2 class="accordion-header" id="heading{{ idx }}">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    [attr.data-bs-target]="'#collapse' + idx" [attr.aria-controls]="'collapse' + idx">
+                                    <strong>Date:</strong> {{ item.date | date: 'yyyy-MM-dd' }} -
+                                    <strong>Bank:</strong>-
+                                    {{ item.bankName }}| <strong>Opening: </strong>{{ item.openingBalance }} |
+                                    <strong>Closing: </strong>
+                                    {{ item.closingBalance }}
+                                </button>
+                            </h2>
+                            <div [id]="'collapse' + idx" class="accordion-collapse collapse"
+                                [attr.aria-labelledby]="'heading' + idx" data-bs-parent="#cashBookAccordion">
+                                <div class="accordion-body">
+                                    <div class="d-flex flex-row justify-content-between">
+                                        <p><strong>Opening Balance:</strong> ₹{{ item.openingBalance }}/-</p>
+                                        <p><strong>Closing Balance:</strong> ₹{{ item.closingBalance }}/-</p>
+                                    </div>
+
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th colspan="2">Collections</th>
+                                                <th colspan="2">Expenses</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngIf="!item.receipts.length && !item.payments.length">
+                                                <td colspan="5" class="text-center text-muted">No transactions</td>
+                                            </tr>
+                                            <tr *ngFor="let _, let i = index of [].constructor(item.maxRows)">
+                                                <td>{{ i + 1 }}</td>
+
+                                                <!-- Collections (Receipts) -->
+                                                <td colspan="2">
+                                                    <span *ngIf="item.receipts[i]">
+                                                        {{ item.receipts[i].headOfAccount }} - ₹{{
+                                                        item.receipts[i].amount }}/-
+                                                    </span>
+                                                </td>
+
+                                                <!-- Expenses (Payments) -->
+                                                <td colspan="2">
+                                                    <span *ngIf="item.payments[i]">
+                                                        {{ item.payments[i].headOfAccount }} - ₹{{
+                                                        item.payments[i].amount }}/-
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2"><strong>Total Collections:</strong> ₹{{ item.dayReceipts
+                                                    }}/-</td>
+                                                <td colspan="2"><strong>Total Expenses:</strong> ₹{{ item.dayPayments
+                                                    }}/-</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

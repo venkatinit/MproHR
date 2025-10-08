@@ -1,0 +1,288 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-body">
+                <form [formGroup]="addEmployee" (ngSubmit)="sendFileToserver($event,type)">
+                    <h5><strong>NG info Solutions</strong></h5>                  
+                    <hr>                 
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Employee Code Prefix*</label>
+                            <input type="text" class="form-control form-control-sm" name="emp_prefix" id="emp_prefix"
+                                formControlName="emp_prefix"
+                                [ngClass]="{ 'is-invalid': submitted && f.emp_prefix.errors }">
+                            
+                                <div *ngIf="(submitted||f.emp_prefix)&&f.emp_prefix.errors?.required"
+                                class="invalid-feedback">Employee Code  Prefix is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">starting serial No*</label>
+                            <input type="text" class="form-control form-control-sm" name="emp_start_no" id="emp_start_no"
+                                formControlName="emp_start_no"
+                                [ngClass]="{ 'is-invalid': submitted && f.emp_start_no.errors }">
+                            
+                                <div *ngIf="(submitted||f.emp_start_no)&&f.emp_start_no.errors?.required"
+                                class="invalid-feedback">Serial No is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">No of Digits*</label>
+                            <input type="text" class="form-control form-control-sm" name="no_of_digits" id="no_of_digits"
+                                formControlName="no_of_digits"
+                                [ngClass]="{ 'is-invalid': submitted && f.no_of_digits.errors }">
+                            
+                                <div *ngIf="(submitted||f.no_of_digits)&&f.no_of_digits.errors?.required"
+                                class="invalid-feedback">No of Digits is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Company Name*</label>
+                            <input type="text" class="form-control form-control-sm" name="company_name" id="company_name"
+                                formControlName="company_name"
+                                [ngClass]="{ 'is-invalid': submitted && f.company_name.errors }">
+                            
+                                <div *ngIf="(submitted||f.company_name)&&f.company_name.errors?.required"
+                                class="invalid-feedback">Company Name is required
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Contact Number*</label>
+                            <input type="text" class="form-control form-control-sm" maxlength="10" name="mobile" id="mobile"
+                                formControlName="mobile"
+                                [ngClass]="{ 'is-invalid': submitted && f.mobile.errors }" numbersOnly>
+                                <div *ngIf="(submitted||f.mobile)&&f.mobile.errors?.required"
+                                class="invalid-feedback">Contact No is required
+                            </div>
+                        </div>                                    
+                       <div class="col-md-4">
+                            <label class="form-label">Letter Head Format*</label>
+                            <div class="mb-3">
+
+                                <input  class="form-control form-control-sm" type="file" (change)="sendFileToserver($event,'latter_head')"
+                                    id="formFileMultiple" multiple name="letter_head_url" id="letter_head_url" formControlName="letter_head_url"
+                                    [ngClass]="{ 'is-invalid': submitted && f.letter_head_url.errors }">
+                            </div>
+                            <div *ngIf="(submitted||f.letter_head_url)&&f.letter_head_url.errors?.required"
+                            class="invalid-feedback">Letter Head Format is required
+                        </div>
+                        </div>      
+                        <div class="col-md-4">
+                            <label class="form-label">Stamp*</label>
+                            <div class="mb-3">
+
+                                <input  class="form-control form-control-sm" type="file" (change)="sendFileToserver($event,'stamp_url')"
+                                    id="formFileMultiple" multiple name="stamp_url" id="stamp_url" formControlName="stamp_url"
+                                    [ngClass]="{ 'is-invalid': submitted && f.stamp_url.errors }">
+                            </div>
+                            <div *ngIf="(submitted||f.stamp_url)&&f.stamp_url.errors?.required"
+                            class="invalid-feedback">Stamp is required
+                        </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Signature*</label>
+                            <div class="mb-3">
+
+                                <input  class="form-control form-control-sm" type="file"(change)="sendFileToserver($event,'signature')"
+                                    id="formFileMultiple" multiple name="signature_url" id="signature_url" formControlName="signature_url"
+                                    [ngClass]="{ 'is-invalid': submitted && f.signature_url.errors }">
+                            </div>
+                            <div *ngIf="(submitted||f.signature_url)&&f.signature_url.errors?.required"
+                            class="invalid-feedback">Signature is required
+                        </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Offer Letter*</label>
+                            <div class="mb-3">
+
+                                <input  class="form-control form-control-sm" type="file" (change)="sendFileToserver($event,'offer')"
+                                    id="formFileMultiple" multiple name="offer_url" id="offer_url" formControlName="offer_url" 
+                                    [ngClass]="{ 'is-invalid': submitted && f.offer_url.errors }">
+                            </div>
+                            <div *ngIf="(submitted||f.offer_url)&&f.offer_url.errors?.required"
+                            class="invalid-feedback">Offer Letter is required
+                        </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">PaySlip*</label>
+                            <div class="mb-3">
+
+                                <input  class="form-control form-control-sm" type="file"(change)="sendFileToserver($event,'payslip')"
+                                    id="formFileMultiple" multiple name="payslip_url" id="payslip_url" formControlName="payslip_url"
+                                    [ngClass]="{ 'is-invalid': submitted && f.payslip_url.errors }">
+                            </div>
+                            <div *ngIf="(submitted||f.payslip_url)&&f.payslip_url.errors?.required"
+                            class="invalid-feedback">Payslip is required
+                        </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Hike*</label>
+                            <div class="mb-3">
+
+                                <input  class="form-control form-control-sm" type="file" (change)="sendFileToserver($event,'hike')"
+                                    id="formFileMultiple" multiple name="hike_url" id="hike_url" formControlName="hike_url"
+                                    [ngClass]="{ 'is-invalid': submitted && f.hike_url.errors }">
+                            </div>
+                            <div *ngIf="(submitted||f.hike_url)&&f.hike_url.errors?.required"
+                            class="invalid-feedback">Hike is required
+                        </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Service*</label>
+                            <div class="mb-3">
+
+                                <input  class="form-control form-control-sm" type="file" (change)="sendFileToserver($event,'service')"
+                                    id="formFileMultiple" multiple name="service_url" id="service_url" formControlName="service_url"
+                                    [ngClass]="{ 'is-invalid': submitted && f.service_url.errors }">
+                            </div>
+                            <div *ngIf="(submitted||f.service_url)&&f.service_url.errors?.required"
+                            class="invalid-feedback">Service is required
+                        </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Experience*</label>
+                            <div class="mb-3">
+
+                                <input  class="form-control form-control-sm" type="file" (change)="sendFileToserver($event,'experience')"
+                                    id="formFileMultiple" multiple name="experience_url" id="experience_url" 
+                                    [ngClass]="{ 'is-invalid': submitted && f.experience_url.errors }">
+                            </div>
+                            <div *ngIf="(submitted||f.experience_url)&&f.experience_url.errors?.required"
+                            class="invalid-feedback">Experience is required
+                        </div>
+                        </div>                                    
+                    </div>                  
+                    <div class="row g-3">
+                        <div class="col-md-6 ">
+                        <h5><strong> Earnings</strong></h5>  
+                                
+                        <hr>  
+                        <div class="row g-3 vertical_border">
+                        <div class="col-md-6">
+                            <label class="form-label">Basic Salary*</label>
+                            <input type="text" class="form-control form-control-sm" name="basic_percent" id="basic_percent"
+                                formControlName="basic_percent"
+                                [ngClass]="{ 'is-invalid': submitted && f.basic_percent.errors }" numbersOnly>
+                            
+                                <div *ngIf="(submitted||f.basic_percent)&&f.basic_percent.errors?.required"
+                                class="invalid-feedback"> Basic Salary must be a valid percentage
+                            </div>                           
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">HRA*</label>
+                            <input type="text" class="form-control form-control-sm" name="house_rent_percent" id="house_rent_percent"
+                                formControlName="house_rent_percent"
+                                [ngClass]="{ 'is-invalid': submitted && f.house_rent_percent.errors }" numbersOnly>
+                            
+                                <div *ngIf="(submitted||f.house_rent_percent)&&f.house_rent_percent.errors?.required"
+                                class="invalid-feedback">HRA must be a valid percentage
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Conveyance*</label>
+                            <input type="text" class="form-control form-control-sm" name="conveyance_percent" id="conveyance_percent"
+                                formControlName="conveyance_percent"
+                                [ngClass]="{ 'is-invalid': submitted && f.conveyance_percent.errors }" numbersOnly>
+                            
+                                <div *ngIf="(submitted||f.conveyance_percent)&&f.conveyance_percent.errors?.required"
+                                class="invalid-feedback">Conveyance must be a valid percentage
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Bonus*</label>
+                            <input type="text" class="form-control form-control-sm" name="bonus_percent" id="bonus_percent"
+                                formControlName="bonus_percent"
+                                [ngClass]="{ 'is-invalid': submitted && f.bonus_percent.errors }" numbersOnly>
+                            
+                                <div *ngIf="(submitted||f.bonus_percent)&&f.bonus_percent.errors?.required"
+                                class="invalid-feedback">Bonus must be a valid percentage
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Medical Allowance*</label>
+                            <input type="text" class="form-control form-control-sm" name="mediacal_percent" id="mediacal_percent"
+                                formControlName="mediacal_percent"
+                                [ngClass]="{ 'is-invalid': submitted && f.mediacal_percent.errors }" numbersOnly>
+                            
+                                <div *ngIf="(submitted||f.mediacal_percent)&&f.mediacal_percent.errors?.required"
+                                class="invalid-feedback">Medical Allowance must be a valid percentage
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Other Allowance*</label>
+                            <input type="text" class="form-control form-control-sm" maxlength="10" name="other_allowance_percent" id="other_allowance_percent"
+                                formControlName="other_allowance_percent"
+                                [ngClass]="{ 'is-invalid': submitted && f.other_allowance_percent.errors }" numbersOnly>
+                                <div *ngIf="(submitted||f.other_allowance_percent)&&f.other_allowance_percent.errors?.required"
+                                class="invalid-feedback">Other Allowance must be a valid percentage
+                            </div>
+                        </div>                                    
+                       </div>       
+                      </div>
+                      <div class="col-md-6">
+                        <h5><strong> Deductions</strong></h5>   
+                        <hr>  
+                        <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Provident Fund</label>
+                            <input type="text" class="form-control form-control-sm" name="pf_deduction_percent" id="pf_deduction_percent"
+                                formControlName="pf_deduction_percent"
+                                [ngClass]="{ 'is-invalid': submitted && f.pf_deduction_percent.errors }" numbersOnly>
+                            
+                                <div *ngIf="(submitted||f.pf_deduction_percent)&&f.pf_deduction_percent.errors?.required"
+                                class="invalid-feedback">Provident Fund must be a valid percentage
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Professional Tax</label>
+                            <input type="text" class="form-control form-control-sm" name="proficinal_tax_percent" id="proficinal_tax_percent"
+                                formControlName="proficinal_tax_percent"
+                                [ngClass]="{ 'is-invalid': submitted && f.proficinal_tax_percent.errors }" numbersOnly>
+                            
+                                <div *ngIf="(submitted||f.proficinal_tax_percent)&&f.proficinal_tax_percent.errors?.required"
+                                class="invalid-feedback">Professional Tax must be a valid percentage
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Income Tax</label>
+                            <input type="text" class="form-control form-control-sm" name="income_tax_percent" id="income_tax_percent"
+                                formControlName="income_tax_percent"
+                                [ngClass]="{ 'is-invalid': submitted && f.income_tax_percent.errors }" numbersOnly>
+                            
+                                <div *ngIf="(submitted||f.income_tax_percent)&&f.income_tax_percent.errors?.required"
+                                class="invalid-feedback">Income Tax must be a valid percentage
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Food Allowance</label>
+                            <input type="text" class="form-control form-control-sm" name="food_coupon_percent" id="food_coupon_percent"
+                                formControlName="food_coupon_percent"
+                                [ngClass]="{ 'is-invalid': submitted && f.food_coupon_percent.errors }" numbersOnly>
+                            
+                                <div *ngIf="(submitted||f.food_coupon_percent)&&f.food_coupon_percent.errors?.required"
+                                class="invalid-feedback">Food Allowance must be a valid percentage
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Other Deductions</label>
+                            <input type="text" class="form-control form-control-sm" name="other_deductions_percent" id="other_deductions_percent"
+                                formControlName="other_deductions_percent"
+                                [ngClass]="{ 'is-invalid': submitted && f.other_deductions_percent.errors }" numbersOnly>
+                            
+                                <div *ngIf="(submitted||f.other_deductions_percent)&&f.other_deductions_percent.errors?.required"
+                                class="invalid-feedback">Other Deductions must be a valid percentage
+                            </div>
+                        </div>           
+                    </div>
+                    </div>   
+                  </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-dark  me-md-2 btn-sm">Close</button>
+                        <app-save-button [spin]="spinLoader"></app-save-button>                         
+                    </div>        
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

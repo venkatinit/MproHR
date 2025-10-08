@@ -1,0 +1,136 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <form [formGroup]="addHike" (ngSubmit)="saveaddHike()">
+                <h5 class="m-3"><strong>Hike</strong></h5>
+
+                <hr>
+                <div class="row g-3 align-items-center m-3">
+                    <div class="col-auto">
+                        <label for="inputPassword6" class="col-form-label">Employee Code*</label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="text" id="inputPassword6" class="form-control" name="emp_code" id="emp_code"
+                            formControlName="emp_code">
+                        <div *ngIf="(submitted||f.emp_code)&&f.emp_code.errors?.required" class="invalid-feedback">
+                            Employee Code is required
+                        </div>
+                    </div>
+
+
+                    <div class="col-auto">
+                        <label for="inputPassword6" class="col-form-label">Employee Name</label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="text" id="inputPassword6" class="form-control">
+                    </div>
+
+                    <div class="col-auto">
+                        <a class="button me-md-2 " (click)="showMe()">Search</a>
+                    </div>
+
+
+                </div>
+
+
+                <div class="row g-3 m-5" [hidden]="isDisplayed">
+                    <div class="col-md-6">
+                        <h5><strong>Existing Data</strong></h5>
+                        <hr>
+                        <div class="col-md-6">
+
+                            <label class="form-label">Hike Date:</label> <span> &nbsp;<label
+                                    class="form-label">{{hike.hike_date}}</label></span>
+
+                        </div>
+                        <div class="col-md-6">
+
+
+                            <label class="form-label">Employee Name:</label> <span> &nbsp;<label
+                                    class="form-label">{{hike.emp_name}}</label></span>
+                        </div>
+                        <div class="col-md-6">
+
+
+                            <label class="form-label">Hike CTC:</label> <span> &nbsp;<label
+                                    class="form-label">{{hike.hike_date}}</label></span>
+                        </div>
+                        <div class="col-md-6">
+
+
+                            <label class="form-label">Designation:</label> <span> &nbsp;<label
+                                    class="form-label">{{hike.designation}}</label></span>
+                        </div>
+                        <div class="col-md-6">
+
+
+                            <label class="form-label">Effect Form Date:</label> <span> &nbsp;<label
+                                    class="form-label">{{hike.effect_date}}</label></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5><strong>Change Data</strong></h5>
+                        <hr>
+                        <div class="col-md-6">
+                            <label class="form-label">Hike Date</label>
+                            <input type="text" class="form-control form-control-sm" name="hike_date" id="hike_date"
+                                formControlName="hike_date"  [ngClass]="{ 'is-invalid': submitted && f.hike_date?.errors }">
+                            <div *ngIf="(submitted || f.hike_date.touched) && f.hike_date.errors?.required"
+                                class="invalid-feedback">Hike Date
+                                is required
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Employee Name</label>
+                            <input type="text" class="form-control form-control-sm" name="emp_name" id="emp_name"
+                                formControlName="emp_name"  [ngClass]="{ 'is-invalid': submitted && f.emp_name?.errors }">
+                            <div *ngIf="(submitted || f.emp_name?.touched) && f.emp_name.errors?.required"
+                                class="invalid-feedback">Employee Name
+                                is required
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Hike CTC</label>
+                            <input type="text" class="form-control form-control-sm" name="hike_ctc" id="hike_ctc"
+                                formControlName="hike_ctc"  [ngClass]="{ 'is-invalid': submitted && f.hike_ctc?.errors }">
+                            <div *ngIf="(submitted || f.hike_ctc.touched) && f.hike_ctc.errors?.required"
+                                class="invalid-feedback">Hike CTC
+                                is required
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Designation</label>
+                            <input type="text" class="form-control form-control-sm" name="designation" id="designation"
+                                formControlName="designation"  [ngClass]="{ 'is-invalid': submitted && f.designation?.errors }">
+                            <div *ngIf="(submitted || f.designation.touched) && f.designation.errors?.required"
+                                class="invalid-feedback">Designation
+                                is required
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Effect Form Date</label>
+                            <input type="text" class="form-control form-control-sm" name="effect_date" id="effect_date"
+                                formControlName="effect_date"  [ngClass]="{ 'is-invalid': submitted && f.effect_date?.errors }">
+                            <div *ngIf="(submitted || f.effect_date.touched) && f.effect_date.errors?.required"
+                                class="invalid-feedback">Effect From Date
+                                is required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-dark  me-md-2 btn-sm">Close</button>
+                        <app-save-button [spin]="spinLoader"></app-save-button>
+
+
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+</div>

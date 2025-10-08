@@ -1,0 +1,439 @@
+<!-- <div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+               
+                <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6'">
+                    <strong>Invoice List</strong>
+                </div>
+
+               
+                <div class="col-md-4 d-flex flex-row align-items-center" *ngIf="isCompanyFilterVisible">
+                    <label for=""><strong>Select Company</strong></label>
+                    <div>
+                        <select id="companyFilter" [(ngModel)]="companyId" class="form-control form-control-sm"
+                            formControlName="company" [ngClass]="{ 'is-invalid': submitted && f.company.errors }">
+                            <option value="">-- Select Company --</option>
+                            <option *ngFor="let comp of companyList" [value]="comp.Id">
+                                {{ comp.CompanyName }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+               
+                <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6 text-end'" class="text-end">
+                    <a class="btn btn-primary btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal">
+                        <i class="fa fa-plus" aria-hidden="true"></i> New
+                    </a>
+
+                    <a class="btn btn-primary btn-sm me-2 text-white" role="button" (click)="toggleCompanyFilter()">
+                        <i class="fa-solid fa-filter"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <table datatable [dtOptions]="dtOptions" class="row-border hover">
+                    <thead>
+                        <tr>
+                            <th>S No</th>
+                            <th>Invoice#</th>
+                            <th>Customer Name</th>
+                            <th>Status</th>
+                            <th>Mbl_no</th>
+                            <th>Due Date</th>
+                            <th>Amount</th>
+                            <th>Balance Due</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="invoice_list?.length != 0">
+                        <tr *ngFor="let item of invoice_list;let i=index">
+                            <td>{{i+1}}</td>
+                            <td>{{ item.emp_code }}</td>
+                            <td>{{ item.emp_name }}</td>
+                            <td>{{ item.email }}</td>
+                            <td>{{ item.mbl_no }}</td>
+                            <td>{{ item.dept }}</td>
+                            <td>{{ item.dept }}</td>
+                            <td>{{ item.designation }}</td>
+                            <td>
+                                <button class="btn btn-sm " type="button" data-toggle="tooltip" data-placement="top"
+                                    title="View"><i class="bi bi-eye-fill text-primary"></i></button>
+                                <button class="btn btn-sm " type="button" data-toggle="tooltip" cls data-placement="top"
+                                    (click)="updateById(item.id)" title="Edit"><i
+                                        class="bi bi-pencil-square text-success"></i></button>
+                                <button class="btn  btn-sm " type="button" data-toggle="tooltip" data-placement="top"
+                                    (click)="deleteInvoice(item.id)" title="Delete"><i
+                                        class="bi bi-trash3-fill text-danger"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="invoice_list?.length == 0">
+                        <tr>
+                            <td colspan="12" class="no-data-available ">No data!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header" *ngIf="this.action !== 'update'">
+                            <strong>Add Invoice</strong>
+                        </div>
+                        <div class="modal-header" *ngIf="this.action === 'update'">
+                            <strong>Update Invoice</strong>
+                        </div>
+                        <div class="modal-body ">
+                            <app-add-invoice></app-add-invoice>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-header d-flex align-items-center">
+            <!-- Title Column -->
+            <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6'">
+                <strong>Invoice List</strong>
+            </div>
+            <!-- Company Filter (shown only if enabled) -->
+            <div class="col-md-4 d-flex flex-row align-items-center" *ngIf="isCompanyFilterVisible">
+                <form class="d-flex" [formGroup]="form" (ngSubmit)="getInvoice()">
+                    <label for="company"><strong>Company Name</strong></label>
+                    <div>
+                        <select id="companyFilter" class="form-control form-control-sm ml-2" formControlName="company"
+                            [ngClass]="{ 'is-invalid': submitted && f.company.errors }">
+                            <option value="">-- Select Company --</option>
+                            <option *ngFor="let comp of companyList" [value]="comp.Id">
+                                {{ comp.CompanyName }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="bg-success text-white rounded save"
+                            [disabled]="form.invalid">Search</button>
+                    </div>
+                </form>
+            </div>
+            <!-- Buttons Column -->
+            <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6 text-end'" class="text-end">
+                <a class="btn btn-primary btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal">
+                    <i class="fa fa-plus" aria-hidden="true"></i> New
+                </a>
+                <a class="btn btn-primary btn-sm me-2 text-white" role="button" (click)="toggleCompanyFilter()">
+                    <!-- {{ isCompanyFilterVisible ? 'Hide Company' : 'Show Company' }} -->
+                    <i class="fa-solid fa-filter"></i>
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-12">
+                    <div class="card-body" #invoiceData>
+                        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+                            <thead>
+                                <tr>
+                                    <th>S.No</th>
+                                    <th>Date</th>
+                                    <th>Invoice No</th>
+                                    <th>Customer Name</th>
+                                    <th>Total Price</th>
+                                    <th>Pending</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngIf="invoices.length != 0">
+                                <tr *ngFor="let item of invoices;let i=index">
+                                    <td>{{ i+1 }}</td>
+                                    <td>{{item.invoice_Date | date}}</td>
+                                    <td>{{item.invoice_No}}</td>
+                                    <td>{{item.customer_Name}}</td>
+                                    <td>{{item.total_Amount}}</td>
+                                    <td>{{item.due_Amount}}</td>
+
+                                    <td>
+                                        <button class="btn btn-sm text-white btn-primary" type="button"
+                                            data-toggle="tooltip" data-placement="top" style="border: none; "
+                                            title="print" (click)="generatePDF(item.id)">
+                                            <i class="bi bi-eye-fill"></i>
+                                        </button>
+                                        <button class="btn btn-sm text-white btn-success" type="button"
+                                            data-toggle="tooltip" data-placement="top" title="update"
+                                            data-bs-toggle="modal" data-bs-target="#exampleModal" style="border: none; "
+                                            (click)="UpdateById(item.id)">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <button class="btn  btn-sm text-white btn-danger " type="button"
+                                            data-toggle="tooltip" data-placement="top" title="delete"><i
+                                                class="fa-solid fa-trash" (click)="deleteInvoice(item.id)"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel" *ngIf="this.action !== 'update'">Add Invoice</h5>
+                <h5 class="modal-title" id="exampleModalLabel" *ngIf="this.action === 'update'">Update Invoice</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="closeModal()"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="invoiceForm" (ngSubmit)="action === 'update' ? updateInvoice() : onSubmit()">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label class="form-label">Invoice Date</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="invoice_Date"
+                                name="invoice_Date" id="invoice_Date" type="date"
+                                [ngClass]="{ 'is-invalid': submitted && f.invoice_Date?.errors }">
+                            <div *ngIf="(submitted || f.invoice_Date.touched) && f.invoice_Date?.errors?.required"
+                                class="invalid-feedback">
+                                Date is
+                                required
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label"> Customer Name </label>
+                            <select class="form-control form-control-sm" name="customer_Id" id="customer_Id"
+                                formControlName="customer_Id"
+                                [ngClass]="{ 'is-invalid': submitted && f.customer_Id?.errors }">
+                                <option value="" disabled selected>Select a Customer</option>
+                                <option *ngFor="let customer of customers" [value]="customer.id">{{
+                                    customer.customer_Name }}
+                                </option>
+                            </select>
+                            <div *ngIf="(submitted || f.customer_Id?.touched) && f.customer_Id?.errors?.required"
+                                class="invalid-feedback">Customer name is required
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Invoice Type</label>
+                            <select class="form-control form-control-sm" name="invoice_type" id="invoice_type"
+                                formControlName="invoice_type" (change)="onInvoiceTypeChange()"
+                                [ngClass]="{ 'is-invalid': submitted && f.invoice_type?.errors }">
+                                <option value="" disabled selected>Select a Type</option>
+                                <option value="GST_Invoice">Tax Invoice</option>
+                                <option value="Normal_Invoice">Normal Invoice</option>
+                            </select>
+                            <div *ngIf="(submitted || f.invoice_type?.touched) && f.invoice_type?.errors?.required"
+                                class="invalid-feedback">
+                                Invoice Type is required
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Total Amount</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="total_Amount"
+                                name="total_Amount" id="total_Amount" readonly numbersOnly
+                                [ngClass]="{ 'is-invalid': submitted && f.total_Amount?.errors }">
+                            <div *ngIf="(submitted || f.total_Amount?.touched) && f.total_Amount?.errors?.required"
+                                class="invalid-feedback">
+                                total amount is required
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">GST %</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="gst_percent"
+                                name="gst_percent" id="gst_percent" numbersOnly [readonly]="isNormalInvoice"
+                                (input)="onGstPercentChange()"
+                                [ngClass]="{ 'is-invalid': submitted && f.gst_percent?.errors }">
+                            <div *ngIf="(submitted || f.gst_percent?.touched) && f.gst_percent?.errors?.required"
+                                class="invalid-feedback">
+                                GST % is required
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">SGST </label>
+                            <input type="text" class="form-control form-control-sm" formControlName="sgst_total"
+                                name="sgst_total" id="sgst_total" type="number" readonly
+                                [ngClass]="{ 'is-invalid': submitted && f.sgst_total?.errors }">
+                            <div *ngIf="(submitted || f.sgst_total?.touched) && f.sgst_total?.errors?.required"
+                                class="invalid-feedback">
+                                SGST is required
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">CGST</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="cgst_total"
+                                name="cgst_total" id="cgst_total" type="number" readonly
+                                [ngClass]="{ 'is-invalid': submitted && f.cgst_total?.errors }">
+                            <div *ngIf="(submitted || f.cgst_total?.touched) && f.cgst_total?.errors?.required"
+                                class="invalid-feedback">
+                                CGST is required
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Total Tax </label>
+                            <input type="text" class="form-control form-control-sm" formControlName="total_tax"
+                                name="total_tax" id="total_tax" type="number" readonly
+                                [ngClass]="{ 'is-invalid': submitted && f.total_tax?.errors }">
+                            <div *ngIf="(submitted || f.total_tax?.touched) && f.total_tax?.errors?.required"
+                                class="invalid-feedback">
+                                Total tax is required
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Net Amount </label>
+                            <input type="text" class="form-control form-control-sm" formControlName="net_amount"
+                                name="net_amount" id="net_amount" type="number" readonly
+                                [ngClass]="{ 'is-invalid': submitted && f.net_amount?.errors }">
+                            <div *ngIf="(submitted || f.net_amount?.touched) && f.net_amount?.errors?.required"
+                                class="invalid-feedback">
+                                Net Amount is required
+                            </div>
+                        </div>
+                        <div formArrayName="invoiceDetails">
+                            <div *ngFor="let detail of invoiceDetails.controls; let i = index" [formGroupName]="i">
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <h6 style="margin-top: 30px;">Service {{ i + 1 }}</h6>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Service</label>
+                                        <select type="text" class="form-control form-control-sm"
+                                            formControlName="service_Id" name="service_Id" id="service_Id"
+                                            [ngClass]="{ 'is-invalid': submitted && f.service_Id?.errors }">
+                                            <option value="">Select a service</option>
+                                            <option *ngIf="serviceGroups.length === 0" disabled>Loading services...
+                                            </option>
+                                            <ng-container *ngFor="let group of serviceGroups">
+                                                <optgroup [label]="group.group_Name">
+                                                    <option *ngFor="let service of group.services" [value]="service.id">
+                                                        {{ service.ledger_Name }}
+                                                    </option>
+                                                </optgroup>
+                                            </ng-container>
+                                        </select>
+                                        <div *ngIf="(submitted || f.service_Id?.touched) && f.service_Id?.errors?.required"
+                                            class="invalid-feedback">Service
+                                            is required
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <label class="form-label">Quantity</label>
+                                        <input type="text" class="form-control form-control-sm" formControlName="qty"
+                                            name="qty" id="qty" numbersOnly (change)="calculateTotalAmount(i)"
+                                            [ngClass]="{ 'is-invalid': submitted && f.qty?.errors }">
+                                        <div *ngIf="(submitted || f.qty?.touched) && f.qty?.errors?.required"
+                                            class="invalid-feedback">
+                                            Service
+                                            is required
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <label class="form-label">Amount</label>
+                                        <input type="text" class="form-control form-control-sm" formControlName="amount"
+                                            numbersOnly (change)="calculateTotalAmount(i)"
+                                            [ngClass]="{ 'is-invalid': submitted && f.amount?.errors }">
+                                        <div *ngIf="(submitted || f.amount?.touched) && f.amount?.errors?.required"
+                                            class="invalid-feedback">Amount is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">Total Amount</label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="service_total_Amount" name="service_total_Amount"
+                                            id="service_total_Amount" numbersOnly readonly
+                                            [ngClass]="{ 'is-invalid': submitted && f.service_total_Amount?.errors }">
+                                        <div *ngIf="(submitted || f.service_total_Amount?.touched) && f.service_total_Amount?.errors?.required"
+                                            class="invalid-feedback">
+                                            total Amount is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">GST %</label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="service_gst_percent" name="service_gst_percent"
+                                            (input)="calculateDetailTax(i)" id="service_gst_percent" numbersOnly
+                                            [ngClass]="{ 'is-invalid': submitted && f.service_gst_percent?.errors }">
+                                        <div *ngIf="(submitted || f.service_gst_percent?.touched) && f.service_gst_percent?.errors?.required"
+                                            class="invalid-feedback">
+                                            GST % is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">SGST </label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="service_sgst_total" name="service_sgst_total"
+                                            id="service_sgst_total" type="number" readonly
+                                            [ngClass]="{ 'is-invalid': submitted && f.service_sgst_total?.errors }">
+                                        <div *ngIf="(submitted || f.service_sgst_total?.touched) && f.service_sgst_total?.errors?.required"
+                                            class="invalid-feedback">
+                                            SGST is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">CGST</label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="service_cgst_total" name="service_cgst_total"
+                                            id="service_cgst_total" type="number" readonly
+                                            [ngClass]="{ 'is-invalid': submitted && f.service_cgst_total?.errors }">
+                                        <div *ngIf="(submitted || f.service_cgst_total?.touched) && f.service_cgst_total?.errors?.required"
+                                            class="invalid-feedback">
+                                            CGST is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">Total Tax </label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="service_total_tax" name="service_total_tax"
+                                            id="service_total_tax" type="number" readonly
+                                            [ngClass]="{ 'is-invalid': submitted && f.service_total_tax?.errors }">
+                                        <div *ngIf="(submitted || f.service_total_tax?.touched) && f.service_total_tax?.errors?.required"
+                                            class="invalid-feedback">
+                                            Total tax is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">Net Amount </label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="service_net_amount" name="service_net_amount"
+                                            id="service_net_amount" type="number" readonly
+                                            [ngClass]="{ 'is-invalid': submitted && f.service_net_amount?.errors }">
+                                        <div *ngIf="(submitted || f.service_net_amount?.touched) && f.service_net_amount?.errors?.required"
+                                            class="invalid-feedback">
+                                            Net Amount is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 d-flex align-baseline" style="margin-top: 25px;">
+                                        <button class="btn btn-danger btn-sm" type="button" [disabled]="i === 0"
+                                            (click)="removeInvoiceDetail(i)"><i class="fa-regular fa-trash-can"
+                                                style="color: #ffffff;"></i></button>
+
+                                        <ng-container *ngIf="i === invoiceDetails.length - 1">
+                                            <button class="btn btn-primary btn-sm" type="button"
+                                                (click)="addInvoiceDetail()"><i class="fa-solid fa-plus "
+                                                    style="color: #ffffff;"></i></button>
+                                            <button class="btn btn-success btn-sm" type="submit"
+                                                *ngIf="this.action !== 'update'">Generate</button>
+                                            <button class="btn btn-success btn-sm" type="submit"
+                                                *ngIf="this.action === 'update'">Update</button>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

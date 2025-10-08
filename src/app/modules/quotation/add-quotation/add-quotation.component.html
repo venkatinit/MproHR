@@ -1,0 +1,125 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header"><strong>New Quote</strong></div>
+            <div class="card-body">
+                <form [formGroup]="addQuotation" (ngSubmit)="action === 'update' ? updateQuote() : onSubmit()">
+
+                    <div class="card">
+                        <div class="card-header">
+                            Item Table
+                        </div>
+                        <div class="card-body col-md-10">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr align="center">
+                                        <th>Item Details</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Tax (%)</th>
+                                        <th>Amount</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody formArrayName="items">
+                                    <tr *ngFor="let item of items.controls; let i = index" [formGroupName]="i">
+                                        <td>
+                                            <input type="text" formControlName="item"
+                                                class="form-control form-control-sm" />
+                                            <div class="text-danger" *ngIf="submitted && item.get('item')?.invalid">Item
+                                                is required</div>
+                                        </td>
+                                        <td>
+                                            <input type="text" numbersOnly formControlName="quantity"
+                                                class="form-control form-control-sm" (input)="calculateRowAmount(i)" />
+                                            <div class="text-danger" *ngIf="submitted && item.get('quantity')?.invalid">
+                                                Required & min 1</div>
+                                        </td>
+                                        <td>
+                                            <input type="text" numbersOnly formControlName="price"
+                                                class="form-control form-control-sm" (input)="calculateRowAmount(i)" />
+                                            <div class="text-danger" *ngIf="submitted && item.get('price')?.invalid">
+                                                Required</div>
+                                        </td>
+                                        <td>
+                                            <input type="text" numbersOnly formControlName="tax"
+                                                class="form-control form-control-sm" (input)="calculateRowAmount(i)" />
+                                            <div class="text-danger" *ngIf="submitted && item.get('tax')?.invalid">
+                                                0–100% tax</div>
+                                        </td>
+                                        <td>
+                                            <input type="text" formControlName="amount"
+                                                class="form-control form-control-sm" readonly />
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm">
+                                                <i class="fa fa-ellipsis-v text-primary" aria-hidden="true"></i>
+                                            </button>
+                                            <button class="btn btn-sm text-danger" type="button" (click)="removeRow(i)"
+                                                [disabled]="i === 0" style="border: none;">
+                                                <i class="fa fa-times"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class=" row d-flex flex-row justify-content-between">
+                                <div class="col-md-5 d-flex flex-column justify-content-between">
+                                    <button class="add_item btn btn-primary col-md-5" (click)="addRow()">+ Add
+                                        Item</button>
+                                    <label for="message">Customer Notes</label>
+                                    <textarea type="text" formControlName="message"
+                                        placeholder="Looking forward for your business."
+                                        class="form-control form-control-sm"></textarea>
+
+                                </div>
+
+                                <div class="  col-md-5">
+                                    <div class="d-flex flex-row justify-content-between"><strong>Sub Total:
+                                        </strong>
+                                        <strong>{{ grandTotal | number:'1.2-2' }}</strong>
+                                    </div>
+                                    <div class="mt-1 d-flex flex-row justify-content-between">
+                                        <p>Discount: </p>
+                                        <input type="text" formControlName="discount" numbersOnly
+                                            (input)="calculateGrandTotal()"
+                                            class="form-control form-control-sm discount " style="width: 90px;" />
+                                        <p>{{ discountedAmount | number:'1.2-2' }} </p>
+                                    </div>
+                                    <div class="card-footer d-flex flex-row justify-content-between "
+                                        style="padding:10px 3px !important;">
+                                        <strong>Grand Total:(₹) </strong>
+                                        <strong>{{ finalTotal | number:'1.2-2' }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer col-md-12 d-flex flex-row  ">
+                            <div class="col-md-7 p-0">
+                                <label for="termsConditions">Terms & Conditions</label>
+                                <textarea type="text" formControlName="termsConditions" name="termsConditions"
+                                    id="termsConditions" style="height: 60px;"
+                                    placeholder="Write your business Terms and Conditions"
+                                    class="form-control form-control-sm"></textarea>
+                                <input type="checkbox" formControlName="terms" id="terms" name="terms" value="terms"> &nbsp; <label
+                                    for="terms">Use
+                                    this in future
+                                    for all quotes of all customers.</label>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="attachment">Attach File(s) to Quote</label>
+                                <input type="file" formControlName="attachment" class="form-control form-control-sm " />
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- <div class="card-footer"></div> -->
+            <div class="modal-footer d-flex flex-row justify-content-between " style="padding: 10px 10px;">
+                <button type="botton" class="btn btn-outline-dark  me-md-2 btn-sm">Close</button>
+                <app-save-button [spin]="spinLoader"></app-save-button>
+            </div>
+        </div>
+    </div>
+</div>

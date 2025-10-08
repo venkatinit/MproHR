@@ -1,0 +1,6 @@
+<button [disabled]="disabled" class="btn btn-primary btn-sm" 
+type="submit"
+[style.pointer-events]="spin?'none':''" id=submitBtn>
+    <i class="fa fa-spinner fa-spin " *ngIf="spin"> </i>
+   &nbsp; {{spin? 'Saving Data' : 'Save'}} &nbsp;
+  </button>

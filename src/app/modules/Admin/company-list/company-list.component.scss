@@ -1,0 +1,7 @@
+a:not([href]):not([tabindex]) {
+    color: white;
+    text-decoration: none;
+}
+table.dataTable {
+    border: none !important;
+}

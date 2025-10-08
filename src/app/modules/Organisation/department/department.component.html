@@ -1,0 +1,112 @@
+<div class="row ">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <!-- Title Column -->
+                <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6'">
+                    <strong>Departments List</strong>
+                </div>
+                <!-- Company Filter (shown only if enabled) -->
+                <div class="col-md-4 d-flex flex-row align-items-center" *ngIf="isCompanyFilterVisible">
+                    <form class="d-flex" [formGroup]="form" (ngSubmit)="getDepartments()">
+                        <label for="company"><strong>Company Name</strong></label>
+                        <div>
+                            <select id="companyFilter" class="form-control form-control-sm ml-2"
+                                formControlName="company" [ngClass]="{ 'is-invalid': submitted && f.company.errors }">
+                                <option value="">-- Select Company --</option>
+                                <option *ngFor="let comp of companyList" [value]="comp.Id">
+                                    {{ comp.CompanyName }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="bg-success text-white rounded save"
+                                [disabled]="form.invalid">Search</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- Buttons Column -->
+                <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6 text-end'" class="text-end">
+                    <a class="btn btn-primary btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal">
+                        <i class="fa fa-plus" aria-hidden="true"></i> New
+                    </a>
+                    <!-- <a class="btn btn-primary btn-sm me-2 text-white" role="button" (click)="toggleCompanyFilter()">
+                        <i class="fa-solid fa-filter"></i>
+                    </a> -->
+                </div>
+            </div>
+            <div class="card-body">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-hover"
+                    id="bankTable">
+                    <thead>
+                        <tr>
+                            <!-- <th>S.No</th> -->
+                            <th>Department </th>
+                            <th>No of Employees</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="departments_list?.length != 0">
+                        <tr *ngFor="let item of departments_list; let i = index">
+                            <!-- <td>{{ i + 1 }}</td> -->
+                            <td>{{ item.created_At | date:'dd-MM-YYYY' }}</td>
+                            <td>{{ item.bank_Name || '-' }}</td>
+                            <td>
+                                <button class="btn btn-sm" type="button" (click)="updateById(item.id)"
+                                    data-bs-toggle="modal" data-bs-target="#newModal" title="Edit">
+                                    <i class="bi bi-pencil-square text-success"></i> </button>
+                                <button class="btn  btn-sm " type="button" data-toggle="tooltip" data-placement="top"
+                                    (click)="deleteDepartment(item.id)" title="Delete"><i
+                                        class="bi bi-trash3-fill text-danger"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="departments_list?.length == 0">
+                        <tr>
+                            <td colspan="12" class="no-data-available">No data!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header" *ngIf="this.action !== 'update'">
+                            <strong>Add Department</strong>
+                        </div>
+                        <div class="modal-header" *ngIf="this.action === 'update'">
+                            <strong>Update Department</strong>
+                        </div>
+                        <div class="modal-body ">
+                            <form [formGroup]="addDepartment"
+                                (ngSubmit)="action === 'update' ? updateDepartment() : saveDepartment()">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label class="form-label">Department Name </label>
+                                        <input type="text" class="form-control form-control-sm" name="bank_name"
+                                            id="bank_name" formControlName="bank_name"
+                                            [ngClass]="{ 'is-invalid': submitted && f.bank_name.errors }">
+                                        <div *ngIf="(submitted || f.bank_name.touched) && f.bank_name.errors?.required"
+                                            class="invalid-feedback">
+                                            Bank Name is
+                                            required
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-2 col-md-12 d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-success btn-sm"
+                                        *ngIf="action !== 'update'">Submit</button>
+                                    <button type="submit" class="btn btn-primary btn-sm"
+                                        *ngIf="action === 'update'">Update</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <app-designation></app-designation>
+    </div>
+</div>

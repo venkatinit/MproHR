@@ -1,0 +1,63 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>Quotation List</strong>
+                <a class="btn btn-primary  btn-sm  me-md-2  float-end" (click)="open_fileUpload()" role="button"><i
+                        class="fa fa-arrow-down" aria-hidden="true"></i> Import
+                    CSV File</a>
+                <a class="btn btn-primary  btn-sm  me-md-2  float-end" (click)="open_fileUpload()" role="button"><i
+                        class="fa fa-arrow-up" aria-hidden="true"></i> Export
+                    Excel</a>
+                <a class="btn btn-primary  btn-sm me-md-2  float-end" routerLink="/add_quatation" role="button"><i
+                        class="fa fa-plus" aria-hidden="true"></i> New</a>
+            </div>
+            <div class="card-body">
+                <table datatable [dtOptions]="dtOptions" class="row-border hover">
+                    <thead>
+                        <tr>
+                            <th>S No</th>
+                            <th>Emp Code</th>
+                            <th>Emp Name</th>
+                            <th>Email id</th>
+                            <th>Mbl_no</th>
+                            <th>Department</th>
+                            <th>Designation</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="employee_list?.length != 0">
+                        <tr *ngFor="let item of employee_list;let i=index">
+                            <td>{{i+1}}</td>
+                            <td>{{ item.emp_code }}</td>
+                            <td>{{ item.emp_name }}</td>
+                            <td>{{ item.email }}</td>
+                            <td>{{ item.mbl_no }}</td>
+                            <td>{{ item.dept }}</td>
+                            <td>{{ item.designation }}</td>
+
+
+                            <td>
+                                <button class="btn btn-sm " type="button" data-toggle="tooltip" data-placement="top"
+                                    title="View"><i class="bi bi-eye-fill text-primary"></i></button>
+                                <button class="btn btn-sm " type="button" data-toggle="tooltip" cls data-placement="top"
+                                    (click)="updateEmployee(i)" title="Edit"><i
+                                        class="bi bi-pencil-square text-success"></i></button>
+
+                                <button class="btn  btn-sm " type="button" data-toggle="tooltip" data-placement="top"
+                                    (click)="deleteEmployee(i)" title="Delete"><i
+                                        class="bi bi-trash3-fill text-danger"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                    <tbody *ngIf="employee_list?.length == 0">
+                        <tr>
+                            <td colspan="8" class="no-data-available">No data!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

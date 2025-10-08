@@ -1,0 +1,84 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>States</strong>
+                <!-- <a class="btn btn-primary  btn-sm  me-md-2  float-end" (click)="open_fileUpload()" role="button">Import
+                    CSV File</a> -->
+                <a class="btn btn-primary btn-sm me-md-2 float-end text-white" role="button" data-bs-toggle="modal"
+                    data-bs-target="#newModal">
+                    <i class="fa fa-plus " aria-hidden="true"></i> New </a>
+            </div>
+            <div class="card-body">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table   table-hover"
+                    id="stateTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>State Name</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="state_list?.length != 0">
+                        <tr *ngFor="let item of state_list; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ item.state_title || '-' }}</td>
+                            <td>
+                                <button class="btn btn-sm" type="button" (click)="updateById(item.state_id)"
+                                    data-bs-toggle="modal" data-bs-target="#newModal" title="Edit">
+                                    <i class="bi bi-pencil-square text-success"></i> </button>
+                                <button class="btn  btn-sm " type="button" data-toggle="tooltip" data-placement="top"
+                                    (click)="deleteState(item.id)" title="Delete"><i
+                                        class="bi bi-trash3-fill text-danger"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                    <tbody *ngIf="state_list?.length == 0">
+                        <tr>
+                            <td colspan="12" class="no-data-available">No data!</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header" *ngIf="this.action !== 'update'">
+                                <strong>Add State</strong>
+                            </div>
+                            <div class="modal-header" *ngIf="this.action === 'update'">
+                                <strong>Update State</strong>
+                            </div>
+                            <div class="modal-body ">
+                                <!-- <form [formGroup]="addState" (ngSubmit)="onSubmitState()"> -->
+                                <form [formGroup]="addState"
+                                    (ngSubmit)="action === 'update' ? updateState() : saveState()">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <label class="form-label">State Name </label>
+                                            <input type="text" class="form-control form-control-sm" name="state_name"
+                                                id="state_name" formControlName="state_name"
+                                                [ngClass]="{ 'is-invalid': submitted && f.state_name.errors }">
+                                            <div *ngIf="(submitted || f.state_name.touched) && f.state_name.errors?.required"
+                                                class="invalid-feedback">
+                                                State Name is
+                                                required
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer col-md-12 mt-2 d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-success btn-sm"
+                                            *ngIf="action !== 'update'">Submit</button>
+                                        <button type="submit" class="btn btn-primary btn-sm"
+                                            *ngIf="action === 'update'">Update</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

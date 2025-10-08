@@ -1,0 +1,91 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <!-- Title Column -->
+                <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6'">
+                    <strong>Your ESIC Settings</strong><a class="btn   btn-sm me-2 text-white" data-bs-toggle="modal"
+                        data-bs-target="#newModal">
+                        <i class="bi bi-pencil-square text-success"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul style="list-style-type: none;">
+                            <li> <strong> ESIC Number </strong> </li>
+                            <li> <strong> Filing Cycle </strong> </li>
+                            <li> <strong> Employee contribution Rate </strong> </li>
+                            <li> <strong> Employer contribution rate </strong> </li>
+                            <li> <strong> Employer contribution Deducts from </strong> </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul style="list-style-type: none;">
+                            <li>ESIC Number</li>
+                            <li>Monthly</li>
+                            <li>0.75% of Goss</li>
+                            <li>3.25% of Goss</li>
+                            <li>Depends</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <strong>ESIC Contribution Details</strong>
+                        </div>
+                        <div class="modal-body ">
+                            <form [formGroup]="esicForm" (ngSubmit)="onSubmit()">
+                                <!-- ESIC Number -->
+                                <div class="mb-3">
+                                    <label for="esicNumber" class="form-label">ESIC Number</label>
+                                    <input type="text" id="esicNumber" class="form-control"
+                                        formControlName="esicNumber">
+                                </div>
+                                <!-- Deduction Cycle -->
+                                <div class="mb-3">
+                                    <label for="deductionCycle" class="form-label">Deduction Cycle</label>
+                                    <select id="deductionCycle" class="form-select" formControlName="deductionCycle">
+                                        <option value="monthly">Monthly</option>
+                                    </select>
+                                </div>
+                                <!-- Employee Contribution Rate -->
+                                <div class="mb-3">
+                                    <label class="form-label">Employee Contribution Rate</label>
+                                    <input type="text" id="eecr" class="form-control" formControlName="eecr">
+                                </div>
+                                <!-- Employer Contribution Rate -->
+                                <div class="mb-3">
+                                    <label class="form-label">Employer Contribution Rate</label>
+                                    <input type="text" id="ercr" class="form-control" formControlName="ercr">
+                                </div>
+                                <!-- Employer Contribution Deducts -->
+                                <div class="mb-3">
+                                    <label class="form-label">Employer Contribution Deducts From</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="employer"
+                                            formControlName="employerDeductsEmployer">
+                                        <label class="form-check-label">Employer</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="employee"
+                                            formControlName="employerDeductsEmployee">
+                                        <label class="form-check-label">Employee Salary Structure</label>
+                                    </div>
+                                </div>
+                                <!-- Submit -->
+                                <div class="col-lg-12 mt-3 d-flex justify-content-end ">
+                                    <button type="submit" class="btn btn-success btn-sm">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,180 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <!-- Title Column -->
+                <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6'">
+                    <strong>Pay Schedule</strong>
+                </div>
+                <!-- Company Filter (shown only if enabled) -->
+                <div class="col-md-4 d-flex flex-row align-items-center" *ngIf="isCompanyFilterVisible">
+                    <form class="d-flex" [formGroup]="form" (ngSubmit)="getBanks()">
+                        <label for="company"><strong>Company Name</strong></label>
+                        <div>
+                            <select id="companyFilter" class="form-control form-control-sm ml-2"
+                                formControlName="company" [ngClass]="{ 'is-invalid': submitted && f.company.errors }">
+                                <option value="">-- Select Company --</option>
+                                <option *ngFor="let comp of companyList" [value]="comp.Id">
+                                    {{ comp.CompanyName }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="bg-success text-white rounded save"
+                                [disabled]="form.invalid">Search</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- Buttons Column -->
+                <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6 text-end'" class="text-end">
+                    <!-- <a class="btn   btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal">
+                        <i class="bi bi-pencil-square text-success"></i>
+                    </a> -->
+                    <!-- <a class="btn btn-primary btn-sm me-2 text-white" role="button" (click)="toggleCompanyFilter()">
+                        <i class="fa-solid fa-filter"></i>
+                    </a> -->
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <ul style="list-style-type: none;"> <strong>Your payroll Schedule</strong> <a
+                                class="btn   btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal">
+                                <i class="bi bi-pencil-square text-success"></i>
+                            </a>
+                            <li>Pay Frequency</li>
+                            <li>No of Working Days in a week</li>
+                            <li>Payment on</li>
+                            <li>First Payment on (Month)</li>
+                            <li>First Payment on (Date)</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <ul style="list-style-type: none;"> &nbsp;
+                            <li>Monthly</li>
+                            <li>No of Working Days in a week</li>
+                            <li>Payment on</li>
+                            <li>First Payment on (Month)</li>
+                            <li>First Payment on (Date)</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- <table class="table table-hover" id="bankTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Created At</th>
+                            <th>Bank name</th>
+                            <th>Branch</th>
+                            <th>Account Number</th>
+                            <th>Opening Balance</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="banks_list?.length != 0">
+                        <tr *ngFor="let item of banks_list; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ item.created_At | date:'dd-MM-YYYY' }}</td>
+                            <td>{{ item.bank_Name || '-' }}</td>
+                            <td>{{ item.branch || '-' }}</td>
+                            <td>{{ item.account_Number || '-' }}</td>
+                            <td>{{ item.opening_Balance || 0 }}</td>
+                            <td>
+                                <button class="btn btn-sm" type="button" (click)="updateById(item.id)"
+                                    data-bs-toggle="modal" data-bs-target="#newModal" title="Edit">
+                                    <i class="bi bi-pencil-square text-success"></i> </button>
+                                <button class="btn  btn-sm " type="button" data-toggle="tooltip" data-placement="top"
+                                    (click)="deleteBank(item.id)" title="Delete"><i
+                                        class="bi bi-trash3-fill text-danger"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="banks_list?.length == 0">
+                        <tr>
+                            <td colspan="12" class="no-data-available">No data!</td>
+                        </tr>
+                    </tbody>
+                </table> -->
+            </div>
+            <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header" *ngIf="this.action !== 'update'">
+                            <strong>Payroll Settings</strong>
+                        </div>
+                        <!-- <div class="modal-header" *ngIf="this.action === 'update'">
+                            <strong>Update Bank</strong>
+                        </div> -->
+                        <div class="modal-body ">
+                            <form [formGroup]="payrollForm" (ngSubmit)="onSubmit()">
+                                <div class="row">
+                                    <!-- Working Days in a Week -->
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">No. of Working Days in a Week</label>
+                                        <input type="number" class="form-control" formControlName="workingDaysInWeek"
+                                            placeholder="Enter days (1-7)" numbersOnly />
+                                    </div>
+
+                                    <!-- Salary Calculation Basis -->
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Salary Calculation Basis</label>
+                                        <select class="form-select" formControlName="salaryCalculationBasis">
+                                            <option value="monthDays">Based on Total Days in Month</option>
+                                            <option value="workingDays">Based on Working Days in Month</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Extra Field when workingDays selected -->
+                                    <div class="col-md-6 mb-3"
+                                        *ngIf="payrollForm.get('salaryCalculationBasis')?.value === 'workingDays'">
+                                        <label class="form-label">Enter No. of Working Days in Month</label>
+                                        <input type="number" class="form-control" formControlName="workingDaysInMonth"
+                                            placeholder="e.g. 22" />
+                                    </div>
+
+                                    <!-- Payment Mode -->
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Payment Mode</label>
+                                        <select class="form-select" formControlName="paymentMode">
+                                            <option value="monthEnd">Payment at Month End</option>
+                                            <option value="specificDate">Specific Date</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Extra Field when specificDate selected -->
+                                    <div class="col-md-6 mb-3"
+                                        *ngIf="payrollForm.get('paymentMode')?.value === 'specificDate'">
+                                        <label class="form-label">Payment Date</label>
+                                        <input type="number" class="form-control" formControlName="specificDate"
+                                            placeholder="Enter date (1–31)" />
+                                    </div>
+
+                                    <!-- Specific Date (Conditional) -->
+                                    <div class="col-md-6 mb-3"
+                                        *ngIf="payrollForm.get('paymentMode')?.value === 'specificDate'">
+                                        <label class="form-label">Payment Date</label>
+                                        <input type="number" class="form-control" formControlName="specificDate"
+                                            placeholder="Enter date (1-31)" />
+                                    </div>
+
+                                    <!-- Payroll Start Month -->
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Payroll Start Month</label>
+                                        <input type="month" class="form-control" formControlName="payrollStartMonth" />
+                                    </div>
+
+                                    <!-- Payroll Start Date -->
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Payroll Start Date</label>
+                                        <input type="date" class="form-control" formControlName="payrollStartDate" />
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Save Settings</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

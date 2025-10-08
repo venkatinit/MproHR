@@ -1,0 +1,21 @@
+.list-group-item.active {
+    border-bottom: #0d6efd solid 4px;
+    padding-bottom: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.menu_list {
+    display: flex;
+    flex-direction: row;
+    cursor: pointer;
+}
+.discount {
+    background-size: 20px;
+    background: url("../../../../assets/img/flaticons/percent.png") no-repeat 65px;
+}
+
+.add_item {
+    width: 115px;
+    height: 40px;
+}

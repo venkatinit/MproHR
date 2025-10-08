@@ -1,0 +1,155 @@
+.details_brief {
+    width: 32%;
+    display: flex;
+    background-image: -webkit-linear-gradient(#36a1ea, white);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: solid 1px grey;
+    border-radius: 10px;
+}
+
+.profile {
+    background-image: -webkit-linear-gradient(#36a1ea, white);
+    margin-left: 28px;
+    width: 44%;
+    border-radius: 10px;
+
+    .employee {
+        margin-left: 110px;
+        margin-top: 35px
+    }
+}
+
+.details {
+    border-radius: 10px;
+    justify-content: space-between;
+    gap: 5px;
+    width: 52%;
+}
+
+.dashboard {
+    padding: 20px;
+    background: #f8f9fa;
+
+    .stats-row {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            flex: 1;
+            min-width: 300px;
+            border-left: 5px solid transparent;
+            box-shadow: 0 1px 4px rgb(223 236 248);
+
+            // &.big {
+            //     flex: 2;
+            //     text-align: center;
+            // }
+        }
+
+        .stat-cards {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            flex: 1;
+            min-width: 150px;
+            border-left: 5px solid transparent;
+            box-shadow: 0 1px 4px rgb(223 236 248);
+
+            h4,
+            h3 {
+                margin: 0;
+            }
+
+            p,
+            .number {
+                font-size: 1.4rem;
+                font-weight: bold;
+            }
+        }
+
+        .stat-cards:hover {
+            background-color: transparent;
+            color: rgb(0, 0, 0);
+        }
+    }
+
+    .charts-row {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            flex: 1;
+            min-width: 300px;
+            box-shadow: 0 1px 4px rgb(223 236 248);
+        }
+    }
+
+    .bottom-row {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+
+        .info-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            flex: 1;
+            min-width: 200px;
+            box-shadow: 0 1px 4px rgb(223 236 248);
+        }
+    }
+}
+
+canvas {
+    max-width: 500px;
+    max-height: 380px;
+    background-color: rgb(223 236 248);
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.h4,
+h4 {
+    font-size: 15px;
+}
+
+// bargraph
+.filter-buttons {
+    margin-bottom: 10px;
+
+    button {
+        padding: 6px 12px;
+        margin-right: 5px;
+        margin-left: 5px;
+        border: none;
+        margin-bottom: 10px;
+        background: #ddd;
+        cursor: pointer;
+        border-radius: 4px;
+
+        &.active {
+            background: #4da3ff;
+            color: white;
+        }
+    }
+}
+
+.slides {
+    background-image: -webkit-linear-gradient(#fd7400, white);
+    width: 19%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

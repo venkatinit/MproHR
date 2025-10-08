@@ -1,0 +1,136 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <!-- Title Column -->
+                <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6'">
+                    <strong>SubService List</strong>
+                </div>
+                <!-- Company Filter (shown only if enabled) -->
+                <div class="col-md-4 d-flex flex-row align-items-center" *ngIf="isCompanyFilterVisible">
+                    <form class="d-flex" [formGroup]="form" (ngSubmit)="getServices()">
+                        <label for="company"><strong>Company Name</strong></label>
+                        <div>
+                            <select id="companyFilter" class="form-control form-control-sm ml-2"
+                                formControlName="company" [ngClass]="{ 'is-invalid': submitted && f.company.errors }">
+                                <option value="">-- Select Company --</option>
+                                <option *ngFor="let comp of companyList" [value]="comp.Id">
+                                    {{ comp.CompanyName }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="bg-success text-white rounded save"
+                                [disabled]="form.invalid">Search</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- Buttons Column -->
+                <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6 text-end'" class="text-end">
+                    <a class="btn btn-primary btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal">
+                        <i class="fa fa-plus" aria-hidden="true"></i> New
+                    </a>
+                    <!-- <a class="btn btn-primary btn-sm me-2 text-white" role="button" (click)="toggleCompanyFilter()">
+                        <i class="fa-solid fa-filter"></i>
+                    </a> -->
+                </div>
+            </div>
+            <div class="card-body">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table   table-hover"
+                    id="serviceTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Created At</th>
+                            <th>Service Name</th>
+                            <th>Ledger Name</th>
+                            <!--<th>Account Number</th> -->
+                            <th>Price</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="services_list?.length !== 0">
+                        <ng-container *ngFor="let group of services_list; let i = index">
+                            <tr *ngFor="let service of group.services">
+                                <td>{{ i + 1 }}</td>
+                                <td>{{ service.created_At | date: 'dd-MM-yyyy' }}</td>
+                                <td>{{ group.group_Name || '-' }}</td>
+                                <td>{{ service.ledger_Name || '-' }}</td>
+                                <td>{{ service.opening_Balance || 0 }}</td>
+                                <td>
+                                    <button class="btn btn-sm" type="button"
+                                        (click)="updateById(service.id, group.group_Id)" data-bs-toggle="modal"
+                                        data-bs-target="#newModal" title="Edit">
+                                        <i class="bi bi-pencil-square text-success"></i> </button>
+                                    <button class="btn  btn-sm " type="button" data-toggle="tooltip"
+                                        data-placement="top" (click)="deleteService(service.id)" title="Delete"><i
+                                            class="bi bi-trash3-fill text-danger"></i></button>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                    <tbody *ngIf="services_list?.length == 0">
+                        <tr>
+                            <td colspan="12" class="no-data-available">No data!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header" *ngIf="this.action !== 'update'">
+                            <strong>Add SubService</strong>
+                        </div>
+                        <div class="modal-header" *ngIf="this.action === 'update'">
+                            <strong>Update SubService</strong>
+                        </div>
+                        <div class="modal-body ">
+                            <form [formGroup]="addService"
+                                (ngSubmit)="action === 'update' ? updateService() : saveService()">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label class="form-label">Select Service Group </label>
+                                        <select id="companyFilter" class="form-control form-control-sm"
+                                            formControlName="group_id"
+                                            [ngClass]="{ 'is-invalid': submitted && f.group_id.errors }">
+                                            <option value="">-- Select Service Group --</option>
+                                            <option *ngFor="let item of service_list" [value]="item.id">
+                                                {{ item.group_Name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label">Service Name </label>
+                                        <input type="text" class="form-control form-control-sm" name="ledgerName"
+                                            id="ledgerName" formControlName="ledgerName"
+                                            [ngClass]="{ 'is-invalid': submitted && f.ledgerName.errors }">
+                                        <!-- <div *ngIf="(submitted || f.ledgerName.touched) && f.ledgerName.errors?.required"
+                                            class="invalid-feedback">
+                                            Service Name is
+                                            required
+                                        </div> -->
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label">Price</label>
+                                        <input type="text" class="form-control form-control-sm" name="prise" id="prise"
+                                            formControlName="prise" numbersOnly
+                                            [ngClass]="{ 'is-invalid': submitted && f.prise.errors }">
+                                        <!-- <div *ngIf="(submitted || f.prise.touched) && f.prise.errors?.required"
+                                            class="invalid-feedback">Price is required
+                                        </div> -->
+                                    </div>
+                                </div>
+                                <div class="modal-footer col-md-12 d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-success btn-sm"
+                                        *ngIf="action !== 'update'">Submit</button>
+                                    <button type="submit" class="btn btn-primary btn-sm"
+                                        *ngIf="action === 'update'">Update</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

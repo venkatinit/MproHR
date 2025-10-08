@@ -1,0 +1,138 @@
+<div class="container ">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Organization Profile</h5>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="updateOrgProfile" (ngSubmit)="saveOrgProfile()">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <!-- Organization Details -->
+                                    <div class="col-md-12">
+                                        <h6 class="mt-3"><strong>Organization Details</strong> </h6>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Organization Logo</label>
+                                        <input type="file" class="form-control form-control-sm"
+                                            (change)="onFileChange($event, 'logo')">
+                                        <div *ngIf="logoPreview" class="mt-2">
+                                            <img [src]="logoPreview" alt="Logo Preview" height="80">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Organization Name</label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="organizationName"
+                                            [ngClass]="{ 'is-invalid': submitted && f.organizationName.errors }">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Country</label>
+                                        <select class="form-control form-control-sm" formControlName="country">
+                                            <option value="">-- Select Country --</option>
+                                            <option value="India">India</option>
+                                            <option value="USA">USA</option>
+                                            <option value="UK">UK</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Nature of Business</label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="natureOfBusiness">
+                                    </div>
+                                    <div class="col-md-12 mb-3">
+                                        <label class="form-label">Business Address</label>
+                                        <textarea rows="3" class="form-control form-control-sm"
+                                            formControlName="businessAddress"></textarea>
+                                    </div>
+                                    <!-- Bank Details -->
+                                    <div class="col-md-12">
+                                        <h6 class="mt-3"> <strong>Bank Details</strong> </h6>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Account Name</label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="accountName">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Account Number</label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="accountNumber">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Account Type</label>
+                                        <select class="form-control form-control-sm" formControlName="accountType">
+                                            <option value="">-- Select Type --</option>
+                                            <option value="Savings">Savings</option>
+                                            <option value="Current">Current</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">IFSC</label>
+                                        <input type="text" class="form-control form-control-sm" formControlName="ifsc">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Bank Name</label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="bankName">
+                                    </div>
+                                    <!-- HR Details -->
+                                    <div class="col-md-12">
+                                        <h6 class="mt-3"> <strong>HR Details</strong></h6>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">HR Mail ID</label>
+                                        <input type="email" class="form-control form-control-sm"
+                                            formControlName="hrMailId">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">HR Contact Number</label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="hrContactNumber">
+                                    </div>
+                                    <!-- Authorization Details -->
+                                    <div class="col-md-12">
+                                        <h6 class="mt-3"> <strong>Authorization Details</strong></h6>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Signature</label>
+                                        <input type="file" class="form-control form-control-sm"
+                                            (change)="onFileChange($event, 'signature')">
+                                        <div *ngIf="signaturePreview" class="mt-2">
+                                            <img [src]="signaturePreview" alt="Signature Preview" height="80">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Round Stamp</label>
+                                        <input type="file" class="form-control form-control-sm"
+                                            (change)="onFileChange($event, 'stamp')">
+                                        <div *ngIf="stampPreview" class="mt-2">
+                                            <img [src]="stampPreview" alt="Stamp Preview" height="80">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Authorised By</label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="authorisedBy">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Authoriser Designation</label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            formControlName="authoriserDesignation">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 col-md-12 d-flex justify-content-end">
+                            <button type="submit" class="btn btn-success btn-sm">Update Profile</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

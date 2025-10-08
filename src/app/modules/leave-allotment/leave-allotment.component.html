@@ -1,0 +1,126 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>Leave Allotments</strong>
+                <!-- <a class="btn btn-primary  btn-sm  me-md-2  float-end" (click)="open_fileUpload()" role="button">Import
+                    CSV File</a> -->
+                <a class="btn btn-primary btn-sm me-md-2 float-end text-white" role="button" data-bs-toggle="modal"
+                    data-bs-target="#newModal">
+                    <i class="fa fa-plus " aria-hidden="true"></i> New </a>
+            </div>
+            <div class="card-body">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table   table-hover"
+                    id="allotmentTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Employee Name</th>
+                            <th>Leave Type</th>
+                            <th>Total Alloted Days</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="allotment_list?.length != 0">
+                        <tr *ngFor="let item of allotment_list; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ item.employeeId || '-' }}</td>
+                            <td>{{ item.leaveTypeId || '-' }}</td>
+                            <td>{{ item.totalDays || '-' }}</td>
+                            <td>
+                                <button class="btn btn-sm" type="button" (click)="updateById(item.id)"
+                                    data-bs-toggle="modal" data-bs-target="#newModal" title="Edit">
+                                    <i class="bi bi-pencil-square text-success"></i> </button>
+                                <button class="btn  btn-sm " type="button" data-toggle="tooltip" data-placement="top"
+                                    (click)="deleteLeaves(item.id)" title="Delete"><i
+                                        class="bi bi-trash3-fill text-danger"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                    <tbody *ngIf="allotment_list?.length == 0">
+                        <tr>
+                            <td colspan="12" class="no-data-available">No data!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header" *ngIf="this.action !== 'update'">
+                            <strong>Add Allotments</strong>
+                        </div>
+                        <div class="modal-header" *ngIf="this.action === 'update'">
+                            <strong>Update Allotments</strong>
+                        </div>
+                        <div class="modal-body ">
+                            <form [formGroup]="addLeaves"
+                                (ngSubmit)="action === 'update' ? updateLeaves() : saveLeaves()">
+                                <div class="row">
+                                    <!-- <div class="col-md-12">
+                                        <label class="form-label">Select Company</label>
+                                        <select class="form-control form-control-sm" formControlName="company"
+                                            [ngClass]="{ 'is-invalid': submitted && f.company.errors }">
+                                            <option value="">-- Select Company --</option>
+                                            <option *ngFor="let comp of companyList" [value]="comp.Id">
+                                                {{ comp.CompanyName }}
+                                            </option>
+                                        </select>
+                                        <div *ngIf="(submitted || f.company.touched) && f.company.errors?.required"
+                                            class="invalid-feedback">
+                                            Company Name is required
+                                        </div>
+                                    </div> -->
+                                    <div class="col-md-12">
+                                        <label class="form-label">Employee Name</label>
+                                        <select class="form-control form-control-sm" formControlName="employee"
+                                            [ngClass]="{ 'is-invalid': submitted && f.employee.errors }">
+                                            <option value="">-- Select Employee --</option>
+                                            <option *ngFor="let emp of employee_List" [value]="emp.id">
+                                                {{ emp.full_Name }}
+                                            </option>
+                                        </select>
+                                        <!-- <div *ngIf="(submitted || f.company.touched) && f.company.errors?.required" class="invalid-feedback">
+                                            Employee Name is required
+                                        </div> -->
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label">Leave Type</label>
+                                        <select class="form-control form-control-sm" formControlName="leave_type"
+                                            [ngClass]="{ 'is-invalid': submitted && f.leave_type.errors }">
+                                            <option value="">-- Select Leave Type --</option>
+                                            <option *ngFor="let type of leaves_list" [value]="type.id">
+                                                {{ type.name }}
+                                            </option>
+                                        </select>
+                                        <!-- <div *ngIf="(submitted || f.leave_type.touched) && f.leave_type.errors?.required"
+                                            class="invalid-feedback">
+                                            Leave Type is required
+                                        </div> -->
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label">No of Days </label>
+                                        <input type="text" class="form-control form-control-sm" name="no_of_days"
+                                            id="no_of_days" formControlName="no_of_days"
+                                            [ngClass]="{ 'is-invalid': submitted && f.no_of_days.errors }">
+                                        <!-- <div *ngIf="(submitted || f.no_of_days.touched) && f.no_of_days.errors?.required"
+                                            class="invalid-feedback"> count
+                                            is required
+                                        </div> -->
+                                    </div>
+                                </div>
+                                <div class="modal-footer col-md-12 d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-success btn-sm"
+                                        *ngIf="action !== 'update'">Submit</button>
+                                    <button type="submit" class="btn btn-primary btn-sm"
+                                        *ngIf="action === 'update'">Update</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

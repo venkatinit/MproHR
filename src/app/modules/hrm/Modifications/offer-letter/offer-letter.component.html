@@ -1,0 +1,160 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <form [formGroup]="addOfferLetter" (ngSubmit)="saveaddOfferLetter()">
+                <h5 class="m-3"><strong>Offer Letter</strong></h5>
+
+                <hr>
+                <div class="row g-3 align-items-center m-3">
+                    <div class="col-auto">
+                        <label for="inputPassword6" class="col-form-label">Employee Code*</label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="text" id="inputPassword6" class="form-control" name="emp_code" id="emp_code"
+                            formControlName="emp_code">
+                        <div *ngIf="(submitted||f.emp_code)&&f.emp_code.errors?.required" class="invalid-feedback">
+                            Employee Code is required
+                        </div>
+                    </div>
+
+
+                    <div class="col-auto">
+                        <label for="inputPassword6" class="col-form-label">Employee Name</label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="text" id="inputPassword6" class="form-control">
+                    </div>
+
+                    <div class="col-auto">
+                        <a class="button me-md-2 " (click)="showMe()">Search</a>
+                    </div>
+
+
+                </div>
+                <div class="row g-3 m-5" [hidden]="isDisplayed">
+                 
+                    <div class="col-md-6" >
+                        <h5><strong>Existing Data</strong></h5>
+                        <hr>
+                        <div class="col-md-8">
+
+                            <label class="form-label">Offer Date:</label> <span> &nbsp;<label
+                                    class="form-label">{{offer_letter.offer_date}}</label></span>
+
+                        </div>
+                        <div class="col-md-8">
+
+
+                            <label class="form-label">Employee Name:</label> <span> &nbsp;<label
+                                    class="form-label">{{offer_letter.emp_name}}</label></span>
+                        </div>
+                        <div class="col-md-8">
+
+
+                            <label class="form-label">Address:</label> <span> &nbsp;<label
+                                    class="form-label">{{offer_letter.address}}</label></span>
+                        </div>
+                        <div class="col-md-8">
+
+
+                            <label class="form-label">Join Date:</label> <span> &nbsp;<label
+                                    class="form-label">{{offer_letter.join_date}}</label></span>
+                        </div>
+                        <div class="col-md-8">
+
+
+                            <label class="form-label">Offer Designation:</label> <span> &nbsp;<label
+                                    class="form-label">{{offer_letter.offer_designation}}</label></span>
+                        </div>
+                        <div class="col-md-8">
+
+
+                            <label class="form-label">Offer CTC:</label> <span> &nbsp;<label
+                                    class="form-label">{{offer_letter.offer_ctc}}</label></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5><strong>Change Data</strong></h5>
+                        <hr>
+                        <div class="row g-3">
+        
+         
+                            <div class="col-md-6">
+                                <label class="form-label">Offer Date</label>
+                                <input type="text" class="form-control form-control-sm" name="offer_date" id="offer_date"
+                                    formControlName="offer_date" [ngClass]="{ 'is-invalid': submitted && f.offer_date.errors }">
+                                <div *ngIf="(submitted || f.offer_date.touched) && f.offer_date.errors?.required"
+                                    class="invalid-feedback">Offer Date is required
+                                </div>
+                
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Employee Name</label>
+                                <input type="text" class="form-control form-control-sm" name="emp_name"
+                                    id="emp_name" formControlName="emp_name"
+                                    [ngClass]="{ 'is-invalid': submitted && f.emp_name.errors }">
+                                <div *ngIf="(submitted || f.emp_name.touched) && f.emp_name?.errors?.required"
+                                    class="invalid-feedback">Employee Name
+                                    is required
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Employee Address</label>
+                                <textarea type="text" class="form-control form-control-sm" name="emp_addr" id="emp_addr"
+                                formControlName="emp_addr"
+                                [ngClass]="{ 'is-invalid': submitted && f.emp_addr?.errors }"></textarea>
+                                <div *ngIf="(submitted || f.emp_addr?.touched) && f.emp_addr.errors?.required"
+                                    class="invalid-feedback">Employee address is required
+                                </div>
+                
+                            </div>
+                        
+                            <div class="col-md-6">
+                                <label class="form-label">Date Of Join </label>
+                                <input type="text" class="form-control form-control-sm" name="join_date" id="join_date"
+                                    formControlName="join_date" [ngClass]="{ 'is-invalid': submitted && f.join_date.errors }">
+                                <div *ngIf="(submitted || f.join_date?.touched) && f.join_date?.errors?.required"
+                                    class="invalid-feedback">Join Date is required
+                                </div>
+                
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Offer Designation</label>
+                                <input type="text" class="form-control form-control-sm" name="offer_designation" id="offer_designation"
+                                    formControlName="offer_designation" [ngClass]="{ 'is-invalid': submitted && f.offer_designation.errors }">
+                                <div *ngIf="(submitted || f.offer_designation?.touched) && f.offer_designation?.errors?.required"
+                                    class="invalid-feedback">Offer Designation is required
+                                </div>
+                
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Offer CTC</label>
+                                <input type="text" class="form-control form-control-sm" name="offer_ctc" id="offer_ctc"
+                                    formControlName="offer_ctc" [ngClass]="{ 'is-invalid': submitted && f.offer_ctc.errors }">
+                                <div *ngIf="(submitted || f.offer_ctc?.touched) && f.offer_ctc.errors?.required"
+                                    class="invalid-feedback">Offer CTC is required
+                                </div>
+                
+                            </div>
+                       
+                
+                    
+                        </div>
+                
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-dark  me-md-2 btn-sm">Close</button>
+                        <app-save-button [spin]="spinLoader"></app-save-button>
+
+                    </div>
+                
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+</div>
+
+

@@ -1,0 +1,304 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <!-- Title Column -->
+                <div class="col-md-6">
+                    <strong>Payments</strong>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a class="btn btn-primary btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal">
+                        <i class="fa fa-plus" aria-hidden="true"></i> New
+                    </a>
+                    <a class="btn btn-primary btn-sm me-2 text-white" role="button" data-bs-toggle="modal"
+                        data-bs-target="#filterModal">
+                        <i class="fa-solid fa-filter"></i>
+                    </a>
+                    <!-- <a class="btn btn-primary  btn-sm  me-md-2  float-end" (click)="open_fileUpload()" role="button"><i
+                                        class="fa fa-arrow-up" aria-hidden="true"></i> Export
+                                    Excel</a> -->
+                </div>
+            </div>
+
+            <div class="card-body">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table   table-hover"
+                    id="collectionTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Created At</th>
+                            <th>Payment NO</th>
+                            <th>Bank Name</th>
+                            <th>Service Name</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="paymentList && paymentList.length > 0">
+                        <tr *ngFor="let item of paymentList;let i=index">
+                            <td>{{ i+1 }}</td>
+                            <td>{{item.payment_Date | date}}</td>
+                            <td>{{item.payment_No}}</td>
+                            <td>{{item.cash_Bank_Flag === 'B' ? item.bank_Name : 'Cash' }}</td>
+                            <td>{{item.service_Name}}</td>
+                            <td>₹{{item.amount}}/-</td>
+                            <td>{{item.status}}</td>
+                            <td class="actionIcons" style="display: flex;">
+                                <button *ngIf="item.status !== 'Cancelled' && item.status !== 'Approved'"
+                                    class="btn btn-sm text-success" type="button" role="button"
+                                    (click)="approveId(item.id)"> <i class="fas fa-thumbs-up"></i>
+                                    <!-- <img src="../../../../assets/img/approved.png"> -->
+                                </button>
+                                <button class="btn   btn-sm  text-success" type="button" role="button"
+                                    [disabled]="item.status === 'Cancelled' || item.status === 'Approved'"><i
+                                        class="fa-solid fa-pen-to-square" (click)="updateById(item.id)"></i>
+                                </button>
+                                <button class="btn  btn-sm  text-danger" type="button" data-toggle="tooltip"
+                                    data-placement="top" title="Preview"
+                                    [disabled]="item.status === 'Cancelled' || item.status === 'Approved'"><i
+                                        class="fa-solid fa-trash" (click)="deletePayments(item.id)"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="paymentList?.length == 0">
+                        <tr>
+                            <td colspan="12" class="no-data-available">No data!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header" *ngIf="this.action !== 'update'">
+                            <strong>Add Payment</strong>
+                        </div>
+                        <div class="modal-header" *ngIf="this.action === 'update'">
+                            <strong>Update Payment</strong>
+                        </div>
+                        <div class="modal-body ">
+                            <form [formGroup]="addPayments"
+                                (ngSubmit)="action === 'update' ? updatePayments() : savePayments()">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="form-label"> Customer Name</label>
+                                        <select class="form-control form-control-sm" formControlName="customer"
+                                            [ngClass]="{ 'is-invalid': submitted && f.customer.errors }">
+                                            <option value="">-- Select Customer --</option>
+                                            <option *ngFor="let comp of customers" [value]="comp.id">
+                                                {{ comp.customer_Name }}
+                                            </option>
+                                        </select>
+                                        <div *ngIf="(submitted || f.customer.touched) && f.customer.errors?.required"
+                                            class="invalid-feedback">
+                                            Customer Name is required
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label class="form-label">Date </label>
+                                        <input type="date" class="form-control form-control-sm" name="dateOfPayments"
+                                            id="dateOfPayments" formControlName="dateOfPayments"
+                                            [ngClass]="{ 'is-invalid': submitted && f.dateOfPayments.errors }">
+                                        <div *ngIf="(submitted || f.dateOfPayments?.touched) && f.dateOfPayments.errors?.required"
+                                            class="invalid-feedback">Date is
+                                            required
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label class="form-label">Mode</label>
+                                        <select class="form-control form-control-sm" name="mode" id="mode"
+                                            formControlName="mode"
+                                            [ngClass]="{ 'is-invalid': submitted && f.mode.errors }"
+                                            (change)="onModeChange($event)">
+                                            <option value="" disabled selected>Select a mode</option>
+                                            <option value="C">Cash</option>
+                                            <option value="B">Bank</option>
+                                        </select>
+                                        <div *ngIf="(submitted || f.mode?.touched) && f.mode.errors?.required"
+                                            class="invalid-feedback">
+                                            Mode is required
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6" *ngIf="showBankField">
+                                        <label class="form-label">Bank Name</label>
+                                        <select class="form-control form-control-sm" name="bank_id" id="bank_id"
+                                            formControlName="bank_id"
+                                            [ngClass]="{ 'is-invalid': submitted && f.bank_id.errors }">
+                                            <option value="" disabled selected>Select a Bank</option>
+                                            <option *ngFor="let bank of banks" [value]="bank.id">
+                                                {{ bank.bank_Name }}
+                                            </option>
+                                        </select>
+                                        <div *ngIf="(submitted || f.bank_id?.touched) && f.bank_id.errors?.required"
+                                            class="invalid-feedback">
+                                            Bank Name is required
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label class="form-label">Service Name</label>
+                                        <select type="text" class="form-control form-control-sm"
+                                            formControlName="service_Id" name="service_Id" id="service_Id"
+                                            [ngClass]="{ 'is-invalid': submitted && f.service_Id?.errors }">
+                                            <option value="">Select a service</option>
+                                            <option *ngIf="serviceGroups.length === 0" disabled>Loading services...
+                                            </option>
+                                            <ng-container *ngFor="let group of serviceGroups">
+                                                <optgroup [label]="group.group_Name">
+                                                    <option *ngFor="let service of group.services" [value]="service.id">
+                                                        {{ service.ledger_Name }}
+                                                    </option>
+                                                </optgroup>
+                                            </ng-container>
+                                        </select>
+
+                                        <div *ngIf="(submitted || f.service_id?.touched) && f.service_id.errors?.required"
+                                            class="invalid-feedback">
+                                            Service is required
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label class="form-label">Amount</label>
+                                        <input type="text" class="form-control form-control-sm" name="amount"
+                                            id="amount" numbersOnly formControlName="amount"
+                                            [ngClass]="{ 'is-invalid': submitted && f.amount.errors }">
+                                        <div *ngIf="(submitted || f.amount?.touched) && f.amount.errors?.required"
+                                            class="invalid-feedback">Amount
+                                            is
+                                            required
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label class="form-label">Description </label>
+                                        <input type="text" class="form-control form-control-sm" name="description"
+                                            id="description" formControlName="description"
+                                            [ngClass]="{ 'is-invalid': submitted && f.amount.errors }">
+                                        <div *ngIf="(submitted || f.description?.touched) && f.description.errors?.required"
+                                            class="invalid-feedback">
+                                            Description
+                                            is required
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 mt-3 d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-success btn-sm"
+                                            *ngIf="action !== 'update'">Submit</button>
+                                        <button type="submit" class="btn btn-primary btn-sm"
+                                            *ngIf="action === 'update'">Update</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <strong>Filter Payment</strong>
+            </div>
+
+            <div class="modal-body ">
+                <form [formGroup]="filterPayments" (ngSubmit)="getPayments()">
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label">From Date</label>
+                            <input type="date" class="form-control form-control-sm" name="from_date" id="from_date"
+                                formControlName="from_date"
+                                [ngClass]="{ 'is-invalid': submitted && f.from_date?.errors }">
+                            <div *ngIf="(submitted || f.from_date?.touched) && f.from_date.errors?.required"
+                                class="invalid-feedback">
+                                From Date is required
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">To Date</label>
+                            <input type="date" class="form-control form-control-sm" name="to_date" id="to_date"
+                                formControlName="to_date" [ngClass]="{ 'is-invalid': submitted && f.to_date.errors }">
+                            <div *ngIf="(submitted || f.to_date?.touched) && f.to_date.errors?.required"
+                                class="invalid-feedback">
+                                To Date is required
+                            </div>
+                        </div>
+                        <!-- <div class="col-md-12">
+                            <label class="form-label">Company</label>
+                            <div class="input-group">
+                                <select class="form-control form-control-sm" formControlName="companyId"
+                                    [ngClass]="{ 'is-invalid': submitted && f.companyId.errors }">
+                                    <option value="">-- Select Company --</option>
+                                    <option *ngFor="let comp of companyList" [value]="comp.Id">
+                                        {{ comp.CompanyName }}
+                                    </option>
+                                </select>
+                                <button type="button" class="btn btn-outline-secondary btn-sm"
+                                    *ngIf="filterPayments.get('bank_id')?.value" (click)="clearField('bank_id')">
+                                    &times;
+                                </button>
+                            </div>
+                            <div *ngIf="(submitted || f.bank_id?.touched) && f.bank_id.errors?.required"
+                                class="invalid-feedback">
+                                Bank Name is required
+                            </div>
+                        </div> -->
+                        <div class="col-md-12">
+                            <label class="form-label">Bank Name</label>
+                            <div class="input-group">
+                                <select class="form-control form-control-sm" name="bank_id" id="bank_id"
+                                    formControlName="bank_id"
+                                    [ngClass]="{ 'is-invalid': submitted && f.bank_id.errors }">
+                                    <option value="" disabled selected>Select a Bank</option>
+                                    <option *ngFor="let bank of banks" [value]="bank.id">
+                                        {{ bank.bank_Name }}
+                                    </option>
+                                </select>
+                                <button type="button" class="btn btn-outline-secondary btn-sm"
+                                    *ngIf="filterPayments.get('bank_id')?.value" (click)="clearField('bank_id')">
+                                    &times;
+                                </button>
+                            </div>
+                            <div *ngIf="(submitted || f.bank_id?.touched) && f.bank_id.errors?.required"
+                                class="invalid-feedback">
+                                Bank Name is required
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Service</label>
+                            <div class="input-group">
+                                <select type="text" class="form-control form-control-sm" formControlName="service_Id"
+                                    name="service_Id" id="service_Id"
+                                    [ngClass]="{ 'is-invalid': submitted && f.service_Id?.errors }">
+                                    <option value="">Select a service</option>
+                                    <option *ngIf="serviceGroups.length === 0" disabled>Loading services...
+                                    </option>
+                                    <ng-container *ngFor="let group of serviceGroups">
+                                        <optgroup [label]="group.group_Name">
+                                            <option *ngFor="let service of group.services" [value]="service.id">
+                                                {{ service.ledger_Name }}
+                                            </option>
+                                        </optgroup>
+                                    </ng-container>
+                                </select>
+                                <button type="button" class="btn btn-outline-secondary btn-sm"
+                                    *ngIf="filterPayments.get('service_id')?.value" (click)="clearField('service_id')">
+                                    &times;
+                                </button>
+                            </div>
+                            <div *ngIf="(submitted || f.service_id?.touched) && f.service_id.errors?.required"
+                                class="invalid-feedback">
+                                Service is required
+                            </div>
+                        </div>
+                        <div class="col-lg-12 mt-3 d-flex justify-content-end ">
+                            <button type="submit" class="btn btn-success btn-sm">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

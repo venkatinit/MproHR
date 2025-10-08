@@ -1,0 +1,223 @@
+<!-- <div class="row ">
+    <div class="col-xs-12">-->
+<!-- <div class="card"> -->
+<!-- <div class="card-header"><strong>New Invoice</strong></div> -->
+<div class="card-body">
+    <form [formGroup]="addQuotation" (ngSubmit)="action === 'update' ? updateQuote() : onSubmit()">
+        <div class="row g-3">
+            <div class="col-md-12 d-flex flex-row">
+                <label class="form-label col-md-2"> Select Company</label>
+                <div class="col-md-3 d-flex flex-column">
+                    <select class="form-control form-control-sm" formControlName="company"
+                        [ngClass]="{ 'is-invalid': submitted && f.company.errors }">
+                        <option value="">-- Select Company --</option>
+                        <option *ngFor="let comp of companyList" [value]="comp.Id">
+                            {{ comp.CompanyName }}
+                        </option>
+                    </select>
+                    <!-- <div *ngIf="(submitted || f.company.touched) && f.company.errors?.required"
+                        class="invalid-feedback">
+                        Company Name is required
+                    </div> -->
+                </div>
+
+                <label class="form-label col-md-2"> Invoice To</label>
+                <div class="col-md-3 d-flex flex-column">
+                    <input type="text" class="form-control form-control-sm  " name="customer_name" id="customer_name"
+                        formControlName="customer_name"
+                        [ngClass]="{ 'is-invalid': submitted && f.customer_name.errors }">
+                    <!-- <div *ngIf="(submitted||f.customer_name)&&f.customer_name.errors?.required"
+                        class="invalid-feedback">Customer Name
+                        is required
+                    </div> -->
+                </div>
+            </div>
+            <div class="col-md-12 d-flex flex-row align-items-center">
+                <label class="form-label col-md-2"> Invoice Number</label>
+                <div class="col-md-3 d-flex flex-column">
+                    <input type="text" class="form-control form-control-sm  " name="invoice_no" id="invoice_no"
+                        formControlName="invoice_no" [ngClass]="{ 'is-invalid': submitted && f.invoice_no.errors }">
+                    <!-- <div *ngIf="(submitted||f.invoice_no)&&f.invoice_no.errors?.required"
+                                                        class="invalid-feedback">Invoice Number
+                                                        is required
+                                                    </div> -->
+                </div>
+                <label class="form-label col-md-2"> Invoice Type</label>
+                <div class="col-md-3 d-flex flex-column">
+                    <select class="form-control form-control-sm" formControlName="type"
+                        [ngClass]="{ 'is-invalid': submitted && f.type.errors }">
+                        <option value="">-- Select type --</option>
+                        <option value="Normal_Invoice">Normal Invoice</option>
+                        <option value="GST_Invoice">GST Invoice</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-12 d-flex flex-row align-items-center">
+                <label class="form-label col-md-2">Invoice Date</label>
+                <div class="col-md-3 d-flex flex-column">
+                    <input type="date" class="form-control form-control-sm" name="invoice_date" id="invoice_date"
+                        formControlName="invoice_date" [ngClass]="{ 'is-invalid': submitted && f.invoice_date.errors }">
+                    <!-- <div *ngIf="(submitted||f.invoice_date)&&f.invoice_date.errors?.required" class="invalid-feedback">
+                        Invoice Date
+                        is required
+                    </div> -->
+                </div>
+                <label class="form-label col-md-1">Terms</label>
+                <div class="col-md-2 d-flex flex-column">
+                    <select class="form-control " formControlName="terms" name="terms" id="terms">
+                        <option value=" " disabled>Select A Term</option>
+                        <option *ngFor="let item of Terms" [value]="item.id">{{
+                            item.value }}</option>
+                    </select>
+                    <!-- <div *ngIf="(submitted||f.terms)&&f.terms.errors?.required" class="invalid-feedback">
+                        Terms
+                        is required
+                    </div> -->
+                </div>
+                <label class="form-label col-md-1">Due On</label>
+                <div class="col-md-2 d-flex flex-column">
+                    <input type="date" class="form-control form-control-sm" name="due_date" id="due_date"
+                        formControlName="due_date" [ngClass]="{ 'is-invalid': submitted && f.due_date.errors }">
+                    <!-- <div *ngIf="(submitted||f.due_date)&&f.due_date.errors?.required" class="invalid-feedback">
+                        Due Date
+                        is required
+                    </div> -->
+                </div>
+            </div>
+            <div class="col-md-12 d-flex">
+                <label class="form-label col-md-2">Sales Person</label>
+                <div class="col-md-3 d-flex flex-column">
+                    <input type="text" class="form-control form-control-sm  " name="sales_person" id="sales_person"
+                        formControlName="sales_person" [ngClass]="{ 'is-invalid': submitted && f.sales_person.errors }">
+                    <!-- <div *ngIf="(submitted||f.sales_person)&&f.sales_person.errors?.required" class="invalid-feedback">
+                        Sales
+                        Person
+                        is required
+                    </div> -->
+                </div>
+            </div>
+            <div class="col-md-12 d-flex">
+                <label class="form-label col-md-2">Subject</label>
+                <div class="col-md-3 d-flex flex-column">
+                    <textarea type="text" class="form-control form-control-sm  " name="subject" id="subject"
+                        formControlName="subject"
+                        [ngClass]="{ 'is-invalid': submitted && f.subject.errors }"></textarea>
+                    <!-- <div *ngIf="(submitted||f.subject)&&f.subject.errors?.required" class="invalid-feedback">
+                        Subject
+                        is required
+                    </div> -->
+                </div>
+            </div>
+        </div>
+        <div class="card mt-3">
+            <div class="card-header">
+                Item Table
+            </div>
+            <div class="card-body col-md-11">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr align="center">
+                            <th>Item Details</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Tax (%)</th>
+                            <th>Amount</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody formArrayName="items">
+                        <tr *ngFor="let item of items.controls; let i = index" [formGroupName]="i">
+                            <td>
+                                <input type="text" formControlName="item" class="form-control form-control-sm" />
+                                <div class="text-danger" *ngIf="submitted && item.get('item')?.invalid">Item
+                                    is required</div>
+                            </td>
+                            <td>
+                                <input type="text" numbersOnly formControlName="quantity"
+                                    class="form-control form-control-sm" (input)="calculateRowAmount(i)" />
+                                <div class="text-danger" *ngIf="submitted && item.get('quantity')?.invalid">
+                                    Required & min 1</div>
+                            </td>
+                            <td>
+                                <input type="text" numbersOnly formControlName="price"
+                                    class="form-control form-control-sm" (input)="calculateRowAmount(i)" />
+                                <div class="text-danger" *ngIf="submitted && item.get('price')?.invalid">
+                                    Required</div>
+                            </td>
+                            <td>
+                                <input type="text" numbersOnly formControlName="tax"
+                                    class="form-control form-control-sm" (input)="calculateRowAmount(i)" />
+                                <div class="text-danger" *ngIf="submitted && item.get('tax')?.invalid">
+                                    0–100% tax</div>
+                            </td>
+                            <td>
+                                <input type="text" formControlName="amount" class="form-control form-control-sm"
+                                    readonly />
+                            </td>
+                            <td>
+                                <button class="btn btn-sm">
+                                    <i class="fa fa-ellipsis-v text-primary" aria-hidden="true"></i>
+                                </button>
+                                <button class="btn btn-sm text-danger" type="button" (click)="removeRow(i)"
+                                    [disabled]="i === 0" style="border: none;">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class=" row d-flex flex-row justify-content-between">
+                    <div class="col-md-5 d-flex flex-column justify-content-between">
+                        <button class="add_item btn btn-primary col-md-5" (click)="addRow()">+ Add
+                            Item</button>
+                        <label for="message">Customer Notes</label>
+                        <textarea type="text" formControlName="message" placeholder="Looking forward for your business."
+                            class="form-control form-control-sm"></textarea>
+                    </div>
+                    <div class=" col-md-5">
+                        <div class="d-flex flex-row justify-content-between"><strong>Sub Total:
+                            </strong>
+                            <strong>{{ grandTotal | number:'1.2-2' }}</strong>
+                        </div>
+                        <div class="mt-1 d-flex flex-row justify-content-between">
+                            <p>Discount: </p>
+                            <input type="text" formControlName="discount" numbersOnly (input)="calculateGrandTotal()"
+                                class="form-control form-control-sm discount " style="width: 90px;" />
+                            <p>{{ discountedAmount | number:'1.2-2' }} </p>
+                        </div>
+                        <div class="card-footer d-flex flex-row justify-content-between "
+                            style="padding:10px 3px !important;">
+                            <strong>Grand Total:(₹) </strong>
+                            <strong>{{ finalTotal | number:'1.2-2' }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer col-md-12 d-flex flex-row  ">
+                <div class="col-md-7 p-0">
+                    <label for="termsConditions">Terms & Conditions</label>
+                    <textarea type="text" formControlName="termsConditions" name="termsConditions" id="termsConditions"
+                        style="height: 60px;" placeholder="Write your business Terms and Conditions"
+                        class="form-control form-control-sm"></textarea>
+                    <input type="checkbox" formControlName="term_check" id="term_check" name="term_check"
+                        value="term_check">
+                    &nbsp; <label for="term_check">Use
+                        this in future
+                        for all quotes of all customers.</label>
+                </div>
+                <div class="col-md-3">
+                    <label for="attachment">Attach File(s) to Quote</label>
+                    <input type="file" formControlName="attachment" class="form-control form-control-sm " />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer bg-light d-flex flex-row justify-content-between " style="padding: 10px 10px;">
+    <button type="botton" class="btn btn-outline-dark  me-md-2 btn-sm">Close</button>
+    <app-save-button [spin]="spinLoader"></app-save-button>
+</div>
+<!-- </div> -->
+<!-- </div>
+</div> -->

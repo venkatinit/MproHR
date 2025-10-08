@@ -1,0 +1,8 @@
+a:not([href]):not([tabindex]) {
+    color: white;
+    text-decoration: none;
+}
+
+.dropdown-toggle::after {
+    content: none !important;
+}

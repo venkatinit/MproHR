@@ -1,0 +1,207 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <!-- Title Column -->
+                <div class="col-md-6">
+                    <strong>Plans List</strong>
+                </div>
+                <!-- Buttons Column -->
+                <div ngClass="col-md-6 text-end">
+                    <a class="btn btn-primary btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal" (click)="openNewModal()">
+                        <i class="fa fa-plus" aria-hidden="true" ></i> New
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table   table-hover"
+                    id="planTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Company Name</th>
+                            <th>Mobile</th>
+                            <th>Plan Type</th>
+                            <th>Start Date</th>
+                            <th>Expires On</th>
+                            <th>Payment Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="plan_list?.length != 0">
+                        <tr *ngFor="let item of plan_list; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ item.companyName || '-' }}</td>
+                            <td>{{ item.mobileNumber || '-' }}</td>
+                            <td>{{ item.plan_Type || '-' }}</td>
+                            <td>{{ item.start_Date | date:'dd-MMM-yyyy' }}</td>
+                            <td>{{ item.end_Date | date:'dd-MMM-yyyy' }}</td>
+                            <td>{{ item.chq_Status || '-' }}</td>
+                            <td>
+                                <button class="btn btn-sm" type="button" (click)="updateById(item.id)" data-bs-toggle="modal"
+                                    data-bs-target="#newModal" title="Edit">
+                                    <i class="bi bi-pencil-square text-success"></i>
+                                </button>
+                                <button class="btn btn-sm" type="button" (click)="deletePlan(item.id)" title="Delete">
+                                    <i class="bi bi-trash3-fill text-danger"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="plan_list?.length == 0">
+                        <tr>
+                            <td colspan="12" class="no-data-available">No data!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header" *ngIf="this.action !== 'update'">
+                            <strong>Add Plan</strong>
+                        </div>
+                        <div class="modal-header" *ngIf="this.action === 'update'">
+                            <strong>Update Plan</strong>
+                        </div>
+                        <div class="modal-body ">
+                            <form [formGroup]="addPlan" (ngSubmit)="action === 'update' ? updatePlan() : savePlan()">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Select Company</label>
+                                        <select class="form-control form-control-sm" formControlName="company"
+                                            [ngClass]="{ 'is-invalid': submitted && f.company.errors }">
+                                            <option value="">-- Select Company --</option>
+                                            <option *ngFor="let comp of companyList" [value]="comp.Id">
+                                                {{ comp.CompanyName }}
+                                            </option>
+                                        </select>
+                                        <!-- <div *ngIf="(submitted || f.company.touched) && f.company.errors?.required"
+                                            class="invalid-feedback">
+                                            Company Name is required
+                                        </div> -->
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Mobile Number </label>
+                                        <select class="form-control form-control-sm" formControlName="mob_no"
+                                            [ngClass]="{ 'is-invalid': submitted && f.mob_no.errors }">
+                                            <option value="">-- Select Number --</option>
+                                            <option *ngFor="let comp of companyList" [value]="comp.MobileNumber">
+                                                {{ comp.CompanyName }}-{{comp.MobileNumber}}
+                                            </option>
+                                        </select>
+                                        <!-- <div *ngIf="(submitted || f.mob_no.touched) && f.mob_no.errors?.required"
+                                            class="invalid-feedback">
+                                            Bank Name is
+                                            required
+                                        </div> -->
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Plan</label>
+                                        <select class="form-control form-control-sm" formControlName="plan_id"
+                                            [ngClass]="{ 'is-invalid': submitted && f.plan_id.errors }">
+                                            <option value="">-- Select Plan --</option>
+                                            <option *ngFor="let type of planList" [value]="type.id">
+                                                {{ type.planName }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Start Date</label>
+                                        <input type="date" class="form-control form-control-sm" name="start_date"
+                                            id="start_date" formControlName="start_date"
+                                            [ngClass]="{ 'is-invalid': submitted && f.start_date.errors }">
+                                        <!-- <div *ngIf="(submitted || f.start_date.touched) && f.start_date.errors?.required"
+                                            class="invalid-feedback">Start Date is required
+                                        </div> -->
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Plan Duration</label>
+                                        <select class="form-control form-control-sm" formControlName="plan_type"
+                                            [ngClass]="{ 'is-invalid': submitted && f.plan_type.errors }">
+                                            <option value="">-- Select Plan Type --</option>
+                                            <option value="Monthly">Monthly</option>
+                                            <option value="Quarterly">Quarterly</option>
+                                            <option value="Half-Yearly">Half-Yearly</option>
+                                            <option value="Yearly">Yearly</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Expire Date</label>
+                                        <input type="date" class="form-control form-control-sm" name="end_date"
+                                            id="end_date" formControlName="end_date" numbersOnly
+                                            [ngClass]="{ 'is-invalid': submitted && f.end_date.errors }">
+                                        <!-- <div *ngIf="(submitted || f.end_date.touched) && f.end_date.errors?.required"
+                                            class="invalid-feedback">Expire Date is required
+                                        </div> -->
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Transaction Id</label>
+                                        <input type="text" class="form-control form-control-sm" name="payment_ref_no"
+                                            id="payment_ref_no" formControlName="payment_ref_no" numbersOnly
+                                            [ngClass]="{ 'is-invalid': submitted && f.payment_ref_no.errors }">
+                                        <!-- <div *ngIf="(submitted || f.payment_ref_no.touched) && f.payment_ref_no.errors?.required"
+                                            class="invalid-feedback">Bank
+                                            Name is
+                                            required
+                                        </div> -->
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Payment Mode</label>
+                                        <select class="form-control form-control-sm" formControlName="payment_mode"
+                                            [ngClass]="{ 'is-invalid': submitted && f.payment_mode.errors }">
+                                            <option value="0">-- Select Mode --</option>
+                                            <option value="Cash">Cash</option>
+                                            <option value="Online">Online</option>
+                                        </select>
+                                        <!-- <div *ngIf="(submitted || f.payment_mode.touched) && f.payment_mode.errors?.required"
+                                            class="invalid-feedback">Bank
+                                            Manager
+                                            Name is
+                                            required
+                                        </div> -->
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Bank Name</label>
+                                        <select class="form-control form-control-sm" formControlName="bank_name"
+                                            [ngClass]="{ 'is-invalid': submitted && f.bank_name.errors }">
+                                            <option value="">-- Select Bank --</option>
+                                            <option *ngFor="let bank of bankList" [value]="bank.id">
+                                                {{ bank.bank_Name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Chequee No</label>
+                                        <input type="text" class="form-control form-control-sm" name="chquee_no"
+                                            id="chquee_no" formControlName="chquee_no"
+                                            [ngClass]="{ 'is-invalid': submitted && f.chquee_no.errors }">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Chequee Date</label>
+                                        <input type="date" class="form-control form-control-sm" name="chequee_date"
+                                            id="chequee_date" formControlName="chequee_date"
+                                            [ngClass]="{ 'is-invalid': submitted && f.chequee_date.errors }">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Chequee Status</label>
+                                        <input type="text" class="form-control form-control-sm" name="chequee_status"
+                                            id="chequee_status" formControlName="chequee_status"
+                                            [ngClass]="{ 'is-invalid': submitted && f.chequee_status.errors }">
+                                    </div>
+
+                                    <div class="mt-2 col-md-12 d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-success btn-sm"
+                                            *ngIf="action !== 'update'">Submit</button>
+                                        <button type="submit" class="btn btn-primary btn-sm"
+                                            *ngIf="action === 'update'">Update</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
