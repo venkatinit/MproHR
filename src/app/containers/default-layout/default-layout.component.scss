@@ -1,4 +1,101 @@
+// .sidebar {
+//     z-index: 1;
+//     width: 20%;
+//     float: left;
+//     transition: all 0.3s ease;
+//     min-height: 100vh;
+//     background: #dfecf8;
+//     overflow-y: auto;
+// }
+
+// .header {
+//     z-index: 10;
+//     position: fixed;
+//     top: 0;
+//     right: 0;
+// }
+
+// .sidebar:not(.collapsed-sidebar)~.main .header {
+//     left: 20%;
+// }
+
+// .sidebar.collapsed-sidebar~.main .header {
+//     left: 0;
+// }
+
+// .main {
+//     width: 80%;
+//     float: right;
+//     transition: all 0.3s ease;
+//     min-height: 100vh;
+// }
+
+// .collapsed-sidebar {
+//     width: 0;
+//     padding: 0;
+// }
+
+// .expanded-main {
+//     width: 100%;
+// }
+
+// ul li a {
+//     border-radius: 4px;
+// }
+
+// #nav .nav-item {
+//     margin-top: 4px;
+// }
+
+// .dropdown-content {
+//     overflow: hidden;
+//     max-height: 0;
+//     transition: max-height 0.4s ease-in-out;
+// }
+
+// .dropdown-content.show {
+//     max-height: 1000px;
+// }
+
+
+// .nav-link .nav-profile-image {
+//     width: 45px;
+//     height: 45px;
+// }
+
+// .nav-link .nav-profile-image img {
+//     width: 45px;
+//     height: 45px;
+//     border-radius: 100%;
+//     border: solid 2px #c0bfcf;
+// }
+
+// .header div button {
+//     border-right: solid 1px black;
+//     border-radius: 0px;
+// }
+
+// .collapsed-sidebar {
+//     width: 5%;
+//     min-width: 60px;
+// }
+
+// .collapsed-sidebar .menu-text {
+//     display: none;
+// }
+
+// .collapsed-sidebar .nav-item a {
+//     justify-content: center;
+// }
+
+// .collapsed-sidebar .logo img {
+//     width: 40px;
+//     transition: all 0.3s ease;
+// }
+
+
 .sidebar {
+    z-index: 1;
     width: 20%;
     float: left;
     transition: all 0.3s ease;
@@ -12,6 +109,7 @@
     position: fixed;
     top: 0;
     right: 0;
+    transition: all 0.3s ease;
 }
 
 .sidebar:not(.collapsed-sidebar)~.main .header {
@@ -19,7 +117,7 @@
 }
 
 .sidebar.collapsed-sidebar~.main .header {
-    left: 0;
+    left: 5%;
 }
 
 .main {
@@ -30,12 +128,13 @@
 }
 
 .collapsed-sidebar {
-    width: 0;
-    padding: 0;
+    width: 5%;
+    padding: 10px;
+    min-width: 60px;
 }
 
 .expanded-main {
-    width: 100%;
+    width: 95%;
 }
 
 ul li a {
@@ -54,4 +153,51 @@ ul li a {
 
 .dropdown-content.show {
     max-height: 1000px;
+}
+
+.nav-link .nav-profile-image {
+    width: 45px;
+    height: 45px;
+}
+
+.nav-link .nav-profile-image img {
+    width: 45px;
+    height: 45px;
+    border-radius: 100%;
+    border: solid 2px #c0bfcf;
+}
+
+.header div button {
+    border-right: solid 1px black;
+    border-radius: 0px;
+}
+
+/* 🌟 Collapsed Sidebar Styling */
+.collapsed-sidebar .menu-text,
+.collapsed-sidebar span:not(.badge):not(.login-status) {
+    display: none !important;
+}
+
+.collapsed-sidebar .nav-item a {
+    justify-content: center;
+    text-align: center;
+}
+
+.collapsed-sidebar .nav-item i {
+    font-size: 1.3rem;
+    display: block;
+    margin: 10px auto;
+}
+
+.collapsed-sidebar .logo img {
+    width: 40px;
+    transition: all 0.3s ease;
+    margin: 10px auto;
+    display: block;
+}
+
+/* Hide profile section in collapsed mode */
+.collapsed-sidebar .nav-profile-image,
+.collapsed-sidebar .nav-profile-text {
+    display: none;
 }

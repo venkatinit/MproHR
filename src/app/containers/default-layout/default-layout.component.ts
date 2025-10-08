@@ -10,10 +10,24 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./default-layout.component.scss']
 })
 export class DefaultLayoutComponent implements OnInit {
-  activeDropdown: string | null = null;
+  isSidebarCollapsed = false;
+  activeDropdown: string = '';
+  hoveredDropdown: string = '';
 
-  toggleDropdown(menu: string): void {
-    this.activeDropdown = this.activeDropdown === menu ? null : menu;
+  toggleSidebar() {
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+  }
+
+  toggleDropdown(menu: string) {
+    this.activeDropdown = this.activeDropdown === menu ? '' : menu;
+  }
+
+  onHoverDropdown(menu: string) {
+    if (this.isSidebarCollapsed) {
+      this.hoveredDropdown = menu;
+    } else {
+      this.hoveredDropdown = '';
+    }
   }
 
   has_user_login: boolean = false
@@ -33,49 +47,7 @@ export class DefaultLayoutComponent implements OnInit {
     this.router.navigate(['/login']);
     // this.router.navigate(['/member_login']);
   }
-
-  open_offer() {
-    const options = { windowClass: 'custom-ngb-modal-window', backdropClass: 'custom-ngb-modal-backdrop' };
-
-    const modalRef = this.modalService.open(OfferLetterComponent, options);
-
-    modalRef.result.then((data) => {
-
-    },
-      (error) => {
-        if (error == "Success") {
-          // this.LoadBrands();
-        }
-      });
-
-  }
-  open_hike() {
-    const options = { windowClass: 'custom-ngb-modal-window', backdropClass: 'custom-ngb-modal-backdrop' };
-
-    const modalRef = this.modalService.open(HikeComponent, options);
-
-    modalRef.result.then((data) => {
-
-    },
-      (error) => {
-        if (error == "Success") {
-          // this.LoadBrands();
-        }
-      });
-
-  }
-  isSidebarCollapsed = false;
-
-  toggleSidebar() {
-    this.isSidebarCollapsed = !this.isSidebarCollapsed;
-  }
-  @HostListener('window:resize', ['$event'])
-  onResize() {
-    const sidebar = document.getElementById('sidebar');
-    if (window.innerWidth > 992) {
-      sidebar?.classList.remove('show-sidebar');
-      this.isSidebarCollapsed = false;
-    }
-  }
+   
+  
 
 }
