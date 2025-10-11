@@ -1,5 +1,5 @@
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
 import { Router, RouterModule } from '@angular/router';
@@ -15,7 +15,7 @@ import Swal from 'sweetalert2';
   templateUrl: './customer.component.html',
   styleUrls: ['./customer.component.scss']
 })
-export class CustomerComponent {
+export class CustomerComponent implements OnInit {
   spinLoader: boolean;
   cateId: number;
   delete_customer: any;

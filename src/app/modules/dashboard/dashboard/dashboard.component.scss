@@ -116,6 +116,7 @@
 .progress.blue .progress-left .progress-bar {
   animation: loading-2 1.5s linear forwards 1.8s;
 }
+
 .progress.green .progress-bar {
   border-color: #28a745;
   /* Bootstrap green */
@@ -174,13 +175,96 @@
   }
 }
 
-.info-card{
-  height:130px !important;
+.info-card {
+  height: 130px !important;
 }
+
 .card-title {
   padding: 0 0 15px 0 !important;
   font-size: 18px;
   font-weight: 500;
   color: #012970;
   font-family: "Poppins", sans-serif;
+}
+
+canvas {
+  width: 100% !important;
+  max-width: 500px;
+  height: 261px !important;
+}
+
+.text-muted a {
+  color: #0d6efd;
+  font-weight: 500;
+}
+
+@media (max-width: 991px) {
+  .card-body .row {
+    flex-direction: column;
+  }
+
+  .card-body .col-lg-8 {
+    margin-top: 1rem;
+  }
+}
+
+/* Apply only to small statistic cards inside the survey section */
+.survey-card {
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+/* Registered CA card */
+.survey-card .text-primary {
+  color: #4e73df !important;
+}
+
+.survey-card:hover:has(.text-primary) {
+  background-color: #4e73df !important;
+}
+
+.survey-card:hover:has(.text-primary) h4,
+.survey-card:hover:has(.text-primary) h6 {
+  color: #fff !important;
+}
+
+/* Active CA card */
+.survey-card .text-success {
+  color: #1cc88a !important;
+}
+
+.survey-card:hover:has(.text-success) {
+  background-color: #1cc88a !important;
+}
+
+.survey-card:hover:has(.text-success) h4,
+.survey-card:hover:has(.text-success) h6 {
+  color: #fff !important;
+}
+
+/* Inactive CA card */
+.survey-card .text-danger {
+  color: #e74a3b !important;
+}
+
+.survey-card:hover:has(.text-danger) {
+  background-color: #e74a3b !important;
+}
+
+.survey-card:hover:has(.text-danger) h4,
+.survey-card:hover:has(.text-danger) h6 {
+  color: #fff !important;
+}
+
+/* Hover lift effect for mini cards only */
+.survey-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-body p a {
+  display: flex;
+  text-decoration: none;
+  align-items: center;
 }

@@ -12,7 +12,6 @@ import { AuthService } from 'src/app/services/auth.service';
 export class DefaultLayoutComponent implements OnInit {
   isSidebarCollapsed = false;
   activeDropdown: string = '';
-  hoveredDropdown: string = '';
 
   toggleSidebar() {
     this.isSidebarCollapsed = !this.isSidebarCollapsed;
@@ -21,15 +20,6 @@ export class DefaultLayoutComponent implements OnInit {
   toggleDropdown(menu: string) {
     this.activeDropdown = this.activeDropdown === menu ? '' : menu;
   }
-
-  onHoverDropdown(menu: string) {
-    if (this.isSidebarCollapsed) {
-      this.hoveredDropdown = menu;
-    } else {
-      this.hoveredDropdown = '';
-    }
-  }
-
   has_user_login: boolean = false
   constructor(private authService: AuthService, private router: Router, private modalService: NgbModal) { }
   ngOnInit(): void {
@@ -47,7 +37,4 @@ export class DefaultLayoutComponent implements OnInit {
     this.router.navigate(['/login']);
     // this.router.navigate(['/member_login']);
   }
-   
-  
-
 }

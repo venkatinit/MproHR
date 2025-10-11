@@ -1,7 +1,7 @@
 <!-- ======= Sidebar ======= -->
 <aside id="sidebar" class="sidebar" [ngClass]="{ 'collapsed-sidebar': isSidebarCollapsed }">
   <a class="d-flex align-items-center justify-content-center logo">
-    <img src="assets/img/ehd.png" width="130px"   alt="">
+    <img src="assets/img/ehd.png" width="130px" alt="">
   </a>
   <ul class="sidebar-nav">
     <li class="nav-item">
@@ -10,9 +10,9 @@
           <img src="assets/img/profile-img.jpg" alt="profile" />
           <span class="login-status online"></span>
         </div>
-        <div class="nav-profile-text d-flex flex-column px-3">
-          <span class="font-weight-medium mb-1">Venkat</span>
-          <span class="font-weight-normal">RS 7,389.00</span>
+        <div class="nav-profile-text d-flex   flex-column px-3">
+          <span class="nav-profile-name font-weight-medium mb-1">Venkatesh Samithikota</span>
+          <span class="nav-profile-name font-weight-normal">RS 7,389.00</span>
         </div>
         <span class="badge badge-danger text-white ml-3 rounded">3</span>
       </a>
@@ -25,23 +25,19 @@
         <span>Dashboard</span>
       </a>
     </li>
-    <li class="home nav-item dropdown" (mouseenter)="onHoverDropdown('home')" (mouseleave)="onHoverDropdown('')"
-      [attr.title]="isSidebarCollapsed ? 'Home' : null">
+    <li class="nav-item">
       <a class="nav-link collapsed" (click)="toggleDropdown('home')">
-        <i class="bi bi-house-door"></i><span>Home</span><i class="bi bi-chevron-down ms-auto"
-          *ngIf="!isSidebarCollapsed"></i>
+        <i class="bi bi-layout-text-window-reverse"></i><span>Home</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
-      <ul class="dropdown-content" style="margin-top: 5px; border-left: solid black 2px ;"
-        [class.show]="activeDropdown === 'home' || hoveredDropdown === 'home'">
+      <ul id="home" [ngClass]="{'collapse': true, 'show': activeDropdown === 'home'}" style="margin-top: 4px;">
         <li class="nav-item">
           <a class="nav-link collapsed" data-bs-target="#forms-home" data-bs-toggle="collapse">
-            <i class="bi bi-building"></i><span>Organization</span><i class="bi bi-chevron-down ms-auto"
-              *ngIf="!isSidebarCollapsed"></i>
+            <i class="bi bi-journal-text"></i><span>Organization</span><i class="bi bi-chevron-down ms-auto"></i>
           </a>
           <ul id="forms-home" class="nav-content collapse " style="text-decoration: none;">
             <li>
               <a routerLink="/org_profile">
-              <i class="bi bi-person"></i><span>Profile</span>
+                <i class="bi bi-journal-text"></i><span>Profile</span>
               </a>
             </li>
             <li>
@@ -50,26 +46,25 @@
               </a>
             </li>
             <!-- <li>
-              <a routerLink="/designations">
-                <i class="bi bi-journal-text"></i><span>Designation</span>
-              </a>
-            </li> -->
+                  <a routerLink="/designations">
+                    <i class="bi bi-journal-text"></i><span>Designation</span>
+                  </a>
+                </li> -->
             <li>
               <a routerLink="/org_status">
-              <i class="bi bi-radioactive"></i><span>Subscription</span>
+                <i class="bi bi-journal-text"></i><span>Subscription</span>
               </a>
             </li>
           </ul>
         </li>
         <li class="nav-item">
           <a class="nav-link collapsed" data-bs-target="#forms-users" data-bs-toggle="collapse">
-            <i class="bi bi-people-fill"></i><span>Users and Roles</span><i class="bi bi-chevron-down ms-auto"
-              *ngIf="!isSidebarCollapsed"></i>
+            <i class="bi bi-journal-text"></i><span>Users and Roles</span><i class="bi bi-chevron-down ms-auto"></i>
           </a>
           <ul id="forms-users" class="nav-content collapse " style="text-decoration: none;">
             <li>
               <a routerLink="/users">
-                <i class="bi bi-people-fill"></i><span>Users</span>
+                <i class="bi bi-journal-text"></i><span>Users</span>
               </a>
             </li>
             <li>
@@ -81,39 +76,40 @@
         </li>
         <li class="nav-item">
           <a class="nav-link collapsed" data-bs-target="#forms-paymentSetup" data-bs-toggle="collapse">
-            <i class="bi bi-journal-text"></i><span>Setup and Configurations</span><i class="bi bi-chevron-down ms-auto"
-              *ngIf="!isSidebarCollapsed"></i>
+            <i class="bi bi-journal-text"></i><span>Setup and Configurations</span><i
+              class="bi bi-chevron-down ms-auto"></i>
           </a>
           <ul id="forms-paymentSetup" class="nav-content collapse " style="text-decoration: none;">
             <li>
               <a routerLink="/paySchedule">
-               <i class="bi bi-currency-rupee"></i><span>Pay Schedule</span>
+                <i class="bi bi-journal-text"></i><span>Pay Schedule</span>
               </a>
             </li>
             <li>
               <a routerLink="/hrm/salary_Components">
-               <i class="bi bi-currency-rupee"></i><span>Salary Components</span>
+                <i class="bi bi-journal-text"></i><span>Salary Components</span>
               </a>
             </li>
             <li>
               <a routerLink="/hrm/statutory_components">
-                <i class="bi bi-journal-text"></i><span>Statutory Complains</span>
+                <i class="bi bi-journal-text"></i><span>Statutory Components</span>
               </a>
             </li>
             <li>
               <a routerLink="/web_portals">
-              <i class="bi bi-currency-rupee"></i><span> Web Portal </span>
+                <i class="bi bi-journal-text"></i><span> Web Portal </span>
               </a>
             </li>
             <li>
               <a routerLink="/Emp_claim_status">
-              <i class="bi bi-box"></i><span>Employee Claim Status</span>
+                <i class="bi bi-journal-text"></i><span>Employee Claim Status</span>
               </a>
             </li>
           </ul>
         </li>
       </ul>
     </li>
+
     <li class="nav-item">
       <a class="nav-link collapsed" (click)="toggleDropdown('admin')">
         <i class="bi bi-layout-text-window-reverse"></i><span>Admin</span><i class="bi bi-chevron-down ms-auto"
@@ -122,8 +118,7 @@
       <ul id="admin" [ngClass]="{'collapse': true, 'show': activeDropdown === 'admin'}" style="margin-top: 4px;">
         <li class="nav-item">
           <a class="nav-link collapsed" data-bs-target="#forms-admin" data-bs-toggle="collapse">
-            <i class="bi bi-journal-text"></i><span>Registrations</span><i class="bi bi-chevron-down ms-auto"
-              *ngIf="!isSidebarCollapsed"></i>
+            <i class="bi bi-journal-text"></i><span>Registrations</span><i class="bi bi-chevron-down ms-auto"></i>
           </a>
           <ul id="forms-admin" class="nav-content collapse " style="text-decoration: none;">
             <li>
@@ -312,12 +307,14 @@
     </li>
     <li class="nav-item">
       <a class="nav-link collapsed" (click)="toggleDropdown('employee')">
-        <i class="bi bi-layout-text-window-reverse"></i><span>Employee</span><i class="bi bi-chevron-down ms-auto" *ngIf="!isSidebarCollapsed"></i>
+        <i class="bi bi-layout-text-window-reverse"></i><span>Employee</span><i class="bi bi-chevron-down ms-auto"
+          *ngIf="!isSidebarCollapsed"></i>
       </a>
       <ul id="employee" [ngClass]="{'collapse': true, 'show': activeDropdown === 'employee'}" style="margin-top: 4px;">
         <li class="nav-item">
           <a class="nav-link collapsed" data-bs-target="#forms-employee" data-bs-toggle="collapse">
-            <i class="bi bi-journal-text"></i><span>Dashboard</span><i class="bi bi-chevron-down ms-auto" *ngIf="!isSidebarCollapsed"></i>
+            <i class="bi bi-journal-text"></i><span>Dashboard</span><i class="bi bi-chevron-down ms-auto"
+              *ngIf="!isSidebarCollapsed"></i>
           </a>
           <ul id="forms-employee" class="nav-content collapse " style="text-decoration: none;">
 
@@ -329,18 +326,19 @@
           </ul>
         </li>
       </ul>
-    </li>  
-    <li class="nav-heading">Pages</li>
-    <li class="nav-item">
-      <a class="nav-link collapsed" routerLink="/about-company">
-      <i class="bi bi-bell"></i>
-        <span>Notofications</span>
+    </li>
+  </ul>
+  <ul class="sidebar-footer sidebar-nav" id="sidebar-footer">
+    <li class="nav-item ">
+      <a class="nav-link collapsed" routerLink="/notifications">
+        <i class="bi bi-bell"></i>
+        <span>Notifications</span>
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link collapsed" routerLink="/contact">
-      <i class="bi bi-box-arrow-right"></i>
-        <span>sign Out</span>
+      <a class="nav-link collapsed" (click)="do_logout()">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Sign Out</span>
       </a>
     </li>
   </ul>
@@ -363,12 +361,44 @@
                 class="rounded-circle">
             </button>
           </a>
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile" style="z-index: 2;">
-            <li class="dropdown-header">
-              <h6>Need Help?</h6>
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile" style="width:320px">
+            <li class="dropdown-header bg-danger text-white">
+              <h6> <strong>Tickets</strong> </h6>
             </li>
             <li>
               <hr class="dropdown-divider">
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-flex flex-row justify-content-around my-2">
+                <div class="nav-profile-image">
+                  <img src="assets/img/profile-img.jpg" alt="profile" />
+                  <span class="login-status online"></span>
+                </div>
+                <div class="nav-profile-text d-flex   flex-column px-3">
+                  <span class="font-weight-medium mb-1">Venkatesh Samithikota</span>
+                  <span class="font-weight-normal">Raised a Ticket</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-flex flex-row justify-content-around my-2">
+                <div class="nav-profile-image">
+                  <img src="assets/img/profile-img.jpg" alt="profile" />
+                  <span class="login-status online"></span>
+                </div>
+                <div class="nav-profile-text d-flex   flex-column px-3">
+                  <span class="font-weight-medium mb-1">Venkatesh Samithikota</span>
+                  <span class="font-weight-normal">Raised a Ticket</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li class="d-flex align-items-center m-2"> <a href="" style="text-decoration: none;">View All Activities</a>
             </li>
           </ul>
         </li>
@@ -378,20 +408,44 @@
               <img src="assets/img/animate_icons/bell.gif" style="width:35px" alt="Profile" class="rounded-circle">
             </button>
           </a>
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-            <li class="dropdown-header">
-              <h6>Notificatons</h6>
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile" style="width:320px">
+            <li class="dropdown-header bg-warning">
+              <h6><strong>Notificatons</strong></h6>
             </li>
             <li>
               <hr class="dropdown-divider">
             </li>
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="l">
-                
+            <li class="nav-item">
+              <a class="nav-link d-flex flex-row justify-content-around my-2">
+                <div class="nav-profile-image">
+                  <img src="assets/img/profile-img.jpg" alt="profile" />
+                  <span class="login-status online"></span>
+                </div>
+                <div class="nav-profile-text d-flex   flex-column px-3">
+                  <span class="font-weight-medium mb-1">Venkatesh Samithikota</span>
+                  <span class="font-weight-normal">Subscription expires in 3 days</span>
+                </div>
               </a>
             </li>
             <li>
               <hr class="dropdown-divider">
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-flex flex-row justify-content-around my-2">
+                <div class="nav-profile-image">
+                  <img src="assets/img/profile-img.jpg" alt="profile" />
+                  <span class="login-status online"></span>
+                </div>
+                <div class="nav-profile-text d-flex   flex-column px-3">
+                  <span class="font-weight-medium mb-1">Venkatesh Samithikota</span>
+                  <span class="font-weight-normal">Subscription expires in 3 days</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li class="d-flex align-items-center m-2"> <a href="" style="text-decoration: none;">View All Activities</a>
             </li>
           </ul>
         </li>
@@ -458,4 +512,8 @@
     </nav>
   </div>
   <router-outlet></router-outlet>
+  <footer class="footer">
+    <span>Copyright©EmproHR.com 2025</span>
+    <span>Designed and Developed by nginfosolutions.com</span>
+  </footer>
 </main>

@@ -1,97 +1,124 @@
-import { Component, OnInit } from '@angular/core';
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Chart, registerables } from 'chart.js';
+import { ToastrService } from 'ngx-toastr';
+import { Subject } from 'rxjs';
+import { ApiService } from 'src/app/api.client';
+import { UtilsServiceService } from 'src/app/utils/utils-service.service';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, AfterViewInit {
+  dtOptions: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject<any>();
+  form: FormGroup;
+  addTask: FormGroup;
+  errors: any[];
+  constructor(
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private api: ApiService,
+    private util: UtilsServiceService,
+    private toast: ToastrService
+  ) { }
+  applicant_list = [
+    { 'emp_code': 'NG0001', 'emp_name': 'Venkat', 'email': 'Venkat@gmail.com', 'mbl_no': '7987578478', 'dept': 'IT', 'designation': 'Angular Developer' },
+    { 'emp_code': 'NG0002', 'emp_name': ' Siva', 'email': ' Siva@gmail.com', 'mbl_no': '7987578478', 'dept': 'IT', 'designation': 'Angular Developer' },
+    { 'emp_code': 'NG0001', 'emp_name': 'Venkat', 'email': 'Venkat@gmail.com', 'mbl_no': '7987578478', 'dept': 'IT', 'designation': 'Angular Developer' },
+    { 'emp_code': 'NG0002', 'emp_name': ' Siva', 'email': ' Siva@gmail.com', 'mbl_no': '7987578478', 'dept': 'IT', 'designation': 'Angular Developer' },
+    { 'emp_code': 'NG0001', 'emp_name': 'Venkat', 'email': 'Venkat@gmail.com', 'mbl_no': '7987578478', 'dept': 'IT', 'designation': 'Angular Developer' }
+  ]
+  task_list = [
+    { 'taskName': 'Team Discussion' },
+    { 'taskName': 'Team Discussion' },
+    { 'taskName': 'Team Discussion' },
+    { 'taskName': 'Team Discussion' },
+    { 'taskName': 'Team Discussion' },
+    { 'taskName': 'Team Discussion' },
 
-  constructor() { }
+  ]
+  submitted: any;
 
   ngOnInit(): void {
+    this.addTask = this.formBuilder.group({
+      task: ['', Validators.required]
+    });
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 10,
+      lengthMenu: [5, 10, 25, 50],
+      destroy: true,
+      processing: true
+    };
+    this.dtTrigger.next(null);
   }
-  async single_employee_form(action = 'open') {
-    let docDefinition = {
-      pageMargins: [40, 60, 40, 60],
-      pageSize: 'A4',
-      height: 'auto',
+  Submit() {
+    this.submitted = true;
+    if (!this.addTask.valid) {
+      return;
+    }
+    const companyId = this.util.decrypt_Text(localStorage.getItem('company_id')) || '';
+    const url = "api/accounting/task";
+    const body = {
+      "id": 0,
+      "task": companyId,
+      "created_At": new Date(),
+      "created_By": 0,
+      "status": true,
+    };
+    this.api.post(url, body).subscribe(
+      (res: any) => {
+        this.addTask.reset();
+        this.submitted = false;
+        this.errors = [];
+        this.toast.success('Customer added successfully', 'Success');
+        window.location.reload();
 
-      content: [
-
-
-        {
-          style: 'tableExample',
-
-          table: {
-            widths: [200, '*'],
-
-            body: [
-
-              [{ text: 'Full Name', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'Date of Birth', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'Gender', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'Email Id', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'Mobile Number', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-
-              [{ text: 'Permanent Address', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'Employee Type', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'Department', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'Technology', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'Offer Date', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'Join Date', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'Offer Designation', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'Offer CTC', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-
-              [{ text: 'Hike date', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'Hike Designation', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'Hike CTC', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'Resignation Date', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'Reliving Date', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'UAN Number', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-
-              [{ text: 'PF Number', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'Adhar Number', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'PAN Number', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'Reference Person Name', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'Reference Person Contact No', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'Bank Name', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'Account Number', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-              [{ text: 'BSR Code/IFSC', fillColor: '#C0D7EC' }, { text: '', alignment: 'right' }],
-
-
-
-            ],
-           
-          },
-          fontSize: 12,
-
-        },
-
-
-
-
-      ],
-
-      defaultStyle: {
-        alignment: 'center',
-
+      },
+      (error: any) => {
+        console.log(error);
+        this.submitted = false;
+        this.toast.error(this.errors[0], 'Customer Not added  successfully');
 
       }
-    };
-
-    if (action === 'download') {
-      pdfMake.createPdf(docDefinition).download();
-    } else if (action === 'print') {
-      pdfMake.createPdf(docDefinition).print();
-    } else {
-      pdfMake.createPdf(docDefinition).open();
-    }
-
+    );
   }
-  
-
-
+  get f() {
+    return this.addTask.controls;
+  }
+  ngOnDestroy(): void {
+    this.dtTrigger.unsubscribe();
+  }
+  ngAfterViewInit(): void {
+    Chart.register(...registerables); // ✅ Register chart components
+    this.renderPieChart();
+  }
+  renderPieChart() {
+    const ctx = document.getElementById('caPieChart') as HTMLCanvasElement;
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Registered', 'Active', 'Inactive'],
+        datasets: [{
+          data: [1244, 744, 500],
+          backgroundColor: ['#4e73df', '#1cc88a', '#e74a3b'],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'bottom'
+          },
+          tooltip: {
+            enabled: true
+          }
+        }
+      }
+    });
+  }
 }
