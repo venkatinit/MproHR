@@ -1,0 +1,104 @@
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-lg-6 mx-auto">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search document by name..."
+                    [(ngModel)]="searchTerm" (input)="filterDocuments()" />
+                <button class="btn btn-primary" type="button" (click)="filterDocuments()">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gy-4 d-flex flex-row  ">
+        <!-- ===== CARD 1 (Documents) ===== -->
+        <div class="col-lg-4 col-md-6 col-sm-12 ">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Document Name</span>
+                    <!-- <i class="bi bi-pencil-square text-success"></i> -->
+                </div>
+                <div class="card-body " style="height: 254px;">
+                    <div class="d-flex justify-content-between mb-2 small text-muted">
+                        <div class="d-flex flex-column justify-content-center align-items-center "><span> <strong>Reg
+                                    on</strong></span>
+                        </div>
+                        <div class="d-flex flex-column justify-content-center align-items-center "><span>
+                                <strong>Expires on</strong> </span>
+                        </div>
+                    </div>
+                    <div class="new d-flex flex-wrap gap-3 justify-content-center" style="cursor: pointer;">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-between small text-muted">
+                    <span> <strong>Updated on</strong> </span>
+                    <span><strong>Updated by</strong> </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 " *ngFor="let doc of filteredDocuments">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center"
+                    style="background-color:#fd7400">
+                    <span>{{ doc.name }}</span>
+                    <i class="bi bi-pencil-square text-success"></i>
+                </div>
+                <div class="card-body ">
+                    <div class="d-flex justify-content-between mb-2 small text-muted">
+                        <div class="d-flex flex-column justify-content-center align-items-center "><span> <strong>Reg
+                                    on</strong></span>
+                            <span style="border:solid 1px #ffffff; border-radius: 4px;padding: 2px;">01/01/2025</span>
+                        </div>
+                        <div></div>
+                        <div class="d-flex flex-column justify-content-center align-items-center "><span>
+                                <strong>Expires
+                                    on</strong></span>
+                            <span style="border:solid 1px #ffffff; border-radius: 4px;padding: 2px;">01/01/2026</span>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap gap-3 justify-content-center" style="cursor: pointer;">
+                        <div (click)="openPreview(doc)" class="text-center" style="width: 130px;">
+                            <img *ngIf="isImage(doc.url)" [src]="doc.url" class="img-thumbnail" alt="{{ doc.name }}"
+                                width="120" height="120" />
+                            <img *ngIf="!isImage(doc.url)" src="assets/img/pdf-icon.png" class="img-thumbnail" alt="PDF"
+                                width="120" height="120" />
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-between small text-muted"
+                    style="background-color:#7ed958">
+                    <span> <strong>Updated on:</strong> 01/01/2025</span>
+                    <span> <strong>Updated by:</strong> venkat</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ===== Modal for Preview & Download ===== -->
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ selectedDoc?.name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body text-center">
+                <!-- Image Preview -->
+                <img *ngIf="isImage(selectedDoc?.url)" [src]="selectedDoc?.url" class="img-fluid rounded shadow"
+                    alt="Preview" />
+                <!-- PDF Preview -->
+                <iframe *ngIf="!isImage(selectedDoc?.url)" [src]="selectedDoc?.url" width="100%" height="600px"
+                    style="border:none;"></iframe>
+            </div>
+
+            <div class="modal-footer">
+                <a [href]="selectedDoc?.url" download class="btn btn-primary">
+                    <i class="bi bi-download"></i> Download
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

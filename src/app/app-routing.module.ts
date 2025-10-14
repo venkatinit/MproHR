@@ -23,7 +23,6 @@ import { CollectionsComponent } from './modules/collections/collections.componen
 import { PriceComponent } from './modules/price/price.component';
 import { ExpensesComponent } from './modules/expenses/expenses.component';
 import { ClientsComponent } from './modules/clients/clients.component';
-import { CompanyLoginPageComponent } from './auth/company-login-page/company-login-page.component';
 import { PlansComponent } from './modules/Admin/plans/plans.component';
 import { UserPlanStatusComponent } from './modules/Admin/user-plan-status/user-plan-status.component';
 import { BankBookComponent } from './modules/Banks/bank-book/bank-book.component';
@@ -38,6 +37,19 @@ import { RolesComponent } from './modules/Organisation/roles/roles.component';
 import { PayScheduleComponent } from './modules/Organisation/pay-schedule/pay-schedule.component';
 import { WebPortalComponent } from './modules/Organisation/web-portal/web-portal.component';
 import { EmpClaimRepComponent } from './modules/Organisation/emp-claim-rep/emp-claim-rep.component';
+import { OrgFolderComponent } from './modules/Organisation/org-folder/org-folder.component';
+import { EmpFolderComponent } from './modules/Organisation/emp-folder/emp-folder.component';
+import { CaListComponent } from './modules/Chartered Accountant/ca-list/ca-list.component';
+import { CaOrgComponent } from './modules/Chartered Accountant/ca-org/ca-org.component';
+import { CaCompanyEmployeeComponent } from './modules/Chartered Accountant/ca-company-employee/ca-company-employee.component';
+import { CaTaskAssignComponent } from './modules/Chartered Accountant/ca-task-assign/ca-task-assign.component';
+import { CaTicketsComponent } from './modules/Chartered Accountant/ca-tickets/ca-tickets.component';
+import { OrgSubscriptionComponent } from './modules/Organisation/org-subscription/org-subscription.component';
+import { OrgTaskAssignComponent } from './modules/Organisation/org-task-assign/org-task-assign.component';
+import { OrgTicketsComponent } from './modules/Organisation/org-tickets/org-tickets.component';
+import { CaDashboardComponent } from './modules/Chartered Accountant/ca-dashboard/ca-dashboard.component';
+import { OrgDashboardComponent } from './modules/Organisation/org-dashboard/org-dashboard.component';
+import { HrDashboardComponent } from './modules/hrm/hr-dashboard/hr-dashboard.component';
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -61,15 +73,50 @@ export const routes: Routes = [
         path: 'employee',
         loadChildren: () => import('./modules/employee/employee.module').then(m => m.EmployeeModule)
       },
+      // superAdmin
       { path: 'contact', component: ContactComponent },
       { path: 'settings', component: AboutCompanyComponent },
+      { path: 'plans', component: PlansComponent },
+      { path: 'user_plan_status', component: UserPlanStatusComponent },
+      { path: 'ca_list', component: CaListComponent },
+      { path: 'ca_organizations', component: CaOrgComponent },
+      { path: 'ca_company_employee', component: CaCompanyEmployeeComponent },
+      { path: 'ca_assign', component: CaTaskAssignComponent },
+      { path: 'ca_tickets', component: CaTicketsComponent },
+
+      // Chartered Accountant
+      { path: 'company_list', component: CompanyListComponent },
+      { path: 'web_portals', component: WebPortalComponent },
+      { path: 'org_subscription', component: OrgSubscriptionComponent },
+      { path: 'ca_company_employee', component: CaCompanyEmployeeComponent },
+      { path: 'org_assign', component: OrgTaskAssignComponent },
+      { path: 'org_tickets', component: OrgTicketsComponent },
+      { path: 'ca_dashBoard', component: CaDashboardComponent },
+
+
+      // Organisation
       { path: 'customers', component: CustomerComponent },
       { path: 'add_customers', component: AddCustomerComponent },
+      { path: 'users', component: ClientsComponent },
+      { path: 'roles', component: RolesComponent },
+      { path: 'org_dashboard', component: OrgDashboardComponent },
+
+
+      //HR
+      { path: 'type_of_leave', component: LeavetypesComponent },
+      { path: 'dashboard', component: HrDashboardComponent },
+
+
+      //Accountant
+
+
+      // employee
+      { path: 'Emp_claim_status', component: EmpClaimRepComponent },
+      //TO everyone
       { path: 'quotations', component: QuotationListComponent },
       { path: 'add_quatation', component: AddQuotationComponent },
       { path: 'invoice', component: InvoiceComponent },
       { path: 'add_invoice', component: AddInvoiceComponent },
-      { path: 'company_list', component: CompanyListComponent },
       { path: 'bankList', component: BankListComponent },
       { path: 'bankBook', component: BankBookComponent },
       { path: 'cashBook', component: CashBookComponent },
@@ -78,23 +125,20 @@ export const routes: Routes = [
       { path: 'subserviceList', component: SubServiceListComponent },
       { path: 'state', component: StatesComponent },
       { path: 'district', component: DistrictComponent },
-      { path: 'type_of_leave', component: LeavetypesComponent },
       { path: 'leave_allotment', component: LeaveAllotmentComponent },
       { path: 'receipts', component: CollectionsComponent },
       { path: 'pricings', component: PriceComponent },
       { path: 'payments', component: ExpensesComponent },
-      { path: 'users', component: ClientsComponent },
-      { path: 'plans', component: PlansComponent },
-      { path: 'user_plan_status', component: UserPlanStatusComponent },
       { path: 'departments', component: DepartmentComponent },
       { path: 'designations', component: DesignationComponent },
       { path: 'org_profile', component: OrgProfileComponent },
       { path: 'org_status', component: OrgStatusComponent },
       { path: 'work_location', component: WorkLocationComponent },
-      { path: 'roles', component: RolesComponent },
       { path: 'paySchedule', component: PayScheduleComponent },
-      { path: 'web_portals', component: WebPortalComponent },
-      { path: 'Emp_claim_status', component: EmpClaimRepComponent },
+      // documents
+      { path: 'org_folder', component: OrgFolderComponent },
+      { path: 'emp_folder', component: EmpFolderComponent },
+
 
 
     ],

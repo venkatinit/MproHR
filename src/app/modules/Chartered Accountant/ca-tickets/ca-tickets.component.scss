@@ -1,0 +1,60 @@
+.input-group {
+    .form-control {
+        border-top-left-radius: 50px;
+        border-bottom-left-radius: 50px;
+    }
+
+    .btn {
+        border-top-right-radius: 50px;
+        border-bottom-right-radius: 50px;
+    }
+}
+
+.nav-profile-image {
+    width: 45px;
+    height: 45px;
+}
+
+.nav-profile-name {
+    display: inline-block;
+    max-width: 170px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+
+.nav-profile-image img {
+    width: 45px;
+    height: 45px;
+    border-radius: 100%;
+    border: solid 2px #c0bfcf;
+}
+
+.content {
+    padding: 15px;
+    display: inline-block;
+    max-width: 98%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+
+.status {
+    background-color: #c8f9fd;
+    color: blue;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    padding: 0px 5px;
+    margin: 5px;
+}
+
+.priority {
+    color: red;
+}
+
+.team {
+    background-color: antiquewhite;
+    color: red;
+}

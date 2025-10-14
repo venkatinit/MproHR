@@ -1,0 +1,48 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card">
+                <h5 class="m-2"><strong>Recent Tickets</strong></h5>
+                <div class="row mb-4">
+                    <div class="col-lg-10 mx-auto">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search document by name..."
+                                [(ngModel)]="searchTerm" (input)="filterDocuments()" />
+                            <button class="btn btn-primary" type="button" (click)="filterDocuments()">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card " style="padding:5px; margin:6px" *ngFor="let doc of filteredDocuments">
+                    <div class="row d-flex flex-column">
+                        <div class="d-flex flex-row align-items-center">
+                            <div class="col-md-7 d-flex flex-row align-items-center">
+                                <div class="nav-profile-image">
+                                    <img src="{{doc.profileImage}}" alt="profile" />
+                                    <span class="login-status online"></span>
+                                </div>
+                                <div class="nav-profile-name ml-2">{{doc.name}}</div>
+                            </div>
+                            <div class="col-md-5">{{doc.timeAgo}}</div>
+                        </div>
+                        <div class="content">
+                            {{doc.message}}
+                        </div>
+                        <div class="d-flex flex-row justify-content-around align-items-center">
+                            <div class="status">{{doc.status}}</div>
+                            <div class="priority">{{doc.priority}}</div>
+                            <div class="team">{{doc.team}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="card">
+
+            </div>
+        </div>
+    </div>
+</div>

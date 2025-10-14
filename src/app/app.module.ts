@@ -60,6 +60,18 @@ import { RolesComponent } from './modules/Organisation/roles/roles.component';
 import { PayScheduleComponent } from './modules/Organisation/pay-schedule/pay-schedule.component';
 import { WebPortalComponent } from './modules/Organisation/web-portal/web-portal.component';
 import { EmpClaimRepComponent } from './modules/Organisation/emp-claim-rep/emp-claim-rep.component';
+import { OrgFolderComponent } from './modules/Organisation/org-folder/org-folder.component';
+import { EmpFolderComponent } from './modules/Organisation/emp-folder/emp-folder.component';
+import { CaListComponent } from './modules/Chartered Accountant/ca-list/ca-list.component';
+import { CaOrgComponent } from './modules/Chartered Accountant/ca-org/ca-org.component';
+import { CaCompanyEmployeeComponent } from './modules/Chartered Accountant/ca-company-employee/ca-company-employee.component';
+import { CaTaskAssignComponent } from './modules/Chartered Accountant/ca-task-assign/ca-task-assign.component';
+import { CaTicketsComponent } from './modules/Chartered Accountant/ca-tickets/ca-tickets.component';
+import { OrgSubscriptionComponent } from './modules/Organisation/org-subscription/org-subscription.component';
+import { OrgTaskAssignComponent } from './modules/Organisation/org-task-assign/org-task-assign.component';
+import { OrgTicketsComponent } from './modules/Organisation/org-tickets/org-tickets.component';
+import { CaDashboardComponent } from './modules/Chartered Accountant/ca-dashboard/ca-dashboard.component';
+import { OrgDashboardComponent } from './modules/Organisation/org-dashboard/org-dashboard.component';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 const APP_CONTAINERS = [DefaultLayoutComponent];
 @NgModule({
@@ -104,6 +116,18 @@ const APP_CONTAINERS = [DefaultLayoutComponent];
     PayScheduleComponent,
     WebPortalComponent,
     EmpClaimRepComponent,
+    OrgFolderComponent,
+    EmpFolderComponent,
+    CaListComponent,
+    CaOrgComponent,
+    CaCompanyEmployeeComponent,
+    CaTaskAssignComponent,
+    CaTicketsComponent,
+    OrgSubscriptionComponent,
+    OrgTaskAssignComponent,
+    OrgTicketsComponent,
+    CaDashboardComponent,
+    OrgDashboardComponent,
   ],
   imports: [
     CommonModule,

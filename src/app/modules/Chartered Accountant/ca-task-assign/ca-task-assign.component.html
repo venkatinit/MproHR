@@ -1,0 +1,177 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <!-- Title Column -->
+                <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6'">
+                    <strong>Tasks List</strong>
+                </div>
+                <!-- Company Filter (shown only if enabled) -->
+                <!-- <div class="col-md-4 d-flex flex-row align-items-center" *ngIf="isCompanyFilterVisible">
+                    <form class="d-flex" [formGroup]="form" (ngSubmit)="getBanks()">
+                        <label for="company"><strong>Company Name</strong></label>
+                        <div>
+                            <select id="companyFilter" class="form-control form-control-sm ml-2"
+                                formControlName="company" [ngClass]="{ 'is-invalid': submitted && f.company.errors }">
+                                <option value="">-- Select Company --</option>
+                                <option *ngFor="let comp of companyList" [value]="comp.Id">
+                                    {{ comp.CompanyName }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="bg-success text-white rounded save"
+                                [disabled]="form.invalid">Search</button>
+                        </div>
+                    </form>
+                </div> -->
+                <!-- Buttons Column -->
+                <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6 text-end'" class="text-end">
+                    <a class="btn btn-primary btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal">
+                        <i class="fa fa-plus" aria-hidden="true"></i> New
+                    </a>
+                    <!-- <a class="btn btn-primary btn-sm me-2 text-white" role="button" (click)="toggleCompanyFilter()">
+                        <i class="fa-solid fa-filter"></i>
+                    </a> -->
+                </div>
+            </div>
+            <div class="card-body">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-hover"
+                    id="bankTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Created At</th>
+                            <th>Name </th>
+                            <th>Mobile</th>
+                            <th>Assigning To</th>
+                            <th>Completed Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="banks_list?.length != 0">
+                        <tr *ngFor="let item of banks_list; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ item.created_At | date:'dd-MM-YYYY' }}</td>
+                            <td>{{ item.bank_Name || '-' }}</td>
+                            <td>{{ item.branch || '-' }}</td>
+                            <td>{{ item.account_Number || '-' }}</td>
+                            <td>{{ item.description || 0 }}</td>
+                            <td>{{ item.description || 0 }}</td>
+                            <td>
+                                <button class="btn btn-sm" type="button" (click)="updateById(item.id)"
+                                    data-bs-toggle="modal" data-bs-target="#newModal" title="Edit">
+                                    <i class="bi bi-pencil-square text-success"></i> </button>
+                                <button class="btn  btn-sm " type="button" data-toggle="tooltip" data-placement="top"
+                                    (click)="deleteBank(item.id)" title="Delete"><i
+                                        class="bi bi-trash3-fill text-danger"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="banks_list?.length == 0">
+                        <tr>
+                            <td colspan="12" class="no-data-available">No data!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header" *ngIf="this.action !== 'update'">
+                            <strong>Assign Task</strong>
+                        </div>
+                        <div class="modal-header" *ngIf="this.action === 'update'">
+                            <strong>Update Task</strong>
+                        </div>
+                        <div class="modal-body ">
+                            <form [formGroup]="assignTask" (ngSubmit)="action === 'update' ? updateBank() : saveBank()">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Person Name</label>
+                                        <input type="text" class="form-control form-control-sm" name="person_name"
+                                            id="person_name" formControlName="person_name"
+                                            [ngClass]="{ 'is-invalid': submitted && f.person_name.errors }">
+                                        <div *ngIf="(submitted || f.person_name.touched) && f.person_name.errors?.required"
+                                            class="invalid-feedback">Bank
+                                            Manager
+                                            Name is
+                                            required
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Person Contact Number</label>
+                                        <input type="text" class="form-control form-control-sm" name="contact_no"
+                                            id="contact_no" formControlName="contact_no" maxlength="10" pattern="[0-9]*"
+                                            inputmode="numeric"
+                                            [ngClass]="{ 'is-invalid': submitted && f.contact_no.errors }"
+                                            numbersOnly />
+                                        <div *ngIf="(submitted || f.contact_no.touched) && f.contact_no.errors?.required"
+                                            class="invalid-feedback">
+                                            Manager Contact Number is required
+                                        </div>
+                                        <div *ngIf="(submitted || f.contact_no.touched) && f.contact_no.errors?.pattern"
+                                            class="invalid-feedback">
+                                            Enter a valid 10-digit contact number
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="assignTo" class="form-label">Assign To (CA)</label>
+                                        <select id="assignTo" class="form-select" formControlName="assignTo"
+                                            name="assignTo">
+                                            <option value="">Select CA</option>
+                                            <option *ngFor="let ca of caList" [value]="ca.id">{{ ca.name }}</option>
+                                        </select>
+                                    </div>
+                                    <!-- Status -->
+                                    <div class="col-md-6">
+                                        <label for="status" class="form-label">Status</label>
+                                        <select id="status" class="form-select" formControlName="status">
+                                            <option value="pending">Pending</option>
+                                            <option value="completed">Completed</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="file" class="form-label">File Upload</label>
+                                        <input type="file" id="file" class="form-control" formControlName="document"
+                                            (change)="onFileSelected($event)" />
+                                    </div>
+                                  
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Completion Date </label>
+                                        <input type="date" class="form-control form-control-sm" name="completeDate"
+                                            id="completeDate" formControlName="completeDate"
+                                            [ngClass]="{ 'is-invalid': submitted && f.completeDate?.errors }">
+                                        <div *ngIf="(submitted || f.completeDate?.touched) && f.completeDate?.errors?.required"
+                                            class="invalid-feedback">Completed Date is
+                                            required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label">Task Description</label>
+                                        <textarea type="text" class="form-control form-control-sm" name="description"
+                                            id="description" formControlName="description"
+                                            [ngClass]="{ 'is-invalid': submitted && f.description.errors }"></textarea>
+                                        <div *ngIf="(submitted || f.description.touched) && f.description.errors?.required"
+                                            class="invalid-feedback">Description is
+                                            required
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-2 col-md-12 d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-success btn-sm"
+                                        *ngIf="action !== 'update'">Submit</button>
+                                    <button type="submit" class="btn btn-primary btn-sm"
+                                        *ngIf="action === 'update'">Update</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

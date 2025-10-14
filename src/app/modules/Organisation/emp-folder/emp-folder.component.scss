@@ -1,0 +1,41 @@
+img {
+    transition: transform 0.3s ease;
+}
+
+img:hover {
+    transform: scale(1.05);
+}
+
+.modal-body {
+    background-color: #f8f9fa;
+}
+
+.card-header {
+    background-color: #fd7400
+}
+
+.card-footer {
+    background-color: #7ed958
+}
+
+.new i {
+    border: 2px solid #dbf9ff;
+    border-radius: 5px;
+    font-size: 50px;
+    margin-top: 33px;
+    padding: 45px 30px 45px 30px;
+    color: blue;
+    background-color: #dbf9ff;
+}
+
+.input-group {
+    .form-control {
+        border-top-left-radius: 50px;
+        border-bottom-left-radius: 50px;
+    }
+
+    .btn {
+        border-top-right-radius: 50px;
+        border-bottom-right-radius: 50px;
+    }
+}
