@@ -50,8 +50,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       pagingType: 'full_numbers',
       pageLength: 10,
       lengthMenu: [5, 10, 25, 50],
-      destroy: true,
-      processing: true
+      responsive: true,
+      autoWidth: false,
+      scrollX: false, // optional
+      language: {
+        emptyTable: 'No records found'
+      }
     };
     this.dtTrigger.next(null);
   }

@@ -40,6 +40,8 @@ import { ProfessionalTaxComponent } from './professional-tax/professional-tax.co
 import { LwfComponent } from './lwf/lwf.component';
 import { StatutoryBonusComponent } from './statutory-bonus/statutory-bonus.component';
 import { StatutoryComponentComponent } from './statutory-component/statutory-component.component';
+import { AdvanceSalaryComponent } from './advance-salary/advance-salary.component';
+import { BulkAttendanceComponent } from './masters/bulk-attendance/bulk-attendance.component';
 
 @NgModule({
   declarations: [
@@ -71,8 +73,9 @@ import { StatutoryComponentComponent } from './statutory-component/statutory-com
     ProfessionalTaxComponent,
     LwfComponent,
     StatutoryBonusComponent,
-    StatutoryComponentComponent
-    
+    StatutoryComponentComponent,
+    AdvanceSalaryComponent,
+    BulkAttendanceComponent
   ],
   imports: [
     CommonModule,

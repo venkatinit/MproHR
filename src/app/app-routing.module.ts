@@ -50,6 +50,8 @@ import { OrgTicketsComponent } from './modules/Organisation/org-tickets/org-tick
 import { CaDashboardComponent } from './modules/Chartered Accountant/ca-dashboard/ca-dashboard.component';
 import { OrgDashboardComponent } from './modules/Organisation/org-dashboard/org-dashboard.component';
 import { HrDashboardComponent } from './modules/hrm/hr-dashboard/hr-dashboard.component';
+import { HolidayCalenderComponent } from './modules/Organisation/holiday-calender/holiday-calender.component';
+
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -100,6 +102,7 @@ export const routes: Routes = [
       { path: 'users', component: ClientsComponent },
       { path: 'roles', component: RolesComponent },
       { path: 'org_dashboard', component: OrgDashboardComponent },
+      { path: 'holiday_calendar', component: HolidayCalenderComponent },
 
 
       //HR

@@ -13,28 +13,26 @@
             </div>
         </div>
         <div class="row d-flex flex-row details ">
-            <div class="details_brief" data-bs-toggle="modal" data-bs-target="#offerLetter"
-                (click)="getEmployeeDetails()">
+            <div class="details_brief" data-bs-toggle="modal" data-bs-target="#Offer" (click)="getEmployeeDetails()">
                 <h5>Offer Letter
                 </h5>
             </div>
-            <div class="details_brief" data-bs-toggle="modal" data-bs-target="#attendance"
-                (click)="getEmployeeDetails()">
+            <div class="details_brief" data-bs-toggle="modal" data-bs-target="#attendances">
                 <h5>Attendance</h5>
             </div>
-            <div class="details_brief" data-bs-toggle="modal" data-bs-target="#payslip" (click)="getEmployeeDetails()">
+            <div class="details_brief" data-bs-toggle="modal" data-bs-target="#Payslip" (click)="getEmployeeDetails()">
                 <h5>Payslip</h5>
             </div>
-            <div class="details_brief" data-bs-toggle="modal" data-bs-target="#relieving"
+            <div class="details_brief" data-bs-toggle="modal" data-bs-target="#Relieving"
                 (click)="getEmployeeDetails()">
-                <h5>Reliving Letter
+                <h5>Relieving Letter
                 </h5>
             </div>
-            <div class="details_brief" data-bs-toggle="modal" data-bs-target="#service" (click)="getEmployeeDetails()">
+            <div class="details_brief" data-bs-toggle="modal" data-bs-target="#Service" (click)="getEmployeeDetails()">
                 <h5>Service Letter</h5>
             </div>
             <div class="details_brief" (click)="toggleUpdates()">
-                <h5>Updates</h5>
+                <h5>More</h5>
             </div>
         </div>
     </div>
@@ -49,39 +47,84 @@
             (click)="getEmployeeDetails()">Leave Request </div>
         <div class="card slides  p-2 ">CTC Update</div>
     </div>
-    <!-- charts start -->
-    <div class="d-flex flex-row mt-2">
-        <div class="col-md-6 stat-card big">
-            <canvas id="pieChart"></canvas>
-        </div>
-
-        <canvas id="attendanceChart"></canvas>
-        <div class="filter-buttons d-flex flex-column g-2">
-            <button (click)="changeFilter('daily')" [class.active]="filterType === 'daily'">Daily</button>
-            <button (click)="changeFilter('monthly')" [class.active]="filterType === 'monthly'">Monthly</button>
-            <button (click)="changeFilter('yearly')" [class.active]="filterType === 'yearly'">Yearly</button>
-        </div>
-    </div>
-    <div class="stats-row mt-2">
-        <div class="stat-cards " *ngFor="let item of [
-        {label:'Checked In',value:stats.checkedIn,color:'#4da3ff'},
-        {label:'Not Checked In',value:stats.notCheckedIn,color:'#ff5c5c'},
-        {label:'On Leave',value:stats.onLeave,color:'#4caf50'},
-        {label:'Weekly Off',value:stats.weeklyOff,color:'#999'},
-        {label:'Holiday',value:stats.holiday,color:'#ff9800'},
-        {label:'Checked Out',value:stats.checkedOut,color:'#ffca28'}
-      ]" [style.borderColor]="item.color">
-            <h4>{{ item.label }}</h4>
-            <p>{{ item.value }}</p>
-        </div>
-    </div>
-    <!-- charts end -->
 </div>
+<!-- ==== Shared Modal ==== -->
+<div class="modal fade" id="Offer" tabindex="-1" aria-labelledby="OfferLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="outer-square">
+                    <div class="tile tile-generate" data-bs-toggle="modal" data-bs-target="#offerLetter">Generate</div>
+                    <div class="tile tile-show" (click)="Offer_generatePDF()">Show</div>
+                    <!-- <div class="tile tile-update" (click)="performAction('update')">Update</div>
+                    <div class="tile tile-delete" (click)="performAction('delete')">Delete</div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="attendances" tabindex="-1" aria-labelledby="attendancesLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="outer-square">
+                    <div class="tile tile-generate" routerLink="/hrm/bulk_attendance">Bulk</div>
+                    <div class="tile tile-show" (click)="goToAttendance(employeeId)">Single</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="Relieving" tabindex="-1" aria-labelledby="RelievingLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="outer-square">
+                    <div class="tile tile-generate" data-bs-toggle="modal" data-bs-target="#relieving">Generate</div>
+                    <div class="tile tile-show">Show</div>
+                    <!-- <div class="tile tile-update" (click)="performAction('update')">Update</div>
+                    <div class="tile tile-delete" (click)="performAction('delete')">Delete</div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="Payslip" tabindex="-1" aria-labelledby="PayslipLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="outer-square">
+                    <div class="tile tile-generate" data-bs-toggle="modal" data-bs-target="#payslipGenerate">Generate
+                    </div>
+                    <div class="tile tile-show" data-bs-toggle="modal" data-bs-target="#payslip">Show</div>
+                    <!-- <div class="tile tile-update" (click)="performAction('update')">Update</div> -->
+                    <!-- <div class="tile tile-delete" (click)="performAction('delete')">Delete</div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="Service" tabindex="-1" aria-labelledby="ServiceLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="outer-square">
+                    <div class="tile tile-generate" data-bs-toggle="modal" data-bs-target="#service">Generate</div>
+                    <div class="tile tile-show">Show</div>
+                    <!-- <div class="tile tile-update" (click)="performAction('update')">Update</div>
+                    <div class="tile tile-delete" (click)="performAction('delete')">Delete</div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- offerletter Generator -->
 <div class="modal fade" id="offerLetter" tabindex="-1" aria-labelledby="offerLetterLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <strong>Generate Offer Letter</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body ">
                 <form [formGroup]="generateOL" (ngSubmit)="Offer_generatePDF()">
@@ -250,22 +293,41 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="attendance" tabindex="-1" aria-labelledby="attendanceLabel" aria-hidden="true">
+<!--   Attendance Bulk VIew -->
+<!-- <div class="modal fade" id="bulkAttendance" tabindex="-1" aria-labelledby="bulkAttendanceLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <strong>Generate Attendance</strong>
+                <strong>Get bulkAttendance</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body ">
-                <form [formGroup]="attendance" (ngSubmit)="Payslip_generatePDF()">
+                <form [formGroup]="BulkAttendance" (ngSubmit)="onSubmitBulkAttendance()">
                     <div class="row">
                         <div class="col-md-12">
-                            <label class="form-label"> Date </label>
-                            <input type="date" class="form-control form-control-sm" name="attendance_date"
-                                id="attendance_date" formControlName="attendance_date"
-                                [ngClass]="{ 'is-invalid': submitted && f.attendance_date?.errors }">
-                            <div *ngIf="(submitted || f.attendance_date?.touched) && f.attendance_date?.errors?.required"
-                                class="invalid-feedback"> Date is
+                            <label class="form-label"> Year </label>
+                            <select id="yearSelect" class="form-select" formControlName="year">
+                                <option value="" disabled selected>Select Year</option>
+                                <option *ngFor="let year of years" [value]="year">
+                                    {{ year }}
+                                </option>
+                            </select>
+                            <div *ngIf="(submitted || g.year?.touched) && g.year?.errors?.required"
+                                class="invalid-feedback">
+                                Year is
+                                required
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label"> Month </label>
+                            <select id="monthSelect" class="form-select" formControlName="month">
+                                <option value="" disabled selected>Select Month</option>
+                                <option *ngFor="let month of months" [value]="month.value">
+                                    {{ month.name }}
+                                </option>
+                            </select>
+                            <div *ngIf="(submitted || g.month?.touched) && g.month?.errors?.required"
+                                class="invalid-feedback"> Month is
                                 required
                             </div>
                         </div>
@@ -277,27 +339,171 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
+<!--   payslip  View -->
 <div class="modal fade" id="payslip" tabindex="-1" aria-labelledby="payslipLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <strong>Generate Payslip</strong>
+                <strong>Get Payslip</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body ">
+                <form [formGroup]="payslipView">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="form-label"> Year </label>
+                            <select id="yearSelect" class="form-select" [(ngModel)]="selectedYear"
+                                formControlName="payslip_year">
+                                <option *ngFor="let year of years" [value]="year">
+                                    {{ year }}
+                                </option>
+                            </select>
+                            <div *ngIf="(submitted || f.payslip_year?.touched) && f.payslip_year?.errors?.required"
+                                class="invalid-feedback">
+                                Year is
+                                required
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label"> Month </label>
+                            <select id="monthSelect" class="form-select" formControlName="payslip_month"
+                                [(ngModel)]="selectedMonth">
+                                <option *ngFor="let month of months" [value]="month.value">
+                                    {{ month.name }}
+                                </option>
+                            </select>
+                            <div *ngIf="(submitted || f.payslip_month?.touched) && f.payslip_month?.errors?.required"
+                                class="invalid-feedback"> Month is
+                                required
+                            </div>
+                        </div>
 
+                    </div>
+                    <div class="mt-2 col-md-12 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-success btn-sm">Submit</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
+<!-- Payslip Generator -->
+<div class="modal fade" id="payslipGenerate" tabindex="-1" aria-labelledby="payslipGenerateLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <strong>Generate Payslip</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body ">
+                <form [formGroup]="payslipForm" (ngSubmit)="Payslip_generatePDF()">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label>Employee ID</label>
+                            <input type="text" formControlName="employeeId" class="form-control" numbersOnly
+                                placeholder="Enter Employee ID">
+                        </div>
+                        <div class="col-md-4">
+                            <label>CTC</label>
+                            <input type="text" formControlName="ctc" class="form-control" placeholder="Enter CTC"
+                                numbersOnly>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Other Allowance</label>
+                            <input type="text" formControlName="otherAllowance" class="form-control" numbersOnly>
+                        </div>
+                    </div>
+
+                    <!-- Allowances -->
+                    <div class="card mb-3">
+                        <div class="card-header d-flex justify-content-between">
+                            <span>Allowances</span>
+                            <button type="button" class="btn btn-sm btn-primary" (click)="addAllowance()">+ Add</button>
+                        </div>
+                        <div class="card-body" formArrayName="allowances">
+                            <div class="row mb-2" *ngFor="let allowance of allowances.controls; let i=index"
+                                [formGroupName]="i">
+                                <div class="col-md-3"><input type="text" class="form-control" placeholder="Name"
+                                        formControlName="name">
+                                </div>
+                                <div class="col-md-3"><input type="text" class="form-control" placeholder="Type"
+                                        formControlName="type">
+                                </div>
+                                <div class="col-md-3"><input type="number" class="form-control" placeholder="Amount"
+                                        formControlName="amount" (input)="calculateTotals()">
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="button" class="btn btn-sm btn-danger" (click)="removeAllowance(i)">
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deductions -->
+                    <div class="card mb-3">
+                        <div class="card-header d-flex justify-content-between">
+                            <span>Deductions</span>
+                            <button type="button" class="btn btn-sm btn-primary" (click)="addDeduction()">+ Add</button>
+                        </div>
+                        <div class="card-body" formArrayName="deductions">
+                            <div class="row mb-2" *ngFor="let deduction of deductions.controls; let i=index"
+                                [formGroupName]="i">
+                                <div class="col-md-3"><input type="text" class="form-control" placeholder="Name"
+                                        formControlName="name">
+                                </div>
+                                <div class="col-md-3"><input type="text" class="form-control" placeholder="Type"
+                                        formControlName="type">
+                                </div>
+                                <div class="col-md-3"><input type="number" class="form-control" placeholder="Amount"
+                                        formControlName="amount" (input)="calculateTotals()">
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="button" class="btn btn-sm btn-danger" (click)="removeDeduction(i)">
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Totals -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label>Total Allowances</label>
+                            <input type="text" formControlName="total_Allowances" class="form-control" readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Total Deductions</label>
+                            <input type="text" formControlName="total_Deductions" class="form-control" readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Take Home Salary</label>
+                            <input type="text" formControlName="take_Home_Salary" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-row justify-content-between">
+                        <button type="button" class="btn btn-primary" (click)="Payslip_generatePDF()">Preview
+                            PDF</button>
+                        <button type="submit" class="btn btn-success">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- releavingLetter generator -->
 <div class="modal fade" id="relieving" tabindex="-1" aria-labelledby="relievingLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <strong>Generate Relieving Letter</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body ">
-                <form [formGroup]="relievingForm" (ngSubmit)="Reliving_generatePDF()">
+                <form [formGroup]="relievingForm" (ngSubmit)="Relieving_generatePDF()">
                     <div class="row">
                         <div class="col-md-4">
                             <label class="form-label"> Employee ID </label>
@@ -394,11 +600,13 @@
         </div>
     </div>
 </div>
+<!-- ServiceLetter generator -->
 <div class="modal fade" id="service" tabindex="-1" aria-labelledby="serviceLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <strong>Generate Service Letter</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body ">
                 <form [formGroup]="serviceForm" (ngSubmit)="Payslip_generatePDF()">
@@ -468,11 +676,13 @@
         </div>
     </div>
 </div>
+<!-- Add Qualifications -->
 <div class="modal fade" id="qualification" tabindex="-1" aria-labelledby="qualificationLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <strong>Add qualification </strong>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body ">
                 <form [formGroup]="qualificationForm" (ngSubmit)="newQualification()">
@@ -525,11 +735,13 @@
         </div>
     </div>
 </div>
+<!-- Add LEave Request -->
 <div class="modal fade" id="leaveRequest" tabindex="-1" aria-labelledby="leaveRequestLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content">
             <div class="modal-header">
                 <strong>Raise a Request</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body ">
@@ -556,13 +768,13 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label"> Leave Type </label>
-                        <select class="form-control form-control-sm ml-2" formControlName="leaveType"
-                            [ngClass]="{ 'is-invalid': submitted && f.leaveType?.errors }">
-                            <option value="">-- Select Type --</option>
-                            <option *ngFor="let comp of LeaveTypeList" [value]="comp.id">
-                                {{ comp.name }}
-                            </option>
-                        </select>
+                            <select class="form-control form-control-sm ml-2" formControlName="leaveType"
+                                [ngClass]="{ 'is-invalid': submitted && f.leaveType?.errors }">
+                                <option value="">-- Select Type --</option>
+                                <option *ngFor="let comp of LeaveTypeList" [value]="comp.id">
+                                    {{ comp.name }}
+                                </option>
+                            </select>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label"> Remarks </label>

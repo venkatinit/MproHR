@@ -9,6 +9,8 @@ import Swal from 'sweetalert2';
 import { ApiResponse } from 'src/app/models/api-response';
 import { ToastrService } from 'ngx-toastr';
 declare var $: any;
+import { Editor, Toolbar } from 'ngx-editor';
+
 @Component({
   selector: 'app-ca-tickets',
   templateUrl: './ca-tickets.component.html',
@@ -19,8 +21,7 @@ export class CaTicketsComponent implements OnInit, OnDestroy {
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions: DataTables.Settings = {};
   action: 'create' | 'update' = 'create';
-  addBank: FormGroup;
-  form: FormGroup;
+  addreply: FormGroup;
   submitted: boolean = false;
   errors: string[] = [];
   spinLoader = false;
@@ -31,6 +32,19 @@ export class CaTicketsComponent implements OnInit, OnDestroy {
   originalBankList: any[] = [];
   filteredBankList: any[] = [];
   companyId: number = 2;
+  editor!: Editor;   // ngx-editor instance
+  toolbar: Toolbar = [
+    ['bold', 'italic'],
+    ['underline', 'strike'],
+    ['ordered_list', 'bullet_list'],
+    [{ heading: ['h1', 'h2', 'h3', 'h4'] }],
+    ['link', 'image'],
+    ['align_left', 'align_center', 'align_right'],
+  ];
+  showReplyForm = false;
+  toggleReplyForm() {
+    this.showReplyForm = !this.showReplyForm;
+  }
   constructor(
     private modalService: NgbModal,
     private toast: ToastrService,
@@ -38,7 +52,7 @@ export class CaTicketsComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private api: ApiService
   ) {
-    this.addBank = this.formBuilder.group({
+    this.addreply = this.formBuilder.group({
       // company: ['', [Validators.required]],
       bank_name: ['', [Validators.required]],
       branch_name: ['', [Validators.required]],
@@ -52,10 +66,7 @@ export class CaTicketsComponent implements OnInit, OnDestroy {
     });
   }
   ngOnInit(): void {
-    this.form = this.formBuilder.group({
-      company: [{ value: '', disabled: true }, Validators.required],
-      // other controls...
-    });
+    this.editor = new Editor();
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -71,76 +82,37 @@ export class CaTicketsComponent implements OnInit, OnDestroy {
   searchTerm = '';
   documents = [
     {
-      "profileImage": "assets/img/profile-img.jpg",
-      "name": "Venkatesh",
-      "timeAgo": "2 mins ago",
-      "message": "Completed initial phase of invoice module integration. Awaiting client feedback for next steps.",
-      "status": "Open",
-      "priority": "High Priority",
-      "team": "Development Team"
+      id: 'E1M1P1R1O',
+      name: 'Venkatesh',
+      profileImage: 'assets/img/profile-img.jpg',
+      timeAgo: '2 mins ago',
+      subject: 'Help needed for payment failure',
+      message: 'Hi, I faced an issue with payment processing. Please look into it urgently.',
+      status: 'Open',
+      priority: 'High',
+      team: 'Development Team'
     },
     {
-      "profileImage": "assets/img/profile-img.jpg",
-      "name": "Priya Sharma",
-      "timeAgo": "10 mins ago",
-      "message": "Started working on API validation for quotation service. Expect to finish by EOD.",
-      "status": "In Progress",
-      "priority": "Medium Priority",
-      "team": "Backend Team"
+      id: 'E1M1P1R2O',
+      name: 'Priya',
+      profileImage: 'assets/img/profile-img.jpg',
+      timeAgo: '10 mins ago',
+      subject: 'Request for access to HR portal',
+      message: 'I am unable to log in to the HR portal, kindly help me reset my credentials.',
+      status: 'Pending',
+      priority: 'Medium',
+      team: 'HR Department'
     },
     {
-      "profileImage": "assets/img/profile-img.jpg",
-      "name": "Ravi Kumar",
-      "timeAgo": "25 mins ago",
-      "message": "UI adjustments for responsive sidebar are complete. Please review on staging.",
-      "status": "Closed",
-      "priority": "Low Priority",
-      "team": "Frontend Team"
-    },
-    {
-      "profileImage": "assets/img/profile-img.jpg",
-      "name": "Neha Patel",
-      "timeAgo": "1 hour ago",
-      "message": "Document upload issue identified. Fix deployed for testing.",
-      "status": "Open",
-      "priority": "High Priority",
-      "team": "QA Team"
-    },
-    {
-      "profileImage": "assets/img/profile-img.jpg",
-      "name": "Amit Singh",
-      "timeAgo": "2 hours ago",
-      "message": "Working on role-based access for admin panel. Need clarification on CA permissions.",
-      "status": "In Progress",
-      "priority": "High Priority",
-      "team": "Development Team"
-    },
-    {
-      "profileImage": "assets/img/profile-img.jpg",
-      "name": "Sneha Gupta",
-      "timeAgo": "3 hours ago",
-      "message": "Testing payroll calculations for accuracy. Found minor discrepancies in deductions.",
-      "status": "Open",
-      "priority": "Medium Priority",
-      "team": "Finance Team"
-    },
-    {
-      "profileImage": "assets/img/profile-img.jpg",
-      "name": "Rahul Verma",
-      "timeAgo": "5 hours ago",
-      "message": "Created new endpoints for employee onboarding. Waiting for UI integration.",
-      "status": "Open",
-      "priority": "High Priority",
-      "team": "API Team"
-    },
-    {
-      "profileImage": "assets/img/profile-img.jpg",
-      "name": "Divya Nair",
-      "timeAgo": "Yesterday",
-      "message": "Updated company master layout and fixed alignment issues in dashboard view.",
-      "status": "Closed",
-      "priority": "Low Priority",
-      "team": "Design Team"
+      id: 'E1M1P1R3O',
+      name: 'Rahul',
+      profileImage: 'assets/img/profile-img.jpg',
+      timeAgo: '30 mins ago',
+      subject: 'Bug in employee registration form',
+      message: 'There is a validation issue in the registration form when entering mobile numbers.',
+      status: 'In Progress',
+      priority: 'High',
+      team: 'Frontend Team'
     }
   ]
 
@@ -150,24 +122,14 @@ export class CaTicketsComponent implements OnInit, OnDestroy {
   filterDocuments() {
     const term = this.searchTerm.trim().toLowerCase();
     this.filteredDocuments = this.documents.filter(doc =>
-      doc.name.toLowerCase().includes(term)
+      doc.id.toLowerCase().includes(term)
     );
   }
-  // Search Filter end
-
-  isCompanyFilterVisible: boolean = false;
-  toggleCompanyFilter() {
-    this.isCompanyFilterVisible = !this.isCompanyFilterVisible;
-    const companyControl = this.form.get('company');
-    if (this.isCompanyFilterVisible) {
-      companyControl?.enable();
-    } else {
-      companyControl?.disable();
-      companyControl?.setValue('');
-    }
+  selectDocument(doc: any) {
+    this.selectedDoc = doc;
   }
   get f() {
-    return this.addBank.controls;
+    return this.addreply.controls;
   }
   getCompanyList() {
     this.api.get('api/company/all').subscribe((res: any) => {
@@ -175,7 +137,7 @@ export class CaTicketsComponent implements OnInit, OnDestroy {
     });
   }
   getBanks() {
-    if (this.form.invalid) return;
+    if (this.addreply.invalid) return;
     const companyId = this.util.decrypt_Text(localStorage.getItem('company_id')) || '';
     const queryParams = new URLSearchParams({
       companyId: companyId,
@@ -188,10 +150,10 @@ export class CaTicketsComponent implements OnInit, OnDestroy {
       this.dtTrigger.next(null); // initialize new
     });
   }
-  saveBank() {
+  submit() {
     console.log('✅ create form submitted');
     this.submitted = true;
-    if (!this.addBank.valid) {
+    if (!this.addreply.valid) {
       return;
     }
     this.spinLoader = true;
@@ -200,22 +162,22 @@ export class CaTicketsComponent implements OnInit, OnDestroy {
     const body = {
       id: 0,
       company_Id: companyId,
-      bank_Name: this.addBank.get('bank_name')?.value,
-      branch: this.addBank.get('branch_name')?.value,
-      address: this.addBank.get('bank_address')?.value,
-      account_Number: this.addBank.get('account_number')?.value,
-      account_Type: this.addBank.get('account_type')?.value,
-      bM_Name: this.addBank.get('bm_name')?.value,
-      bM_Contact_No: this.addBank.get('bm_contact_no')?.value,
+      bank_Name: this.addreply.get('bank_name')?.value,
+      branch: this.addreply.get('branch_name')?.value,
+      address: this.addreply.get('bank_address')?.value,
+      account_Number: this.addreply.get('account_number')?.value,
+      account_Type: this.addreply.get('account_type')?.value,
+      bM_Name: this.addreply.get('bm_name')?.value,
+      bM_Contact_No: this.addreply.get('bm_contact_no')?.value,
       branch_Contact_No: '',
-      opening_Balance: this.addBank.get('opening_Balance')?.value,
+      opening_Balance: this.addreply.get('opening_Balance')?.value,
       txn_Start_Date: new Date(),
       created_At: new Date(),
       status: true,
     };
     this.api.post(url, body).subscribe(
       (res: any) => {
-        this.addBank.reset();
+        this.addreply.reset();
         this.submitted = false;
         this.errors = [];
         this.spinLoader = false;
@@ -239,14 +201,14 @@ export class CaTicketsComponent implements OnInit, OnDestroy {
     this.api.get(`api/accounting/bank/${id}`).subscribe(
       (res: any) => {
         if (res && res.data && res.succeeded && res.data.status) {
-          this.addBank.controls['bank_name'].setValue(res.data.bank_Name);
-          this.addBank.controls['branch_name'].setValue(res.data.branch);
-          this.addBank.controls['bank_address'].setValue(res.data.address);
-          this.addBank.controls['account_number'].setValue(res.data.account_Number);
-          this.addBank.controls['account_type'].setValue(res.data.account_Type);
-          this.addBank.controls['bm_name'].setValue(res.data.bM_Name);
-          this.addBank.controls['bm_contact_no'].setValue(res.data.bM_Contact_No);
-          this.addBank.controls['opening_Balance'].setValue(res.data.opening_Balance);
+          this.addreply.controls['bank_name'].setValue(res.data.bank_Name);
+          this.addreply.controls['branch_name'].setValue(res.data.branch);
+          this.addreply.controls['bank_address'].setValue(res.data.address);
+          this.addreply.controls['account_number'].setValue(res.data.account_Number);
+          this.addreply.controls['account_type'].setValue(res.data.account_Type);
+          this.addreply.controls['bm_name'].setValue(res.data.bM_Name);
+          this.addreply.controls['bm_contact_no'].setValue(res.data.bM_Contact_No);
+          this.addreply.controls['opening_Balance'].setValue(res.data.opening_Balance);
           this.submitted = false;
           this.errors = [];
         }
@@ -264,7 +226,7 @@ export class CaTicketsComponent implements OnInit, OnDestroy {
   updateBank() {
     console.log('✅ Update form submitted');
     this.submitted = true;
-    if (!this.addBank.valid) {
+    if (!this.addreply.valid) {
       return;
     }
     this.spinLoader = true;
@@ -273,22 +235,22 @@ export class CaTicketsComponent implements OnInit, OnDestroy {
     const body = {
       "id": this.cateId,
       "company_Id": companyId,
-      "bank_Name": this.addBank.get("bank_name").value,
-      "branch": this.addBank.get("branch_name").value,
-      "address": this.addBank.get("bank_address").value,
-      "account_Number": this.addBank.get("account_number").value,
-      "account_Type": this.addBank.get("account_type").value,
-      "bM_Name": this.addBank.get("bm_name").value,
-      "bM_Contact_No": this.addBank.get("bm_contact_no").value,
+      "bank_Name": this.addreply.get("bank_name").value,
+      "branch": this.addreply.get("branch_name").value,
+      "address": this.addreply.get("bank_address").value,
+      "account_Number": this.addreply.get("account_number").value,
+      "account_Type": this.addreply.get("account_type").value,
+      "bM_Name": this.addreply.get("bm_name").value,
+      "bM_Contact_No": this.addreply.get("bm_contact_no").value,
       "branch_Contact_No": " ",
-      "opening_Balance": this.addBank.get("opening_Balance").value,
+      "opening_Balance": this.addreply.get("opening_Balance").value,
       "txn_Start_Date": new Date(),
       "created_At": new Date(),
       "status": true
     };
     this.api.put(url, body).subscribe(
       (res: any) => {
-        this.addBank.reset();
+        this.addreply.reset();
         this.submitted = false;
         this.errors = [];
         this.toast.success('Bank Updated successfully', 'Success');

@@ -1,0 +1,100 @@
+.hr-calendar {
+    .month-card {
+        border-radius: 8px;
+        overflow: hidden;
+        height: 285px !important;
+    }
+
+    .weekdays {
+        display: flex;
+        gap: 2px;
+        margin-bottom: 6px;
+
+        .weekday {
+            flex: 1 0 0;
+            font-size: 11px;
+            text-align: center;
+            color: #666;
+        }
+    }
+
+    .weeks {
+        .week {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 4px;
+
+            .day {
+                flex: 1 0 0;
+                height: 30px;
+                width: 30px;
+                border-radius: 6px;
+                padding: 4px;
+                font-size: 12px;
+                background: #fff;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                cursor: pointer;
+                position: relative;
+                transition: transform .12s ease, box-shadow .12s ease;
+
+                &:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.06);
+                }
+
+                &.other-month {
+                    opacity: 0.35;
+                }
+
+                &.weekend {
+                    background: #f2f2f6;
+                    color: #444;
+                }
+
+                &.holiday {
+                    background: #fff0f0;
+                    border: 1px solid #ffd6d6;
+                    color: #b11;
+                }
+
+                .date-number {
+                    font-weight: 600;
+                    font-size: 13px;
+                }
+                .holiday-label {
+                    margin-top: 6px;
+                    font-size: 11px;
+                    color: #b11;
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+
+    .edit-form {
+        .card {
+            border-radius: 8px;
+
+            .card-body {
+                form .form-label {
+                    font-size: 12px;
+                }
+            }
+        }
+    }
+}
+
+/* responsive tweaks */
+@media (max-width: 768px) {
+    .hr-calendar .month-card {
+        min-height: 200px;
+    }
+
+    .hr-calendar .day {
+        height: 48px;
+    }
+}
+

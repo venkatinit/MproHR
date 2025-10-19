@@ -28,6 +28,8 @@ import { ProfessionalTaxComponent } from './professional-tax/professional-tax.co
 import { LwfComponent } from './lwf/lwf.component';
 import { StatutoryBonusComponent } from './statutory-bonus/statutory-bonus.component';
 import { StatutoryComponentComponent } from './statutory-component/statutory-component.component';
+import { AdvanceSalaryComponent } from './advance-salary/advance-salary.component';
+import { BulkAttendanceComponent } from './masters/bulk-attendance/bulk-attendance.component';
 
 const routes: Routes = [
   { path: 'add-employee', component: AddEmployeeComponent },
@@ -52,7 +54,7 @@ const routes: Routes = [
   { path: 'allowances', component: PayrollAllowancesComponent },
   { path: 'deductions', component: PayrollDeductionsComponent },
   { path: 'reimbersement', component: PayrollReimbursementComponent },
-  { path: 'employee-attendance', component: AttendanceComponent },
+  { path: 'employee-attendance/:id', component: AttendanceComponent },
   { path: 'hrm', component: HrDashboardComponent },
   { path: 'employee_dashboard/:id', component: EmployeeDashboardComponent },
   { path: 'salary_Components', component: SalaryComponentsComponent },
@@ -62,7 +64,8 @@ const routes: Routes = [
   { path: 'labour_welfare_fund', component: LwfComponent },
   { path: 'statutory_bonus', component: StatutoryBonusComponent },
   { path: 'statutory_components', component: StatutoryComponentComponent },
-
+  { path: 'advance_salary', component: AdvanceSalaryComponent },
+  { path: 'bulk_attendance', component: BulkAttendanceComponent },
 
 ];
 

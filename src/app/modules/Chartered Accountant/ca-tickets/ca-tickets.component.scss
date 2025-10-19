@@ -58,3 +58,15 @@
     background-color: antiquewhite;
     color: red;
 }
+
+.active-card {
+    border: 2px solid #007bff;
+    background-color: #f0f8ff;
+    transition: all 0.3s ease;
+}
+
+.mail-body {
+    font-size: 15px;
+    line-height: 1.6;
+    margin-top: 10px;
+}

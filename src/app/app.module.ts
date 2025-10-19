@@ -17,7 +17,7 @@ import { AuthService } from './services/auth.service';
 import { ToastrModule } from "ngx-toastr";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from './shared-module/shared-module.module';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModalModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ApiService } from './api.client';
 import { AboutCompanyComponent } from './about-company/about-company.component';
@@ -72,6 +72,8 @@ import { OrgTaskAssignComponent } from './modules/Organisation/org-task-assign/o
 import { OrgTicketsComponent } from './modules/Organisation/org-tickets/org-tickets.component';
 import { CaDashboardComponent } from './modules/Chartered Accountant/ca-dashboard/ca-dashboard.component';
 import { OrgDashboardComponent } from './modules/Organisation/org-dashboard/org-dashboard.component';
+import { NgxEditorMenuComponent, NgxEditorModule } from "ngx-editor";
+import { HolidayCalenderComponent } from './modules/Organisation/holiday-calender/holiday-calender.component';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 const APP_CONTAINERS = [DefaultLayoutComponent];
 @NgModule({
@@ -128,9 +130,13 @@ const APP_CONTAINERS = [DefaultLayoutComponent];
     OrgTicketsComponent,
     CaDashboardComponent,
     OrgDashboardComponent,
+    HolidayCalenderComponent,
+   
   ],
   imports: [
     CommonModule,
+    NgxEditorModule,
+    NgbModalModule,
     RouterModule,
     BrowserModule,
     BrowserAnimationsModule,
@@ -148,6 +154,7 @@ const APP_CONTAINERS = [DefaultLayoutComponent];
       progressBar: true
     }),
     AppRoutingModule,
+    NgxEditorMenuComponent
   ],
   providers: [
     AuthGuard,

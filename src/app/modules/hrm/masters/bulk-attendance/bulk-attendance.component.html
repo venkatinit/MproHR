@@ -1,0 +1,98 @@
+<div class="d-flex flex-row justify-content-between" *ngIf="attendanceData.length > 0">
+    <button class="btn btn-primary btn-sm btn-pill">
+        <div class="details_brief" data-bs-toggle="modal" data-bs-target="#bulkAttendance">
+            Search
+        </div>
+    </button>
+    <button class="btn btn-sm btn-primary btn-pill" (click)="exportToExcel()">
+        <div class="details_brief">
+            <i class="bi bi-file-earmark-excel"></i> Export to Excel
+        </div>
+    </button>
+</div>
+<div *ngIf="attendanceData.length > 0" class="mt-3 table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th colspan="34" class="text-center text-danger">Form D</th>
+            </tr>
+            <tr>
+                <th colspan="34" class="text-center text-danger">
+                    Attendance Register -
+                    <span *ngIf="BulkAttendance.value.month && BulkAttendance.value.year">
+                        {{ getMonthName(BulkAttendance.value.month) }} {{ BulkAttendance.value.year }}
+                    </span>
+                </th>
+            </tr>
+            <tr>
+            <th colspan="7" class="text-center">Establishment Name: {{ establishmentName }}</th>
+            <th colspan="7" class="text-center">Director Name: {{ directorName }}</th>
+            <th colspan="7" class="text-center">LIN No: {{ linNo }}</th>
+            <th colspan="7" class="text-center">Wages Period From: {{ wagesPeriodFrom | date: 'dd-MM-yyyy' }}</th>
+            <th colspan="6" class="text-center">Wages Period To: {{ wagesPeriodTo | date: 'dd-MM-yyyy' }}</th>  </tr>
+            <tr>
+                <th>Employee Code</th>
+                <th>Employee Name</th>
+                <th>Department</th>
+                <th *ngFor="let day of [].constructor(31); let i = index">
+                    Day {{ i + 1 }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let emp of attendanceData">
+                <td>{{ emp.employeeCode }}</td>
+                <td>{{ emp.employeeName }}</td>
+                <td>{{ emp.department }}</td>
+                <td *ngFor="let d of emp.days">{{ d }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="bulkAttendance" tabindex="-1" aria-labelledby="bulkAttendanceLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <strong>Get bulkAttendance</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body ">
+                <form [formGroup]="BulkAttendance" (ngSubmit)="onSubmitBulkAttendance()">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="form-label"> Year </label>
+                            <select id="yearSelect" class="form-select" formControlName="year">
+                                <option value="" disabled selected>Select Year</option>
+                                <option *ngFor="let year of years" [value]="year">
+                                    {{ year }}
+                                </option>
+                            </select>
+                            <div *ngIf="(submitted || g.year?.touched) && g.year?.errors?.required"
+                                class="invalid-feedback">
+                                Year is
+                                required
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label"> Month </label>
+                            <select id="monthSelect" class="form-select" formControlName="month">
+                                <option value="" disabled selected>Select Month</option>
+                                <option *ngFor="let month of months" [value]="month.value">
+                                    {{ month.name }}
+                                </option>
+                            </select>
+                            <div *ngIf="(submitted || g.month?.touched) && g.month?.errors?.required"
+                                class="invalid-feedback"> Month is
+                                required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-2 col-md-12 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-success btn-sm">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

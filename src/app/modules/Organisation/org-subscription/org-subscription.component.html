@@ -1,1 +1,85 @@
-<p>org-subscription works!</p>
+<div class="container mt-4">
+    <div class="card p-3 shadow-sm">
+        <h5 class="mb-3">Generate Payslip</h5>
+
+        <form [formGroup]="payslipForm" (ngSubmit)="fetchPayslip()" class="d-flex gap-2">
+            <input formControlName="empId" class="form-control" placeholder="Enter Employee ID" />
+            <button type="submit" class="btn btn-primary" [disabled]="loading">
+                {{ loading ? 'Loading...' : 'Fetch Payslip' }}
+            </button>
+        </form>
+    </div>
+
+    <div *ngIf="payslipData" class="card mt-4 p-4 shadow payslip-card">
+        <div class="text-center mb-4">
+            <h4><strong>Company Name Pvt Ltd</strong></h4>
+            <p><strong>Payslip for {{ payslipData.payPeriod }}</strong></p>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <p><strong>Employee ID:</strong> {{ payslipData.empId }}</p>
+                <p><strong>Name:</strong> {{ payslipData.empName }}</p>
+                <p><strong>Department:</strong> {{ payslipData.department }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Designation:</strong> {{ payslipData.designation }}</p>
+                <p><strong>Pay Period:</strong> {{ payslipData.payPeriod }}</p>
+            </div>
+        </div>
+
+        <table class="table table-bordered text-center align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Earnings</th>
+                    <th>Amount (₹)</th>
+                    <th>Deductions</th>
+                    <th>Amount (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Basic</td>
+                    <td>{{ payslipData.basic | number:'1.2-2' }}</td>
+                    <td>PF</td>
+                    <td>{{ payslipData.pf | number:'1.2-2' }}</td>
+                </tr>
+                <tr>
+                    <td>HRA</td>
+                    <td>{{ payslipData.hra | number:'1.2-2' }}</td>
+                    <td>ESIC</td>
+                    <td>{{ payslipData.esic | number:'1.2-2' }}</td>
+                </tr>
+                <tr>
+                    <td>Conveyance</td>
+                    <td>{{ payslipData.conveyance | number:'1.2-2' }}</td>
+                    <td>Tax</td>
+                    <td>{{ payslipData.tax | number:'1.2-2' }}</td>
+                </tr>
+                <tr>
+                    <td>Other Allowances</td>
+                    <td>{{ payslipData.allowances | number:'1.2-2' }}</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="table-secondary">
+                    <td><strong>Total Earnings</strong></td>
+                    <td><strong>{{ payslipData.grossEarnings | number:'1.2-2' }}</strong></td>
+                    <td><strong>Total Deductions</strong></td>
+                    <td><strong>{{ payslipData.deductions | number:'1.2-2' }}</strong></td>
+                </tr>
+                <tr class="table-success">
+                    <td colspan="4" class="text-end">
+                        <strong>Net Pay: ₹ {{ payslipData.netPay | number:'1.2-2' }}</strong>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="text-end mt-3">
+            <button class="btn btn-outline-secondary btn-sm me-2" (click)="printPayslip()">
+                <i class="bi bi-printer"></i> Print
+            </button>
+        </div>
+    </div>
+</div>

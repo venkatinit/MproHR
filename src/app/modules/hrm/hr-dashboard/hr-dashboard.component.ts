@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CalendarEvent } from 'angular-calendar';
 import { addDays, startOfMonth, endOfMonth, eachDayOfInterval, format } from 'date-fns';
-import { ChartData, ChartOptions } from 'chart.js';
+import { Chart, ChartData, ChartOptions } from 'chart.js';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 type Status = 'Present' | 'Absent' | 'Delayed' | 'Leave';
 @Component({
@@ -11,7 +11,10 @@ type Status = 'Present' | 'Absent' | 'Delayed' | 'Leave';
 })
 export class HrDashboardComponent implements OnInit {
   // Calendar state
+  attendanceChart!: Chart;
+
   viewDate: Date = new Date();
+  filterType: 'daily' | 'monthly' | 'yearly' = 'daily';
 
   // Employee filter
   employees = [
@@ -26,6 +29,72 @@ export class HrDashboardComponent implements OnInit {
     emp3: {}
   };
 
+  stats = {
+    totalEmployees: 5000,
+    checkedIn: 4500,
+    notCheckedIn: 500,
+    onLeave: 456,
+    weeklyOff: 145,
+    holiday: 12,
+    checkedOut: 250
+  };
+  attendanceData = {
+    daily: {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      present: [90, 85, 88, 92, 87, 80, 70],
+      absent: [10, 15, 12, 8, 13, 20, 30]
+    },
+    monthly: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+      present: [88, 90, 92, 87, 85, 89, 10],
+      absent: [12, 10, 8, 13, 15, 11, 20]
+    },
+    yearly: {
+      labels: ['2021', '2022', '2023', '2024'],
+      present: [89, 91, 90, 88],
+      absent: [11, 9, 10, 12]
+    }
+  };
+  loadAttendanceChart() {
+    const selectedData = this.attendanceData[this.filterType];
+
+    if (this.attendanceChart) {
+      this.attendanceChart.destroy(); // Destroy old chart before creating a new one
+    }
+
+    this.attendanceChart = new Chart('attendanceChart', {
+      type: 'bar',
+      data: {
+        labels: selectedData.labels,
+        datasets: [
+          {
+            label: 'Present %',
+            data: selectedData.present,
+            backgroundColor: '#4da3ff'
+          },
+          {
+            label: 'Absent %',
+            data: selectedData.absent,
+            backgroundColor: '#f44336'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            ticks: {
+              callback: function (value) {
+                return value + '%';
+              }
+            }
+          }
+        }
+      }
+    });
+  }
   // Calendar events (built for the current month + employee)
   events: CalendarEvent[] = [];
 
@@ -159,7 +228,10 @@ export class HrDashboardComponent implements OnInit {
   }
 
 
-
+  changeFilter(type: 'daily' | 'monthly' | 'yearly') {
+    this.filterType = type;
+    this.loadAttendanceChart();
+  }
   // payslip
   payslipForm:FormGroup;
 
@@ -174,94 +246,35 @@ ngOnInit(): void {
         total_Deductions: [{ value: 0, disabled: true }],
         take_Home_Salary: [{ value: 0, disabled: true }]
       });
-}
-
-  get allowances(): FormArray {
-    return this.payslipForm.get('allowances') as FormArray;
-  }
-
-  get deductions(): FormArray {
-    return this.payslipForm.get('deductions') as FormArray;
-  }
-
-  addAllowance() {
-    this.allowances.push(this.formBuilder.group({
-      name: ['', Validators.required],
-      type: ['string', Validators.required],
-      amount: [0, Validators.required]
-    }));
-  }
-
-  addDeduction() {
-    this.deductions.push(this.formBuilder.group({
-      name: ['', Validators.required],
-      type: ['string', Validators.required],
-      amount: [0, Validators.required]
-    }));
-  }
-  // payslip.component.ts
-  removeAllowance(index: number) {
-    this.allowances.removeAt(index);
-    this.calculateTotals();
-  }
-
-  removeDeduction(index: number) {
-    this.deductions.removeAt(index);
-    this.calculateTotals();
-  }
-  calculateTotals() {
-    const allowanceTotal = this.allowances.controls.reduce((sum, ctrl) => sum + Number(ctrl.value.amount || 0), 0);
-    const deductionTotal = this.deductions.controls.reduce((sum, ctrl) => sum + Number(ctrl.value.amount || 0), 0);
-
-    this.payslipForm.patchValue({
-      total_Allowances: allowanceTotal,
-      total_Deductions: deductionTotal,
-      take_Home_Salary: allowanceTotal - deductionTotal
-    }, { emitEvent: false });
-  }
-
-  onSubmit() {
-    if (this.payslipForm.invalid) return;
-
-    const payload = this.payslipForm.value;
-    this.api.post('api/payroll/calculate-ctc', payload).subscribe({
-      next: (res: any) => {
-        // this.result = res.data || res;
-      },
-      error: (err) => console.error('Error calling calculate-ctc API', err)
-    });
-    console.log('✅ create form submitted');
-    // this.submitted = true;
-    if (!this.payslipForm.valid) {
-      return;
+  this.loadAttendanceChart();
+  new Chart('pieChart', {
+    type: 'pie',
+    data: {
+      labels: ['Checked In', 'Not Checked In', 'On Leave', 'On Week off', 'Holiday', 'Checked Out'],
+      datasets: [
+        {
+          data: [350, 50, 50, 20, 20, 10],
+          // backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          labels: {
+            color: '#333',       // Label color
+            font: {
+              size: 16,          // Label font size
+              weight: 'bold'
+            }
+          },
+          position: 'right'    // Legend position
+        }
+      }
     }
-    // this.spinLoader = true;
-    // const decryptedUserId = this.util.decrypt_Text(localStorage.getItem('id') || '');
-    const url = 'api/payroll/calculate-ctc';
-    const body = {
-      employeeId: this.payslipForm.get('employeeId')?.value,
-      ctc: this.payslipForm.get('ctc')?.value,
-      otherAllowance: this.payslipForm.get('otherAllowance')?.value,
-
-      allowances: this.payslipForm.get('allowances')?.value || [],
-      deductions: this.payslipForm.get('deductions')?.value || [],
-      total_Allowances: 0, // let backend calculate if not needed
-      total_Deductions: 0,
-      take_Home_Salary: 0
-    };
-    // this.api.post(url, body).subscribe({
-    //   next: (res: any) => {
-    //     console.log('✅ API Success:', res);
-    //     this.toast.success('Payslip calculated successfully');
-    //     // you can store result if needed
-    //     this.result = res.data || res;
-    //   },
-    //   error: (err) => {
-    //     // console.error('❌ API Error:', err);
-    //     this.toast.error('Failed to calculate payslip');
-    //   }
-    // });
-  }
+  });
+}
 }
 
 // import { Component, OnInit } from '@angular/core';

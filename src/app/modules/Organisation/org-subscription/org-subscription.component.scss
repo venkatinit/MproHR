@@ -1,0 +1,16 @@
+.payslip-card {
+  max-width: 800px;
+  margin: auto;
+  background: #fff;
+  border-radius: 8px;
+}
+
+@media print {
+  .btn, form, h5 {
+    display: none !important;
+  }
+  .payslip-card {
+    box-shadow: none;
+    border: none;
+  }
+}

@@ -1,8 +1,9 @@
 <!-- ======= Sidebar ======= -->
-<aside id="sidebar" class="sidebar" [ngClass]="{ 'collapsed-sidebar': isSidebarCollapsed }">
-  <a class="d-flex align-items-center justify-content-center logo">
+<aside id="sidebar" class="sidebar" [ngClass]="{ 'collapsed-sidebar': isSidebarCollapsed }"
+  [class.show]="!isSidebarCollapsed">
+  <!-- <a class="d-flex align-items-center justify-content-center logo">
     <img src="assets/img/ehd.png" width="130px" alt="">
-  </a>
+  </a> -->
   <ul class="sidebar-nav">
     <li class="nav-item">
       <a class="nav-link">
@@ -278,7 +279,6 @@
                 <span>Applicant List</span>
               </a>
             </li>
-
           </ul>
         </li>
         <li class="nav-item">
@@ -312,6 +312,11 @@
             <li>
               <a routerLink="/hrm/leave_balance_list">
                 <span>Balance Leaves</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/holiday_calendar">
+                <span>Holiday Calendar</span>
               </a>
             </li>
           </ul>
@@ -470,9 +475,9 @@
   </ul> -->
 </aside>
 <main id="main" class="main" style="z-index: 0;" [ngClass]="{ 'expanded-main': isSidebarCollapsed }">
-  <div id="header" class="header d-flex align-items-center pt-2 ">
-    <div class="d-flex align-items-center   w-100">
-      <ul class="d-flex align-items-center" style="list-style-type: none; padding: 0px;">
+  <div id="header" class="header  d-flex flex-row align-items-center justify-content-between">
+    <div class="d-flex align-items-center">
+      <ul class="d-flex align-items-center" style="list-style-type: none; padding: 0px; margin-bottom: 0px !important;">
         <li class="nav-item dropdown   ">
           <a class="nav-link nav-profile d-flex align-items-center pe-0  ">
             <button class="btn" type="button" (click)="toggleSidebar()">
@@ -577,11 +582,16 @@
         </li>
       </ul>
     </div>
-    <nav class="header-nav ms-auto">
-      <ul class="d-flex align-items-center">
-        <li class="nav-item dropdown pe-3">
+    <div>
+      <a class="d-flex align-items-center justify-content-center logo">
+        <img src="assets/img/ehd.png" width="130px" alt="">
+      </a>
+    </div>
+    <div class=" d-flex align-items-center  ">
+      <ul class="d-flex align-items-center" style="list-style: none; margin-bottom: 0px !important;">
+        <li class="nav-item dropdown  ">
           <a class="nav-link nav-profile d-flex align-items-center pe-0" data-bs-toggle="dropdown">
-            <img src="assets/img/animate_icons/gear.gif" alt="Profile" class="rounded-circle">
+            <img src="assets/img/animate_icons/gear.gif" style="width:50px;" alt="Profile" class="rounded-circle">
           </a>
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
@@ -635,7 +645,7 @@
           </ul>
         </li>
       </ul>
-    </nav>
+    </div>
   </div>
   <router-outlet></router-outlet>
   <footer class="footer">

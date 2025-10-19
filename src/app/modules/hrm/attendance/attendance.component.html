@@ -1,198 +1,71 @@
-<div class="row ">
-    <div class="col-xs-12">
-        <div class="card">
-            <div class="card-header d-flex align-items-center">
-                <!-- Title Column -->
-                <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6'">
-                    <strong>Attendance List</strong>
+<div class="container my-4" *ngIf="employeeDetails">
+    <div class="card shadow-lg p-4">
+        <h3 class="text-start text-primary mb-3">Employee Attendance Report</h3>
+
+        <!-- Employee Info -->
+        <div class="employee-details mb-3">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Employee ID:</strong> {{ employeeDetails.employee_Code }}</p>
+                    <p><strong>Full Name:</strong> {{ employeeDetails.full_Name }}</p>
+                    <p><strong>Designation:</strong> {{ employeeDetails.designation }}</p>
                 </div>
-                <!-- Company Filter (shown only if enabled) -->
-                <div class="col-md-4 d-flex flex-row align-items-center" *ngIf="isCompanyFilterVisible">
-                    <form class="d-flex" [formGroup]="form" (ngSubmit)="getAttendance()">
-                        <label for="company"><strong>Company Name</strong></label>
-                        <div>
-                            <select id="companyFilter" class="form-control form-control-sm ml-2" formControlName="company"
-                                [ngClass]="{ 'is-invalid': submitted && f.company.errors }">
-                                <option value="">-- Select Company --</option>
-                                <option *ngFor="let comp of companyList" [value]="comp.Id">
-                                    {{ comp.CompanyName }}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="bg-success text-white rounded save" [disabled]="form.invalid">Search</button>
-                        </div>
-                    </form>
-                </div>
-                <!-- Buttons Column -->
-                <!-- <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6 text-end'" class="text-end">
-                    <a class="btn btn-primary btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal">
-                        <i class="fa fa-plus" aria-hidden="true"></i> New
-                    </a>
-                    <a class="btn btn-primary btn-sm me-2 text-white" role="button" (click)="toggleCompanyFilter()">
-                        <i class="fa-solid fa-filter"></i>
-                    </a>
-                    <a class="btn btn-primary btn-sm me-2 text-white" role="button" (click)="toggleCompanyFilter()">
-                        {{ isCompanyFilterVisible : 'Bulk Upload' }}
-                    </a>
-                </div> -->
-                <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6 text-end'" class="text-end">
-                    <!-- New Button -->
-                    <a class="btn btn-primary btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal">
-                        <i class="fa fa-plus"></i> New
-                    </a>
-
-                    <!-- Show/Hide Company Button -->
-                    <a class="btn btn-primary btn-sm me-2 text-white" role="button" (click)="toggleCompanyFilter()">
-                        <i class="fa-solid fa-filter"></i>
-                    </a>
-
-                    <!-- Bulk Upload Dropdown -->
-                    <div class="btn-group">
-                        <button class="btn btn-primary btn-sm dropdown-toggle text-white" type="button"
-                            id="bulkUploadDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fa fa-upload"></i> Bulk Upload
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="bulkUploadDropdown">
-                            <li>
-                                <a class="dropdown-item" (click)="triggerFileInput('attendance')">Upload Attendance
-                                    Excel</a>
-                            </li>
-                            <!-- <li>
-                                <a class="dropdown-item" (click)="triggerFileInput('employees')">Upload Employees
-                                    Excel</a>
-                            </li> -->
-                        </ul>
-                    </div>
-
-                    <!-- Hidden File Input -->
-                    <input type="file" #fileInput accept=".xlsx,.xls" (change)="onFileSelected($event)"
-                        style="display: none;" />
+                <div class="col-md-6">
+                    <p><strong>Department:</strong> {{ employeeDetails.department }}</p>
+                    <p><strong>Joining Date:</strong> {{ employeeDetails.joining_Date | date }}</p>
+                    <p><strong>Location:</strong> {{ employeeDetails.present_Address }}</p>
                 </div>
             </div>
-            <div class="card-body">
-                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table   table-hover"
-                    id="attendanceTable">
-                    <thead>
-                        <tr>
-                            <th>S.No</th>
-                            <th>Date</th>
-                            <th>Student name</th>
-                            <th>Status</th>
-                            <th>Remarks</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody *ngIf="attendance_list?.length != 0">
-                        <tr *ngFor="let item of attendance_list; let i = index">
-                            <td>{{ i + 1 }}</td>
-                            <td>{{ item.date | date:'dd-MM-YYYY' }}</td>
-                            <td>{{ item.employeeId || '-' }}</td>
-                            <td>{{ item.status || '-' }}</td>
-                            <td>{{ item.remarks || '-' }}</td>
-                            <td>
-                                <button class="btn btn-sm" type="button" (click)="updateById(item.id)"
-                                    data-bs-toggle="modal" data-bs-target="#newModal" title="Edit">
-                                    <i class="bi bi-pencil-square text-success"></i> </button>
-                                <button class="btn  btn-sm " type="button" data-toggle="tooltip" data-placement="top"
-                                    (click)="deleteAttendance(item.id)" title="Delete"><i
-                                        class="bi bi-trash3-fill text-danger"></i></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                    <tbody *ngIf="attendance_list?.length == 0">
-                        <tr>
-                            <td colspan="12" class="no-data-available">No data!</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-sm">
-                    <div class="modal-content">
-                        <div class="modal-header" *ngIf="this.action !== 'update'">
-                            <strong>Add Attendance</strong>
-                        </div>
-                        <div class="modal-header" *ngIf="this.action === 'update'">
-                            <strong>Update Attendance</strong>
-                        </div>
-                        <div class="modal-body ">
-                            <form [formGroup]="addAttendance"
-                                (ngSubmit)="action === 'update' ? updateAttendance() : saveAttendance()">
-                                <div class="row">
-                                    <!-- <div class="col-md-12">
-                                        <label class="form-label">Select Company</label>
-                                        <select class="form-control form-control-sm" formControlName="company"
-                                            [ngClass]="{ 'is-invalid': submitted && f.company.errors }">
-                                            <option value="">-- Select Company --</option>
-                                            <option *ngFor="let comp of companyList" [value]="comp.Id">
-                                                {{ comp.CompanyName }}
-                                            </option>
-                                        </select>
-                                        <div *ngIf="(submitted || f.company.touched) && f.company.errors?.required"
-                                            class="invalid-feedback">
-                                            Company Name is required
-                                        </div>
-                                    </div> -->
-                                    <div class="col-md-12">
-                                        <label class="form-label">Date</label>
-                                        <input type="date" class="form-control form-control-sm" name="date" id="date"
-                                            formControlName="date"
-                                            [ngClass]="{ 'is-invalid': submitted && f.date.errors }">
-                                        <!-- <div *ngIf="(submitted || f.date.touched) && f.date.errors?.required"
-                                            class="invalid-feedback">
-                                            Date is
-                                            required
-                                        </div> -->
-                                    </div>
-                                    <div class="col-md-12">
-                                        <label class="form-label">Employee Name</label>
-                                        <select class="form-control form-control-sm" formControlName="employeeId"
-                                            [ngClass]="{ 'is-invalid': submitted && f.employeeId.errors }">
-                                            <option value="">-- Select Employee --</option>
-                                            <option *ngFor="let comp of EmployeeList" [value]="comp.id">
-                                                {{ comp.employee_Name }}
-                                            </option>
-                                        </select>
-                                        <!-- <div *ngIf="(submitted || f.company.touched) && f.company.errors?.required"
-                                            class="invalid-feedback">
-                                            Company Name is required
-                                        </div> -->
-                                    </div>
-                                    <div class="col-md-12">
-                                        <label class="form-label">Status</label>
-                                        <select class="form-control form-control-sm" formControlName="status"
-                                            [ngClass]="{ 'is-invalid': submitted && f.status.errors }">
-                                            <option value="">-- Select Status --</option>
-                                            <option value="Present">Present</option>
-                                            <option value="Absent">Absent</option>
-                                        </select>
-                                        <!-- <div *ngIf="(submitted || f.status.touched) && f.status.errors?.required"
-                                            class="invalid-feedback">Status is
-                                            required
-                                        </div> -->
-                                    </div>
-                                    <div class="col-md-12">
-                                        <label class="form-label">Description</label>
-                                        <input type="text" class="form-control form-control-sm" name="remarks"
-                                            id="remarks" formControlName="remarks"
-                                            [ngClass]="{ 'is-invalid': submitted && f.remarks.errors }">
-                                        <!-- <div *ngIf="(submitted || f.remarks.touched) && f.remarks.errors?.required"
-                                            class="invalid-feedback">Description is required
-                                        </div> -->
-                                    </div>
-                                </div>
-                                <div class="mt-2 col-md-12 d-flex justify-content-end">
-                                    <button type="submit" class="btn btn-success btn-sm"
-                                        *ngIf="action !== 'update'">Submit</button>
-                                    <button type="submit" class="btn btn-primary btn-sm"
-                                        *ngIf="action === 'update'">Update</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+        </div>
+        <!-- Attendance Summary -->
+        <div class="summary mb-4">
+            <h5 class="text-secondary mb-2">Summary (October 2025)</h5>
+            <div class="d-flex justify-content-between text-center summary-boxes">
+                <div class="summary-item present">
+                    <h6>Present</h6>
+                    <p>{{ totalPresent }}</p>
+                </div>
+                <div class="summary-item absent">
+                    <h6>Absent</h6>
+                    <p>{{ totalAbsent }}</p>
+                </div>
+                <div class="summary-item leave">
+                    <h6>Leave</h6>
+                    <p>{{ totalLeave }}</p>
+                </div>
+                <div class="summary-item holiday">
+                    <h6>Holiday</h6>
+                    <p>{{ totalHoliday }}</p>
+                </div>
+                <div class="summary-item percent">
+                    <h6>Attendance %</h6>
+                    <p>{{ attendancePercent }}%</p>
                 </div>
             </div>
+        </div>
+
+        <!-- Attendance Table -->
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle text-center">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Day</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let record of attendanceData">
+                        <td>{{ record.day }}</td>
+                        <td>{{ record.date }}</td>
+                        <td>
+                            <span class="badge" [ngClass]="getStatusClass(record.status)">
+                                {{ record.status }}
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

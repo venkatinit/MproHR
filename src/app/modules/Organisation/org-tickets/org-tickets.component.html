@@ -1,1 +1,93 @@
-<p>org-tickets works!</p>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card" style="padding:0px;">
+                <h5 class="m-2"><strong>Recent Tickets</strong></h5>
+                <div class="row mb-4">
+                    <div class="col-lg-10 mx-auto">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search document by id..."
+                                [(ngModel)]="searchTerm" (input)="filterDocuments()" />
+                            <button class="btn btn-primary" type="button" (click)="filterDocuments()">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card " style="padding:5px; margin:6px" *ngFor="let doc of filteredDocuments"
+                    (click)="selectDocument(doc)" [ngClass]="{ 'active-card': selectedDoc === doc }">
+                    <div class="row d-flex flex-column">
+                        <div class="d-flex flex-row align-items-center">
+                            <div class="col-md-7 d-flex flex-row align-items-center">
+                                <div class="nav-profile-image">
+                                    <img src="{{doc.profileImage}}" alt="profile" />
+                                    <span class="login-status online"></span>
+                                </div>
+                                <div class="d-flex flex-column ml-2">
+                                    <div class="text-success">#{{doc.id}}</div>
+                                    <div class="nav-profile-name ">{{doc.name}}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-5 d-flex justify-content-end">{{doc.timeAgo}}</div>
+                        </div>
+                        <div class="content">
+                            {{doc.message}}
+                        </div>
+                        <div class="d-flex flex-row justify-content-around align-items-center">
+                            <div class="status">{{doc.status}}</div>
+                            <div class="priority">{{doc.priority}}</div>
+                            <div class="team">{{doc.team}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8" *ngIf="selectedDoc">
+            <div class="card">
+                <div class="card-header">
+                    <h5><strong>{{ selectedDoc.subject }}</strong></h5>
+                    <div class="d-flex flex-row justify-content-start align-items-center" style="gap: 40px;">
+                        <div class="status">{{ selectedDoc.status }}</div>
+                        <div class="priority">{{ selectedDoc.priority }}</div>
+                        <div class="team">{{ selectedDoc.team }}</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="col-md-7 d-flex flex-row align-items-center">
+                        <div class="nav-profile-image">
+                            <img [src]="selectedDoc.profileImage" alt="profile" />
+                            <span class="login-status online"></span>
+                        </div>
+                        <strong class="ml-2">{{ selectedDoc.name }}</strong>
+                        <div class="small text-muted ml-2">{{ selectedDoc.timeAgo }}</div>
+                    </div>
+                    <div class="p-3 mail-body bg-light rounded">
+                        <p>{{ selectedDoc.message }}</p>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-success btn-sm d-flex flex-row float-end" (click)="toggleReplyForm()">
+                        <i class="bi bi-reply"></i> Reply </button>
+                    <div *ngIf="showReplyForm" class="mt-5 p-3 border rounded shadow-sm bg-light">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="mb-0"><strong>Write a reply</strong></h5>
+                        </div>
+                        <form [formGroup]="addreply" (ngSubmit)="submit()">
+                            <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
+                            <ngx-editor [editor]="editor" formControlName="description" name="description"
+                                id="description"></ngx-editor>
+                            <div class="mt-2 d-flex justify-content-between">
+                                <button type="button" class="btn btn-danger btn-sm" (click)="toggleReplyForm()">
+                                    <i class="bi bi-x-lg"></i> Close
+                                </button>
+                                <button type="submit" class="btn btn-success btn-sm">
+                                    <i class="bi bi-send"></i> Submit
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Chart, registerables } from 'chart.js';
 import { ApiService } from 'src/app/api.client';
 import pdfMake from "pdfmake/build/pdfmake";
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
-import { ToastContainerModule, ToastrService } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { UtilsServiceService } from 'src/app/utils/utils-service.service';
-import { ApiResponse } from 'src/app/models/api-response';
 
 Chart.register(...registerables);
 @Component({
@@ -24,16 +23,15 @@ Chart.register(...registerables);
     ])
   ]
 })
-export class EmployeeDashboardComponent implements OnInit {
-  attendanceChart!: Chart;
-  filterType: 'daily' | 'monthly' | 'yearly' = 'daily';
+export class EmployeeDashboardComponent implements OnInit  {
+  selectedSection: string = '';
   employeeId!: number;
   employeeDetails: any;
   form: FormGroup;
   loading = true;
   generateOL: FormGroup;
   submitted: boolean = false;
-  attendance: FormGroup;
+  payslipView: FormGroup;
   payslipForm: FormGroup;
   relievingForm: FormGroup;
   serviceForm: FormGroup;
@@ -42,15 +40,36 @@ export class EmployeeDashboardComponent implements OnInit {
   result: any;
   errors: string[] = [];
   LeaveTypeList: any[] = [];
+  attendanceData: any[] = [];
+
+  months = [
+    { name: 'January', value: 1 },
+    { name: 'February', value: 2 },
+    { name: 'March', value: 3 },
+    { name: 'April', value: 4 },
+    { name: 'May', value: 5 },
+    { name: 'June', value: 6 },
+    { name: 'July', value: 7 },
+    { name: 'August', value: 8 },
+    { name: 'September', value: 9 },
+    { name: 'October', value: 10 },
+    { name: 'November', value: 11 },
+    { name: 'December', value: 12 }
+  ];
+
+  years: number[] = [];
+  selectedMonth: number = new Date().getMonth() + 1;
+  selectedYear: number = new Date().getFullYear();
   constructor(
     private route: ActivatedRoute,
     private api: ApiService,
     private formBuilder: FormBuilder,
     private toast: ToastrService,
-    private util: UtilsServiceService
+    private util: UtilsServiceService,
+    private router: Router
 
   ) {
-    Chart.register(...registerables);
+    // Chart.register(...registerables);
   }
   ngOnInit() {
     this.generateOL = this.formBuilder.group({
@@ -82,8 +101,10 @@ export class EmployeeDashboardComponent implements OnInit {
       auth_name: ['', [Validators.required]],
       auth_designation: ['', [Validators.required]],
     });
-    this.attendance = this.formBuilder.group({
-      attendance_date: ['', Validators.required],
+
+    this.payslipView = this.formBuilder.group({
+      payslip_month: ['', Validators.required],
+      payslip_year: ['', Validators.required]
       // other controls...
     });
     this.qualificationForm = this.formBuilder.group({
@@ -99,41 +120,29 @@ export class EmployeeDashboardComponent implements OnInit {
       reason: ['', [Validators.required]],
       remarks: ['', [Validators.required]],
     });
+    this.payslipForm = this.formBuilder.group({
+      employeeId: ['', Validators.required],
+      ctc: [0, Validators.required],
+      otherAllowance: [0],
+      allowances: this.formBuilder.array([]),
+      deductions: this.formBuilder.array([]),
+      total_Allowances: [0],
+      total_Deductions: [0],
+      take_Home_Salary: [0],
+    });
     this.addQualification();
 
     // Get ID from URL
     this.employeeId = Number(this.route.snapshot.paramMap.get('id'));
     // Fetch Employee Details
     this.getEmployeeDetails();
-    this.loadAttendanceChart();
-    new Chart('pieChart', {
-      type: 'pie',
-      data: {
-        labels: ['Checked In', 'Not Checked In', 'On Leave', 'On Week off', 'Holiday', 'Checked Out'],
-        datasets: [
-          {
-            data: [350, 50, 50, 20, 20, 10],
-            // backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            labels: {
-              color: '#333',       // Label color
-              font: {
-                size: 16,          // Label font size
-                weight: 'bold'
-              }
-            },
-            position: 'right'    // Legend position
-          }
-        }
-      }
-    });
+
     this.getLeaveTypes();
+
+    const currentYear = new Date().getFullYear();
+    for (let y = currentYear - 5; y <= currentYear + 5; y++) {
+      this.years.push(y);
+    }
   }
 
   getLeaveTypes() {
@@ -149,9 +158,7 @@ export class EmployeeDashboardComponent implements OnInit {
         }
       });
   }
-  // get f() {
-  //   return this.leaveRequest.controls;
-  // }
+
   saveRequest() {
     console.log('✅ create form submitted');
     this.submitted = true;
@@ -278,78 +285,6 @@ export class EmployeeDashboardComponent implements OnInit {
   get f() {
     return this.generateOL.controls;
   }
-  attendanceData = {
-    daily: {
-      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      present: [90, 85, 88, 92, 87, 80, 70],
-      absent: [10, 15, 12, 8, 13, 20, 30]
-    },
-    monthly: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-      present: [88, 90, 92, 87, 85, 89, 10],
-      absent: [12, 10, 8, 13, 15, 11, 20]
-    },
-    yearly: {
-      labels: ['2021', '2022', '2023', '2024'],
-      present: [89, 91, 90, 88],
-      absent: [11, 9, 10, 12]
-    }
-  };
-  loadAttendanceChart() {
-    const selectedData = this.attendanceData[this.filterType];
-
-    if (this.attendanceChart) {
-      this.attendanceChart.destroy(); // Destroy old chart before creating a new one
-    }
-
-    this.attendanceChart = new Chart('attendanceChart', {
-      type: 'bar',
-      data: {
-        labels: selectedData.labels,
-        datasets: [
-          {
-            label: 'Present %',
-            data: selectedData.present,
-            backgroundColor: '#4da3ff'
-          },
-          {
-            label: 'Absent %',
-            data: selectedData.absent,
-            backgroundColor: '#f44336'
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 100,
-            ticks: {
-              callback: function (value) {
-                return value + '%';
-              }
-            }
-          }
-        }
-      }
-    });
-  }
-
-  changeFilter(type: 'daily' | 'monthly' | 'yearly') {
-    this.filterType = type;
-    this.loadAttendanceChart();
-  }
-
-  stats = {
-    totalEmployees: 5000,
-    checkedIn: 4500,
-    notCheckedIn: 500,
-    onLeave: 456,
-    weeklyOff: 145,
-    holiday: 12,
-    checkedOut: 250
-  };
 
   // =============================
   dateFormat(dateString: string | Date): string {
@@ -546,7 +481,7 @@ export class EmployeeDashboardComponent implements OnInit {
         {
           ol: [
             'This Letter of Offer contains the proposed Terms and Conditions of your employment with the Employer and is subject to the preparation and execution of a formal Contract of Employment.',
-            'We look forward to your positive response and the opportunity to welcome you to  NG Info SOLUTIONS PVT LTD. If you have any questions or require further information, please feel free to contact', { text: this.generateOL?.get('reportingTo')?.value, fontSize: 10 }, 'at srnritsolutions1292@gmail.com.'
+            'We look forward to your positive response and the opportunity to welcome you to  NG Info SOLUTIONS PVT LTD. If you have any questions or require further information, please feel free to contact', { text: this.generateOL?.get('reportingTo')?.value, fontSize: 10 }, 'at nginfosolutions2024@gmail.com.'
 
           ]
         },
@@ -779,7 +714,7 @@ export class EmployeeDashboardComponent implements OnInit {
           ul: [
             'During the term of your employment, should you desire to leave the services of NG Info SOLUTIONS PVT LTD , you shall be required to give ', { text: this.generateOL?.get('noticePeriod')?.value }, ' days’ notice or salary in lieu thereof.The company may, at its discretion, relieve you before the expiry of notice period without compensating for the remaining notice period.',
             'NG Info SOLUTIONS PVT LTD shall be entitled to terminate your employment without cause at any time by giving you ', { text: this.generateOL?.get('noticePeriod')?.value }, ' days notice or salary in lieu thereof.',
-            'Notwithstanding anything mentioned in this Agreement, NG Info SOLUTIONS PVT LTD may terminate your employment, with immediate effect by a notice in writing(without salary in lieu of notice), in the event of your misconduct, including but not limited to, fraudulent, dishonest or undisciplined conduct of, or breach of integrity, or embezzlement, or misappropriation or misuse by you of NG Info SOLUTIONS PVT LTD ’s property, or insubordination or failure to comply with the directions given to you by persons so authorized, or your insolvency or conviction for any offence involving moral turpitude, or breach by you of any terms of this Agreement or NG Info SOLUTIONS PVT LTD Policy or other documents or directions of NG Info SOLUTIONS PVT LTD, or irregularity in attendance, or your unauthorized absence from the place of work(or remote check in in case of work from home) for more than five(5) working days, or closure of the business of NG Info SOLUTIONS PVT LTD, or redundancy of your post in NG Info SOLUTIONS PVT LTD, or upon you conducting yourself in a manner which is regarded by NG Info SOLUTIONS PVT LTD as prejudicial to its own interests or to the interests of its clients and/ or customers.',
+            'Notwithstanding anything mentioned in this Agreement, NG Info SOLUTIONS PVT LTD may terminate your employment, with immediate effect by a notice in writing(without salary in lieu of notice), in the event of your misconduct, including but not limited to, fraudulent, dishonest or undisciplined conduct of, or breach of integrity, or embezzlement, or misappropriation or misuse by you of NG Info SOLUTIONS PVT LTD ’s property, or insubordination or failure to comply with the directions given to you by persons so authorized, or your insolvency or conviction for any offence involving moral turpitude, or breach by you of any terms of this Agreement or NG Info SOLUTIONS PVT LTD Policy or other documents or directions of NG Info SOLUTIONS PVT LTD, or irregularity in payslipView, or your unauthorized absence from the place of work(or remote check in in case of work from home) for more than five(5) working days, or closure of the business of NG Info SOLUTIONS PVT LTD, or redundancy of your post in NG Info SOLUTIONS PVT LTD, or upon you conducting yourself in a manner which is regarded by NG Info SOLUTIONS PVT LTD as prejudicial to its own interests or to the interests of its clients and/ or customers.',
             'Notwithstanding anything aforesaid, termination by you shall be subject to the satisfactory completion of all your existing duties, obligations and projects etc.',
             'During the notice period, Company will continue to pay its share of insurance premiums, if applicable.',
             'On acceptance of the resignation notice, you will be required to immediately give up to the company all correspondences, specifications, formulae, books, documents, market data, literature, drawings, effects or records, et al belonging to the company or relating to its business and shall not make or retain any copies of these items. '
@@ -972,74 +907,293 @@ export class EmployeeDashboardComponent implements OnInit {
   }
 
   // Payslip
-  async Payslip_generatePDF(action = 'open') {
-    const data = this.employeeDetails;
-    // const logo = await this.getBase64ImageFromURL(data.company.logo);
+  get allowances(): FormArray {
+    return this.payslipForm.get('allowances') as FormArray;
+  }
 
-    const earningsRows = data.payslip.earnings.map((e, i) => [
-      e.label, e.amount,
-      data.payslip.deductions[i]?.label || '', data.payslip.deductions[i]?.amount || ''
-    ]);
+  get deductions(): FormArray {
+    return this.payslipForm.get('deductions') as FormArray;
+  }
 
-    const docDefinition = {
-      pageSize: 'A4',
-      pageMargins: [50, 150, 50, 60],
-      content: [
-        {
-          style: 'tableExample',
-          table: {
-            widths: [100, '*', 100, '*'],
-            body: [
-              [
-                // { image: logo, height: 64, width: 64, colSpan: 2, rowSpan: 2, alignment: 'center', margin: [0, 20] }, '',
-                { text: data.company.name, fontSize: 16, bold: true, colSpan: 2, alignment: 'left', margin: [0, 5] }, ''
-              ],
-              ['', '', { text: data.company.address, colSpan: 2, alignment: 'left', margin: [0, 0, 0, 5] }, ''],
-              [{ text: `Salary Slip for the month of ${data.payslip.month}`, colSpan: 4, alignment: 'center', color: 'blue', bold: true, margin: [0, 5] }, '', '', ''],
+  addAllowance() {
+    this.allowances.push(this.formBuilder.group({
+      name: ['', Validators.required],
+      type: ['string', Validators.required],
+      amount: [0, Validators.required]
+    }));
+  }
 
-              ['Name', data.payslip.employee.name, 'Pan No', data.payslip.employee.pan],
-              ['Date of Joining', data.payslip.employee.doj, 'Gender', data.payslip.employee.gender],
-              ['Designation', data.payslip.employee.designation, 'Employment Type', data.payslip.employee.employmentType],
-              ['Emp No', data.payslip.employee.empNo, 'Working Days', data.payslip.employee.workingDays],
-              ['Location', data.payslip.employee.location, 'Paid Days', data.payslip.employee.paidDays],
-              ['Bank Name', data.payslip.employee.bankName, 'Account No', data.payslip.employee.accountNo],
-              ['EPF No', data.payslip.employee.epfNo, 'UAN No', data.payslip.employee.uanNo],
+  addDeduction() {
+    this.deductions.push(this.formBuilder.group({
+      name: ['', Validators.required],
+      type: ['string', Validators.required],
+      amount: [0, Validators.required]
+    }));
+  }
+  // payslip.component.ts
+  removeAllowance(index: number) {
+    this.allowances.removeAt(index);
+    this.calculateTotals();
+  }
 
-              [{ text: 'EARNINGS', colSpan: 2, bold: true, alignment: 'center', margin: [0, 5] }, '',
-              { text: 'DEDUCTIONS', colSpan: 2, bold: true, alignment: 'center', margin: [0, 5] }, ''],
+  removeDeduction(index: number) {
+    this.deductions.removeAt(index);
+    this.calculateTotals();
+  }
+  calculateTotals() {
+    const allowanceTotal = this.allowances.controls.reduce((sum, ctrl) => sum + Number(ctrl.value.amount || 0), 0);
+    const deductionTotal = this.deductions.controls.reduce((sum, ctrl) => sum + Number(ctrl.value.amount || 0), 0);
 
-              ...earningsRows,
+    this.payslipForm.patchValue({
+      total_Allowances: allowanceTotal,
+      total_Deductions: deductionTotal,
+      take_Home_Salary: allowanceTotal - deductionTotal
+    }, { emitEvent: false });
+  }
 
-              [{ text: 'Total Earnings', bold: true }, data.payslip.totalEarnings,
-              { text: 'Total Deductions', bold: true }, data.payslip.totalDeductions],
+  onSubmit() {
+    if (this.payslipForm.invalid) return;
 
-              ['', '', { text: 'Net Pay', bold: true }, { text: data.payslip.netPay, bold: true }],
+    const payload = this.payslipForm.value;
+    this.api.post('api/payroll/calculate-ctc', payload).subscribe({
+      next: (res: any) => {
+        // this.result = res.data || res;
+      },
+      error: (err) => console.error('Error calling calculate-ctc API', err)
+    });
+    console.log('✅ create form submitted');
+    // this.submitted = true;
+    if (!this.payslipForm.valid) {
+      return;
+    }
+    // this.spinLoader = true;
+    // const decryptedUserId = this.util.decrypt_Text(localStorage.getItem('id') || '');
+    const url = 'api/payroll/calculate-ctc';
+    const body = {
+      employeeId: this.payslipForm.get('employeeId')?.value,
+      ctc: this.payslipForm.get('ctc')?.value,
+      otherAllowance: this.payslipForm.get('otherAllowance')?.value,
 
-              [{
-                text: 'This is a computer generated document. Signature & seal not required. For any discrepancy contact accounts department within 3 days or email info@nginfosolutions.com',
-                colSpan: 4,
-                fillColor: '#eeeeee',
-                fontSize: 9,
-                alignment: 'center',
-                margin: [0, 10, 0, 0]
-              }, '', '', '']
-            ]
-          },
-          fontSize: 12
-        }
+      allowances: this.payslipForm.get('allowances')?.value || [],
+      deductions: this.payslipForm.get('deductions')?.value || [],
+      total_Allowances: 0, // let backend calculate if not needed
+      total_Deductions: 0,
+      take_Home_Salary: 0
+    };
+  }
+  Payslip_generatePDF(action = 'open') {
+    const emp = this.employeeDetails;
+
+    if (!emp) {
+      console.error('Employee details not loaded yet!');
+      return;
+    }
+
+    // 🔹 Static or sample company + pay data
+    const data = {
+      company: {
+        name: 'EmproHR Pvt Ltd',
+        address: 'Hyderabad, Telangana, India',
+        // logo: 'assets/img/DEMO.png'
+      },
+      employee: {
+        id: emp.employee_Code || '',
+        name: emp.full_Name || '',
+        designation: emp.designation || '',
+        department: emp.department || '',
+        joiningDate: emp.joining_Date ? emp.joining_Date.split('T')[0] : '',
+        pan: emp.paN_Number || '',
+        uan: emp.uaN_Number || '',
+        bankName: emp.bank_Name || '',
+        accountNo: emp.account_Number || '',
+        location: emp.present_Address || '',
+        workingDays: 26,
+        paidDays: 25
+      },
+      month: 'October 2025',
+
+      // You can replace these with dynamic data if you fetch salary structure from API
+
+      allowances: [
+        { name: 'Basic Pay', amount: emp.offer_CTC / 12 * 0.50 },
+        { name: 'HRA', amount: emp.offer_CTC / 12 * 0.20 },
+        { name: 'Conveyance', amount: 2500 },
+        { name: 'Medical Allowance', amount: 1250 }
+      ],
+      deductions: [
+        { name: 'PF', amount: (emp.offer_CTC / 12) * 0.12 },
+        { name: 'ESIC', amount: 500 },
+        { name: 'TDS', amount: 1000 }
       ]
     };
+    // 🔹 Totals
+    const totalAllowances = data.allowances.reduce((a, b) => a + b.amount, 0);
+    const totalDeductions = data.deductions.reduce((a, b) => a + b.amount, 0);
+    const takeHome = totalAllowances - totalDeductions;
+    // 🔹 Merge earnings & deductions into rows
+    const rows = [];
+    const maxRows = Math.max(data.allowances.length, data.deductions.length);
+    for (let i = 0; i < maxRows; i++) {
+      rows.push([
+        data.allowances[i]?.name || '',
+        data.allowances[i]?.amount || '',
+        data.deductions[i]?.name || '',
+        data.deductions[i]?.amount || ''
+      ]);
+    }
 
+    // 🔹 PDF Definition
+    const docDefinition: any = {
+      content: [
+        {
+          columns: [
+            // {
+            //   image: data.company.logo,
+            //   width: 60
+            // },
+            [
+              { text: data.company.name, fontSize: 16, bold: true, alignment: 'center' },
+              { text: data.company.address, fontSize: 10, alignment: 'center' }
+            ]
+          ]
+        },
+        { text: `\nSalary Slip for the month of ${data.month}`, style: 'title' },
+        { text: '\n' },
+
+        {
+          style: 'detailsTable',
+          table: {
+            widths: ['*', '*', '*', '*'],
+            body: [
+              ['Employee ID', data.employee.id, 'Employee Name', data.employee.name],
+              ['Designation', data.employee.designation, 'Department', data.employee.department],
+              ['Joining Date', data.employee.joiningDate, 'Account No', data.employee.accountNo],
+              ['PAN No', data.employee.pan, 'UAN No', data.employee.uan],
+              ['Working Days', data.employee.workingDays, 'Paid Days', data.employee.paidDays]
+            ]
+          },
+          layout: 'lightHorizontalLines'
+        },
+
+        // { text: '\n' },
+
+        {
+          style: 'salaryTable',
+          table: {
+            headerRows: 1,
+            widths: ['*', 'auto', '*', 'auto'],
+            body: [
+              [
+                { text: 'Earnings', bold: true },
+                { text: 'Amount', bold: true },
+                { text: 'Deductions', bold: true },
+                { text: 'Amount', bold: true }
+              ],
+              ...rows,
+              [
+                { text: 'Total Earnings', bold: true },
+                totalAllowances,
+                { text: 'Total Deductions', bold: true },
+                totalDeductions
+              ],
+              ['', '', { text: 'Net Pay', bold: true }, { text: takeHome, bold: true }]
+            ]
+          },
+          layout: 'lightHorizontalLines'
+        },
+
+        { text: '\n' },
+        {
+          text: 'This is a computer-generated payslip and does not require a signature.',
+          alignment: 'center',
+          fontSize: 9,
+          italics: true
+        }
+      ],
+      styles: {
+        title: { fontSize: 14, bold: true, alignment: 'center', color: '#1e40af' },
+        detailsTable: { margin: [0, 5, 0, 15] },
+        salaryTable: { margin: [0, 10, 0, 15] }
+      }
+    };
+
+    // 🔹 Generate or download
+    const pdfDoc = pdfMake.createPdf(docDefinition);
     if (action === 'download') {
-      pdfMake.createPdf(docDefinition).download(`Payslip_${data.payslip.month.replace(/ /g, '_')}.pdf`);
-    } else if (action === 'print') {
-      pdfMake.createPdf(docDefinition).print();
+      pdfDoc.download(`Payslip_${data.employee.id}.pdf`);
     } else {
-      pdfMake.createPdf(docDefinition).open();
+      pdfDoc.open();
     }
   }
 
-  async Reliving_generatePDF(action = 'open') {
+  // async Payslip_generatePDF(action = 'open') {
+  //   const data = this.employeeDetails;
+  //   // const logo = await this.getBase64ImageFromURL(data.company.logo);
+
+  //   const earningsRows = data.payslip.earnings.map((e, i) => [
+  //     e.label, e.amount,
+  //     data.payslip.deductions[i]?.label || '', data.payslip.deductions[i]?.amount || ''
+  //   ]);
+
+  //   const docDefinition = {
+  //     pageSize: 'A4',
+  //     pageMargins: [50, 150, 50, 60],
+  //     content: [
+  //       {
+  //         style: 'tableExample',
+  //         table: {
+  //           widths: [100, '*', 100, '*'],
+  //           body: [
+  //             [
+  //               // { image: logo, height: 64, width: 64, colSpan: 2, rowSpan: 2, alignment: 'center', margin: [0, 20] }, '',
+  //               { text: data.company.name, fontSize: 16, bold: true, colSpan: 2, alignment: 'left', margin: [0, 5] }, ''
+  //             ],
+  //             ['', '', { text: data.company.address, colSpan: 2, alignment: 'left', margin: [0, 0, 0, 5] }, ''],
+  //             [{ text: `Salary Slip for the month of ${data.payslip.month}`, colSpan: 4, alignment: 'center', color: 'blue', bold: true, margin: [0, 5] }, '', '', ''],
+
+  //             ['Name', data.payslip.employee.name, 'Pan No', data.payslip.employee.pan],
+  //             ['Date of Joining', data.payslip.employee.doj, 'Gender', data.payslip.employee.gender],
+  //             ['Designation', data.payslip.employee.designation, 'Employment Type', data.payslip.employee.employmentType],
+  //             ['Emp No', data.payslip.employee.empNo, 'Working Days', data.payslip.employee.workingDays],
+  //             ['Location', data.payslip.employee.location, 'Paid Days', data.payslip.employee.paidDays],
+  //             ['Bank Name', data.payslip.employee.bankName, 'Account No', data.payslip.employee.accountNo],
+  //             ['EPF No', data.payslip.employee.epfNo, 'UAN No', data.payslip.employee.uanNo],
+
+  //             [{ text: 'EARNINGS', colSpan: 2, bold: true, alignment: 'center', margin: [0, 5] }, '',
+  //             { text: 'DEDUCTIONS', colSpan: 2, bold: true, alignment: 'center', margin: [0, 5] }, ''],
+
+  //             ...earningsRows,
+
+  //             [{ text: 'Total Earnings', bold: true }, data.payslip.totalEarnings,
+  //             { text: 'Total Deductions', bold: true }, data.payslip.totalDeductions],
+
+  //             ['', '', { text: 'Net Pay', bold: true }, { text: data.payslip.netPay, bold: true }],
+
+  //             [{
+  //               text: 'This is a computer generated document. Signature & seal not required. For any discrepancy contact accounts department within 3 days or email info@nginfosolutions.com',
+  //               colSpan: 4,
+  //               fillColor: '#eeeeee',
+  //               fontSize: 9,
+  //               alignment: 'center',
+  //               margin: [0, 10, 0, 0]
+  //             }, '', '', '']
+  //           ]
+  //         },
+  //         fontSize: 12
+  //       }
+  //     ]
+  //   };
+
+  //   if (action === 'download') {
+  //     pdfMake.createPdf(docDefinition).download(`Payslip_${data.payslip.month.replace(/ /g, '_')}.pdf`);
+  //   } else if (action === 'print') {
+  //     pdfMake.createPdf(docDefinition).print();
+  //   } else {
+  //     pdfMake.createPdf(docDefinition).open();
+  //   }
+  // }
+
+  async Relieving_generatePDF(action = 'open') {
     let docDefinition = {
       pageMargins: [40, 160, 40, 140],
       pageSize: 'A4',
@@ -1198,7 +1352,7 @@ export class EmployeeDashboardComponent implements OnInit {
         },
         {
           text: ['It is hereby certified that Mr/Ms.', this.serviceForm?.get("full_name")?.value, 'worked as a Manager in our ',
-            'company from' + this.serviceForm?.get("doj")?.value + 'to' + this.serviceForm?.get("reliving_date")?.value],
+            'company from' + this.serviceForm?.get("doj")?.value + 'to' + this.serviceForm?.get("relieving_date")?.value],
           style: 'text1',
         },
         {
@@ -1263,5 +1417,15 @@ export class EmployeeDashboardComponent implements OnInit {
     }
   }
 
+  goToAttendance(id: number) {
+    this.router.navigate(['/hrm/employee-attendance', id]).then(() => {
+      window.location.reload();
+    });
+  }
 
+  getMonthName(value: number): string {
+    const month = this.months.find(m => m.value === value);
+    return month ? month.name : '';
+  }
+  
 }

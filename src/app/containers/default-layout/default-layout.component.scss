@@ -1,3 +1,4 @@
+/* ==================== Base Layout ==================== */
 .sidebar {
     z-index: 1;
     width: 20%;
@@ -87,30 +88,6 @@ ul li a {
     border-radius: 0px;
 }
 
-/* 🌟 Collapsed Sidebar Styling */
-// .collapsed-sidebar .menu-text,
-// .collapsed-sidebar span:not(.badge):not(.login-status) {
-//     display: none !important;
-// }
-
-// .collapsed-sidebar .nav-item a {
-//     justify-content: center;
-//     text-align: center;
-// }
-
-// .collapsed-sidebar .nav-item i {
-//     font-size: 1.3rem;
-//     display: block;
-//     margin: 10px auto;
-// }
-
-// .collapsed-sidebar .logo img {
-//     width: 40px;
-//     transition: all 0.3s ease;
-//     margin: 10px auto;
-//     display: block;
-// }
-
 /* Hide profile section in collapsed mode */
 .collapsed-sidebar .nav-profile-image,
 .collapsed-sidebar .nav-profile-text {
@@ -134,3 +111,5 @@ ul li {
         font-family: math;
     }
 }
+
+/* ==================== Responsive Design ==================== */
