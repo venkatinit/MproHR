@@ -474,7 +474,7 @@
     </li>
   </ul> -->
 </aside>
-<main id="main" class="main" style="z-index: 0;" [ngClass]="{ 'expanded-main': isSidebarCollapsed }">
+<main id="main" class="main big-screen" style="z-index: 0;" [ngClass]="{ 'expanded-main': isSidebarCollapsed }">
   <div id="header" class="header  d-flex flex-row align-items-center justify-content-between">
     <div class="d-flex align-items-center">
       <ul class="d-flex align-items-center" style="list-style-type: none; padding: 0px; margin-bottom: 0px !important;">
@@ -587,7 +587,7 @@
         <img src="assets/img/ehd.png" width="130px" alt="">
       </a>
     </div>
-    <div class=" d-flex align-items-center  ">
+    <div class=" big-screen d-flex align-items-center  ">
       <ul class="d-flex align-items-center" style="list-style: none; margin-bottom: 0px !important;">
         <li class="nav-item dropdown  ">
           <a class="nav-link nav-profile d-flex align-items-center pe-0" data-bs-toggle="dropdown">
@@ -653,3 +653,535 @@
     <span>Designed and Developed by nginfosolutions.com</span>
   </footer>
 </main>
+<div class="mobileMenu">
+  <button class="btn" type="button" (click)="toggleMobileSidebar()">
+    <i class="rounded-circle fas fa-bars"></i>
+  </button>
+  <button class="btn" type="button">
+    <i class="rounded-circle fas fa-home"></i>
+  </button>
+  <button class="btn" type="button">
+    <i class="rounded-circle fas fa-question"></i>
+  </button>
+  <button class="btn" type="button">
+    <ul class="d-flex align-items-center"
+      style="list-style: none; margin-bottom: 0px !important; padding-left:0px !important ;">
+      <li class="nav-item dropdown  ">
+        <a class="nav-link nav-profile d-flex align-items-center pe-0" data-bs-toggle="dropdown">
+          <i class="rounded-circle fas fa-user"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+          <li class="dropdown-header">
+            <h6>NG Info </h6>
+          </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li>
+            <a class="dropdown-item d-flex align-items-center" routerLink="/users">
+              <i class="bi bi-person-fill"></i>
+              <span>Team </span>
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item d-flex align-items-center" routerLink="/settings">
+              <i class="bi bi-gear"></i>
+              <span>Settings </span>
+            </a>
+          </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li>
+            <a class="dropdown-item d-flex align-items-center">
+              <i class="bi bi-app-indicator"></i>
+              <span>App Version v1.0.0</span>
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item d-flex align-items-center">
+              <i class="bi bi-bookshelf"></i>
+              <span>Terms and Conditions</span>
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item d-flex align-items-center">
+              <i class="bi bi-shield"></i>
+              <span>Privacy Policy</span>
+            </a>
+          </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li>
+            <a class="dropdown-item d-flex align-items-center" (click)="do_logout()">
+              <i class="bi bi-box-arrow-right"></i>
+              <span>Sign Out</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </button>
+</div>
+<aside id="sidebar-mobile" class="sidebar-mobile" [class.show]="isMobileSidebarOpen">
+  <!-- <a class="d-flex align-items-center justify-content-center logo">
+    <img src="assets/img/ehd.png" width="130px" alt="">
+  </a> -->
+  <ul class="sidebar-nav">
+    <li class="nav-item">
+      <a class="nav-link">
+        <div class="nav-profile-image">
+          <img src="assets/img/profile-img.jpg" alt="profile" />
+          <span class="login-status online"></span>
+        </div>
+        <div class="nav-profile-text d-flex   flex-column px-3">
+          <span class="nav-profile-name font-weight-medium mb-1">Venkatesh Samithikota</span>
+          <span class="nav-profile-name font-weight-normal">RS 7,389.00</span>
+        </div>
+        <span class="badge badge-danger text-white ml-3 rounded">3</span>
+      </a>
+    </li>
+  </ul>
+  <ul class="sidebar-nav" id="sidebar-nav">
+    <!-- Dashboard -->
+    <li class="nav-item" [attr.title]="isSidebarCollapsed ? 'Dashboard' : null">
+      <a class="nav-link " routerLink="/dashboard">
+        <i class="bi bi-grid"></i>
+        <span>Dashboard</span>
+      </a>
+    </li>
+    <!-- Super Admin -->
+    <li class="nav-item">
+      <a class="nav-link collapsed" (click)="toggleDropdown('super_admin')">
+        <span>Super Admin</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="super_admin" [ngClass]="{'collapse': true, 'show': activeDropdown === 'super_admin'}"
+        style="margin-top: 4px;">
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#forms-super_admin" data-bs-toggle="collapse">
+            <span>Chartered Accountant</span><i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="forms-super_admin" class="nav-content collapse " style="text-decoration: none;">
+            <li>
+              <a routerLink="/ca_list">
+                <span>List</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/ca_organizations">
+                <span>Organizations</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/ca_company_employee">
+                <span>Employees</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/ca_assign">
+                <span>Task Assing</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/ca_tickets">
+                <span>Tickets</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/roles">
+                <span>Roles</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/plans">
+                <span>Plans</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/user_plan_status">
+                <span>Active Clients</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <!-- Chartered Accountant -->
+    <li class="nav-item">
+      <a class="nav-link collapsed" (click)="toggleDropdown('ca_admin')">
+        <span>Chartered Accountant</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="ca_admin" [ngClass]="{'collapse': true, 'show': activeDropdown === 'ca_admin'}" style="margin-top: 4px;">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/ca_dashBoard">
+            <i class="bi bi-grid"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#forms-ca_admin" data-bs-toggle="collapse">
+            <span>Organization</span><i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="forms-ca_admin" class="nav-content collapse " style="text-decoration: none;">
+            <li>
+              <a routerLink="/org_subscription">
+                <span>Subscription</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/company_list">
+                <span>Organizations</span>
+              </a>
+            </li>
+            <!-- <li>
+              <a routerLink="/org_rar">
+                <span>Users and Roles</span>
+              </a>
+            </li> -->
+            <li>
+              <a routerLink="/ca_company_employee">
+                <span>Employees</span>
+              </a>
+            </li>
+            <!-- <li>
+              <a routerLink="/org_assign">
+                <span>Task Assing</span>
+              </a>
+            </li> -->
+            <li>
+              <a routerLink="/org_tickets">
+                <span>Tickets</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#forms-ca_paymentSetup" data-bs-toggle="collapse">
+            <span>Setup and Configurations</span><i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="forms-ca_paymentSetup" class="nav-content collapse " style="text-decoration: none;">
+            <li>
+              <a routerLink="/paySchedule">
+                <span>Pay Schedule</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/hrm/salary_Components">
+                <span>Salary Components</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/hrm/statutory_components">
+                <span>Statutory Components</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/web_portals">
+                <span> Web Portal </span>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <!-- Organization -->
+    <li class="nav-item">
+      <a class="nav-link collapsed" (click)="toggleDropdown('home')">
+        <span>Organization</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="home" [ngClass]="{'collapse': true, 'show': activeDropdown === 'home'}" style="margin-top: 4px;">
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#forms-home" data-bs-toggle="collapse">
+            <span>Organization</span><i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="forms-home" class="nav-content collapse " style="text-decoration: none;">
+            <li>
+              <a routerLink="/org_profile">
+                <span>Profile</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/departments">
+                <span>Department & Designation</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/org_status">
+                <span>Subscription</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#forms-users" data-bs-toggle="collapse">
+            <span>Users and Roles</span><i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="forms-users" class="nav-content collapse " style="text-decoration: none;">
+            <li>
+              <a routerLink="/users">
+                <span>Users</span>
+              </a>
+            </li>
+            <!-- <li>
+              <a routerLink="/roles">
+                <span>Roles</span>
+              </a>
+            </li> -->
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#forms-paymentSetup" data-bs-toggle="collapse">
+            <span>Setup and Configurations</span><i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="forms-paymentSetup" class="nav-content collapse " style="text-decoration: none;">
+            <li>
+              <a routerLink="/paySchedule">
+                <span>Pay Schedule</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/hrm/salary_Components">
+                <span>Salary Components</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/hrm/statutory_components">
+                <span>Statutory Components</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/web_portals">
+                <span> Web Portal </span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/Emp_claim_status">
+                <span>Employee Claim Status</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#forms-documents" data-bs-toggle="collapse">
+            <span>Documents</span><i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="forms-documents" class="nav-content collapse " style="text-decoration: none;">
+            <li>
+              <a routerLink="/org_folder">
+                <span>Organisation Folder</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/emp_folder">
+                <span>Employee Folder</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <!-- HR -->
+    <li class="nav-item">
+      <a class="nav-link collapsed" (click)="toggleDropdown('hr')" routerLink="/hrm/hrm">
+        <span>HR</span><i class="bi bi-chevron-down ms-auto" *ngIf="!isSidebarCollapsed"></i>
+      </a>
+      <ul id="hr" [ngClass]="{'collapse': true, 'show': activeDropdown === 'hr'}" style="margin-top: 4px;">
+
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#career" data-bs-toggle="collapse">
+            <span>Career</span><i class="bi bi-chevron-down ms-auto" *ngIf="!isSidebarCollapsed"></i>
+          </a>
+          <ul id="career" class="nav-content collapse " style="text-decoration: none;">
+            <li>
+              <a routerLink="/hrm/post-job">
+                <span>Openings</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/hrm/applicant-list">
+                <span>Applicant List</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#forms-hr" data-bs-toggle="collapse">
+            <span>Muster Roll</span><i class="bi bi-chevron-down ms-auto" *ngIf="!isSidebarCollapsed"></i>
+          </a>
+          <ul id="forms-hr" class="nav-content collapse " style="text-decoration: none;">
+            <li>
+              <a routerLink="/hrm/employee-list">
+                <span>Employee List</span>
+              </a>
+            </li>
+            <!-- <li>
+              <a routerLink="/hrm/background-verification">
+               <span>BGV</span>
+              </a>
+            </li> -->
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#emp-dashboard" data-bs-toggle="collapse"
+            routerLink="/hrm/employee_dashboard">
+            <span> Attendance Dashboard</span> <i class="bi bi-chevron-down ms-auto" *ngIf="!isSidebarCollapsed"></i>
+          </a>
+          <ul id="emp-dashboard" class="nav-content collapse " style="text-decoration: none;">
+            <li>
+              <a routerLink="/hrm/employee-attendance">
+                <span>Attendance</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/hrm/leave_balance_list">
+                <span>Balance Leaves</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/holiday_calendar">
+                <span>Holiday Calendar</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#pending" data-bs-toggle="collapse">
+            <span>Approvals </span><i class="bi bi-chevron-down ms-auto" *ngIf="!isSidebarCollapsed"></i>
+          </a>
+          <ul id="pending" class="nav-content collapse " style="text-decoration: none;">
+            <li>
+              <a routerLink="/hrm/leave_approvals">
+                <span>leaves Approvals</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/hrm/leave_balance_list">
+                <span>Balance Leaves</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#forms-payroll" data-bs-toggle="collapse">
+            <span>Payroll</span><i class="bi bi-chevron-down ms-auto" *ngIf="!isSidebarCollapsed"></i>
+          </a>
+          <ul id="forms-payroll" class="nav-content collapse " style="text-decoration: none;">
+            <li>
+              <a routerLink="/hrm/allowances">
+                <span>Allowances</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/hrm/deductions">
+                <span>Deductions</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse">
+           <span>Modifications</span><i class="bi bi-chevron-down ms-auto" *ngIf="!isSidebarCollapsed"></i>
+          </a>
+          <ul id="tables-nav" class="nav-content collapse ">
+            <li>
+              <a routerLink="/hrm/offer-letter">
+               <span>Offer Letter </span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/hrm/hike">
+               <span>Hike</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/hrm/experience-letter">
+               <span>Experience Letter </span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/hrm/service-letter">
+               <span>Service Letter </span>
+              </a>
+            </li>
+          </ul>
+        </li> -->
+      </ul>
+    </li>
+    <!-- Company Accountant -->
+    <li class="nav-item">
+      <a class="nav-link collapsed" (click)="toggleDropdown('accounttant')">
+        <span>Accountant</span><i class="bi bi-chevron-down ms-auto" *ngIf="!isSidebarCollapsed"></i>
+      </a>
+      <ul id="accounttant" [ngClass]="{'collapse': true, 'show': activeDropdown === 'accounttant'}"
+        style="margin-top: 4px;">
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#forms-accounttant" data-bs-toggle="collapse">
+            <span>Sales</span><i class="bi bi-chevron-down ms-auto" *ngIf="!isSidebarCollapsed"></i>
+          </a>
+          <ul id="forms-accounttant" class="nav-content dropdown-content" style="text-decoration: none;">
+            <li><a routerLink="/customers"><i class="bi bi-person-fill"></i><span>Customers</span></a></li>
+            <li><a routerLink="/quotations"><i class="bi bi-journal-text"></i><span>Quotation</span></a></li>
+            <li><a routerLink="/invoice"><i class="bi bi-journal-text"></i><span>Invoice</span></a></li>
+            <li><a routerLink="/receipts"><i class="bi bi-journal-text"></i><span>Receipts</span></a></li>
+            <li><a routerLink="/payments"><i class="bi bi-cash-coin"></i><span>Payments</span></a></li>
+            <li><a routerLink="/bankList"><i class="bi bi-bank"></i><span>Banks</span></a></li>
+            <li><a routerLink="/serviceList"><i class="bi bi-journal-text"></i><span>Services</span></a></li>
+            <li><a routerLink="/subserviceList"><i class="bi bi-journal-text"></i><span>SubServices</span></a>
+            </li>
+            <li><a routerLink="/state"><i class="bi bi-journal-text"></i><span>States</span></a></li>
+            <li><a routerLink="/district"><i class="bi bi-journal-text"></i><span>Districts</span></a></li>
+            <li><a routerLink="/type_of_leave"><i class="bi bi-journal-text"></i><span>Leave Type</span></a>
+            </li>
+            <li><a routerLink="/leave_allotment"><i class="bi bi-journal-text"></i><span>Leave
+                  Allotment</span></a></li>
+            <li><a routerLink="/pricings"><i class="bi bi-journal-text"></i><span>Prices modal</span></a></li>
+            <li><a routerLink="/bankBook"><i class="bi bi-journal-text"></i><span>Bank Book</span></a></li>
+            <li><a routerLink="/cashBook"><i class="bi bi-journal-text"></i><span>Cash Book</span></a></li>
+            <li><a routerLink="/all_Transactions"><i class="bi bi-journal-text"></i><span>Accounts
+                  Statement</span></a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <!-- Employee -->
+    <li class="nav-item">
+      <a class="nav-link collapsed" (click)="toggleDropdown('employee')">
+        <span>Employee</span><i class="bi bi-chevron-down ms-auto" *ngIf="!isSidebarCollapsed"></i>
+      </a>
+      <ul id="employee" [ngClass]="{'collapse': true, 'show': activeDropdown === 'employee'}" style="margin-top: 4px;">
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#forms-employee" data-bs-toggle="collapse">
+            <span>Dashboard</span><i class="bi bi-chevron-down ms-auto" *ngIf="!isSidebarCollapsed"></i>
+          </a>
+          <ul id="forms-employee" class="nav-content collapse " style="text-decoration: none;">
+            <li>
+              <a routerLink="/employee/leave-request">
+                <span>Leave Request</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/Emp_claim_status">
+                <span>Employee Claim Status</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li class="nav-item " style="margin-top:40px;">
+      <a class="nav-link collapsed" routerLink="/notifications">
+        <i class="bi bi-bell"></i>
+        <span>Notifications</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" (click)="do_logout()">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Sign Out</span>
+      </a>
+    </li>
+  </ul>
+</aside>
+<div class="overlay" *ngIf="isMobileSidebarOpen" (click)="toggleMobileSidebar()"></div>

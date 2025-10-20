@@ -223,8 +223,8 @@
                   <td>{{ item.mbl_no }}</td>
                   <td>{{ item.designation }}</td>
                   <td>
-                    <button class="btn btn-sm btn-success me-1">Approve</button>
-                    <button class="btn btn-sm btn-danger">Reject</button>
+                    <button class="btn btn-sm btn-success me-1" (click)="handleLeaveAction(item.id)">Approval</button>
+                    <!-- <button class="btn btn-sm btn-danger">Reject</button> -->
                   </td>
                 </tr>
               </tbody>
@@ -252,29 +252,27 @@
         </div>
         <!-- Body -->
         <div class="card-body">
-          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-hover  " id="todoTable">
+          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-hover  " style="border: none;" id="todoTable">
             <tbody *ngIf="task_list?.length != 0">
               <tr *ngFor="let item of task_list; let i = index" class="d-flex flex-row justify-content-between">
                 <td>{{ item.taskName }}</td>
                 <td>
-                  <button class=" btn btn-sm btn-success me-1">Done</button>
+                  <button class=" btn btn-sm btn-success me-1">Status</button>
                 </td>
               </tr>
             </tbody>
             <tbody *ngIf="task_list?.length == 0">
               <tr>
-                <td colspan="6" class="text-center">No Customers available!</td>
+                <td colspan="6" class="text-center">No Tasks available!</td>
               </tr>
             </tbody>
           </table>
-          <form class="d-flex" [formGroup]="addTask" (ngSubmit)="Submit()">
-            <div class="col-md-8">
+          <form class=" row d-flex flex-row" [formGroup]="addTask" (ngSubmit)="Submit()">
+            <div class="col-md-12 col-sm-12">
               <input type="text" class="form-control form-control-sm" name="task" id="task" formControlName="task"
                 [ngClass]="{ 'is-invalid': submitted && f.task.errors }">
-            </div>
-            <div class="col-md-4">
-              <button type="submit" class="btn btn-primary btn-sm " [disabled]="addTask.invalid">
-                Add New
+              <button type="submit" style="position:absolute; right:11px; bottom:0px;border-radius: 0px 5px 5px 0px;" class="btn btn-primary btn-sm " [disabled]="addTask.invalid">
+                New
               </button>
             </div>
           </form>

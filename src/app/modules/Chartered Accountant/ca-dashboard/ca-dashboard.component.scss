@@ -268,3 +268,32 @@ canvas {
     text-decoration: none;
     align-items: center;
 }
+
+table.dataTable.dtr-inline.collapsed>tbody>tr>td:first-child:before {
+    top: 14px;
+    left: 8px;
+    height: 14px;
+    width: 14px;
+    line-height: 14px;
+    background-color: #007bff;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 0.2em 0.8em;
+}
+
+table {
+    border-collapse: collapse;
+    /* Collapses borders between cells */
+}
+
+table,
+th,
+td {
+    border: none;
+    /* Removes all borders */
+}

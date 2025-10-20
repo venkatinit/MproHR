@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
 import { ApiService } from 'src/app/api.client';
 import { UtilsServiceService } from 'src/app/utils/utils-service.service';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -25,11 +26,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     private toast: ToastrService
   ) { }
   applicant_list = [
-    { 'emp_code': 'NG0001', 'emp_name': 'Venkat', 'email': 'Venkat@gmail.com', 'mbl_no': '7987578478', 'dept': 'IT', 'designation': 'Angular Developer' },
-    { 'emp_code': 'NG0002', 'emp_name': ' Siva', 'email': ' Siva@gmail.com', 'mbl_no': '7987578478', 'dept': 'IT', 'designation': 'Angular Developer' },
-    { 'emp_code': 'NG0001', 'emp_name': 'Venkat', 'email': 'Venkat@gmail.com', 'mbl_no': '7987578478', 'dept': 'IT', 'designation': 'Angular Developer' },
-    { 'emp_code': 'NG0002', 'emp_name': ' Siva', 'email': ' Siva@gmail.com', 'mbl_no': '7987578478', 'dept': 'IT', 'designation': 'Angular Developer' },
-    { 'emp_code': 'NG0001', 'emp_name': 'Venkat', 'email': 'Venkat@gmail.com', 'mbl_no': '7987578478', 'dept': 'IT', 'designation': 'Angular Developer' }
+    { 'id':1, 'emp_code': 'NG0001', 'emp_name': 'Venkat', 'email': 'Venkat@gmail.com', 'mbl_no': '7987578478', 'dept': 'IT', 'designation': 'Angular Developer' },
+    { 'id':2, 'emp_code': 'NG0002', 'emp_name': ' Siva', 'email': ' Siva@gmail.com', 'mbl_no': '7987578478', 'dept': 'IT', 'designation': 'Angular Developer' },
+    { 'id':3, 'emp_code': 'NG0001', 'emp_name': 'Venkat', 'email': 'Venkat@gmail.com', 'mbl_no': '7987578478', 'dept': 'IT', 'designation': 'Angular Developer' },
+    { 'id':4, 'emp_code': 'NG0002', 'emp_name': ' Siva', 'email': ' Siva@gmail.com', 'mbl_no': '7987578478', 'dept': 'IT', 'designation': 'Angular Developer' },
+    { 'id':5, 'emp_code': 'NG0001', 'emp_name': 'Venkat', 'email': 'Venkat@gmail.com', 'mbl_no': '7987578478', 'dept': 'IT', 'designation': 'Angular Developer' }
   ]
   task_list = [
     { 'taskName': 'Team Discussion' },
@@ -125,4 +126,80 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       }
     });
   }
+   handleLeaveAction(id: number) {
+      Swal.fire({
+        title: 'Choose an action',
+        text: 'What would you like to do with this request?',
+        icon: 'question',
+        showCancelButton: true,
+        showDenyButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Approve',
+        denyButtonText: 'Reject',
+        cancelButtonText: 'Delete',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Approve
+          const body = {
+            id: id,
+            status: 'Approved',
+            role: 'Admin',
+          };
+          this.api.put(`leave/approve/${id}`, body).subscribe({
+            next: (res: any) => {
+              Swal.fire('Approved!', 'Request has been approved.', 'success');
+              // this.PendingRequests();
+            },
+            error: (err: any) => {
+              Swal.fire('Error!', 'Failed to approve the Request.', 'error');
+              console.log(err);
+            }
+          });
+  
+        } else if (result.isDenied) {
+          // Reject
+          const body = {
+            id: id,
+            status: 'Rejected',
+            role: 'Admin',
+          };
+          this.api.put(`Request/reject/${id}`, body).subscribe({
+            next: (res: any) => {
+              Swal.fire('Rejected!', 'Request has been rejected.', 'info');
+              // this.PendingRequests();
+            },
+            error: (err: any) => {
+              Swal.fire('Error!', 'Failed to reject the Request.', 'error');
+              console.log(err);
+            }
+          });
+  
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          // Delete
+          Swal.fire({
+            title: 'Are you sure?',
+            text: 'You want to delete this Request record?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it',
+            cancelButtonText: 'No, cancel',
+          }).then((confirmDelete) => {
+            if (confirmDelete.isConfirmed) {
+              this.api.delete(`api/admin/Request/allotment/${id}`).subscribe({
+                next: (res: any) => {
+                  Swal.fire('Deleted!', 'The Request has been deleted.', 'success');
+                  // this.PendingRequests();
+                },
+                error: (err: any) => {
+                  Swal.fire('Error!', 'Failed to delete the Request.', 'error');
+                  console.log(err);
+                }
+              });
+            } else {
+              Swal.fire('Cancelled', 'Request record is safe.', 'info');
+            }
+          });
+        }
+      });
+    }
 }

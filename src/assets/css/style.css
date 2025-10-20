@@ -1,4 +1,4 @@
-*{
+* {
   cursor: pointer;
 }
 
@@ -625,7 +625,7 @@ h6 {
   top: 0px;
   left: 0;
   bottom: 0;
-  z-index: 996;
+  /* z-index: 996; */
   transition: all 0.3s;
   padding: 0px 10px 10px 10px;
   overflow-y: auto;
@@ -1341,4 +1341,8 @@ h6 {
   bottom: 12px;
   left: 12px;
   right: auto;
+}
+
+.table-responsive{
+  overflow-x: auto;
 }

@@ -8,54 +8,53 @@
                 <a class="btn btn-primary  btn-sm me-md-2  float-end" routerLink="/hrm/add-employee" role="button"><i
                         class="fa fa-plus" aria-hidden="true"></i> New</a>
             </div>
-            <div class="card-body">
-                <form>
-                    <table datatable [dtOptions]="dtOptions" class="row-border hover">
-                        <thead>
-                            <tr>
-                                <th>S No</th>
-                                <th>Applicant Name</th>
-                                <th>Email id</th>
-                                <th>Mobile No</th>
-                                <th>Department</th>
-                                <th>Designation</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody *ngIf="applicant_list?.length != 0">
-                            <tr *ngFor="let item of applicant_list;let i=index">
-                                <td>{{i+1}}</td>
-                                <td>{{ item.emp_name }}</td>
-                                <td>{{ item.email }}</td>
-                                <td>{{ item.mbl_no }}</td>
-                                <td>{{ item.dept }}</td>
-                                <td>{{ item.designation }}</td>
-                                <td>
-                                    <div class="dropdown">
-                                        <button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton1"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="fa-solid fa-ellipsis-vertical"></i>
-                                        </button>
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1"
-                                            style="transform: translate3d(-160px, -4px, 0px) !important ;">
-                                            <li><a class="dropdown-item text-primary" href="#">Preview</a></li>
-                                            <li><a class="dropdown-item text-success"
-                                                    (click)="updateEmployee(i)">Update</a> </li>
-                                            <li><a class="dropdown-item text-danger"
-                                                    (click)="deleteEmployee(i)">Delete</a></li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
+            <div class="card-body table-responsive">
 
-                        <tbody *ngIf="applicant_list?.length == 0">
-                            <tr>
-                                <td colspan="8" class="no-data-available">No data!</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </form>
+                <table datatable [dtOptions]="dtOptions" class="row-border hover">
+                    <thead>
+                        <tr>
+                            <th>S No</th>
+                            <th>Applicant Name</th>
+                            <th>Email id</th>
+                            <th>Mobile No</th>
+                            <th>Department</th>
+                            <th>Designation</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="applicant_list?.length != 0">
+                        <tr *ngFor="let item of applicant_list;let i=index">
+                            <td>{{i+1}}</td>
+                            <td>{{ item.emp_name }}</td>
+                            <td>{{ item.email }}</td>
+                            <td>{{ item.mbl_no }}</td>
+                            <td>{{ item.dept }}</td>
+                            <td>{{ item.designation }}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton1"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1"
+                                        style="transform: translate3d(-160px, -4px, 0px) !important ;">
+                                        <li><a class="dropdown-item text-primary" href="#">Preview</a></li>
+                                        <li><a class="dropdown-item text-success" (click)="updateEmployee(i)">Update</a>
+                                        </li>
+                                        <li><a class="dropdown-item text-danger" (click)="deleteEmployee(i)">Delete</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                    <tbody *ngIf="applicant_list?.length == 0">
+                        <tr>
+                            <td colspan="8" class="no-data-available">No data!</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

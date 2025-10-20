@@ -33,44 +33,42 @@
                     </a>
                 </div>
             </div>
-            <div class="card-body">
-        
-                                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
-                                    class="table   table-hover" id="bankTable">
-                                    <thead>
-                                        <tr>
-                                            <th>S.No</th>
-                                            <th>Deduction Name</th>
-                                            <th>Deduction Type</th>
-                                            <th>Value</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody *ngIf="deduction_list?.length != 0">
-                                        <tr *ngFor="let item of deduction_list; let i = index">
-                                            <td>{{ i + 1 }}</td>
-                                            <td>{{ item.name || '-'}}</td>
-                                            <td>{{ item.type || '-' }}</td>
-                                            <td>{{ item.value || '-' }}</td>
-                                            <td>
-                                                <button class="btn btn-sm" type="button" (click)="updateById(item.id)"
-                                                    data-bs-toggle="modal" data-bs-target="#newModal" title="Edit">
-                                                    <i class="bi bi-pencil-square text-success"></i> </button>
-                                                <button class="btn  btn-sm " type="button" data-toggle="tooltip"
-                                                    data-placement="top" (click)="deleteDeduction(item.id)"
-                                                    title="Delete"><i
-                                                        class="bi bi-trash3-fill text-danger"></i></button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
+            <div class="card-body table-responsive">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table   table-hover"
+                    id="bankTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Deduction Name</th>
+                            <th>Deduction Type</th>
+                            <th>Value</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="deduction_list?.length != 0">
+                        <tr *ngFor="let item of deduction_list; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ item.name || '-'}}</td>
+                            <td>{{ item.type || '-' }}</td>
+                            <td>{{ item.value || '-' }}</td>
+                            <td>
+                                <button class="btn btn-sm" type="button" (click)="updateById(item.id)"
+                                    data-bs-toggle="modal" data-bs-target="#newModal" title="Edit">
+                                    <i class="bi bi-pencil-square text-success"></i> </button>
+                                <button class="btn  btn-sm " type="button" data-toggle="tooltip" data-placement="top"
+                                    (click)="deleteDeduction(item.id)" title="Delete"><i
+                                        class="bi bi-trash3-fill text-danger"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
 
-                                    <tbody *ngIf="deduction_list?.length == 0">
-                                        <tr>
-                                            <td colspan="12" class="no-data-available">No data!</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                           
+                    <tbody *ngIf="deduction_list?.length == 0">
+                        <tr>
+                            <td colspan="12" class="no-data-available">No data!</td>
+                        </tr>
+                    </tbody>
+                </table>
+
             </div>
             <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-sm">

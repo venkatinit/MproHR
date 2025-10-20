@@ -1,6 +1,6 @@
 <div class="dashboard">
     <div class="row d-flex flex-row justify-content-between">
-        <div class=" profile">
+        <div class="col-lg-6 col-sm-12 profile">
             <div class="employee grid-cols-6 rounded-2xl shadow-md p-6 d-flex items-center justify-between">
                 <div>
                     <img src="../../../../assets/img/profile-img.jpg" style="width: 75px;" alt="profile"
@@ -12,27 +12,31 @@
                 </div>
             </div>
         </div>
-        <div class="row d-flex flex-row details ">
-            <div class="details_brief" data-bs-toggle="modal" data-bs-target="#Offer" (click)="getEmployeeDetails()">
-                <h5>Offer Letter
-                </h5>
-            </div>
-            <div class="details_brief" data-bs-toggle="modal" data-bs-target="#attendances">
-                <h5>Attendance</h5>
-            </div>
-            <div class="details_brief" data-bs-toggle="modal" data-bs-target="#Payslip" (click)="getEmployeeDetails()">
-                <h5>Payslip</h5>
-            </div>
-            <div class="details_brief" data-bs-toggle="modal" data-bs-target="#Relieving"
-                (click)="getEmployeeDetails()">
-                <h5>Relieving Letter
-                </h5>
-            </div>
-            <div class="details_brief" data-bs-toggle="modal" data-bs-target="#Service" (click)="getEmployeeDetails()">
-                <h5>Service Letter</h5>
-            </div>
-            <div class="details_brief" (click)="toggleUpdates()">
-                <h5>More</h5>
+        <div class="col-lg-6 col-sm-12">
+            <div class=" row d-flex flex-row details ">
+                <div class="col-sm-6 col-md-4 details_brief" data-bs-toggle="modal" data-bs-target="#Offer"
+                    (click)="getEmployeeDetails()">
+                    <h5>Offer Letter </h5>
+                </div>
+                <div class="col-sm-6 col-md-4 details_brief" data-bs-toggle="modal" data-bs-target="#attendances">
+                    <h5>Attendance</h5>
+                </div>
+                <div class="col-sm-6 col-md-4 details_brief" data-bs-toggle="modal" data-bs-target="#Payslip"
+                    (click)="getEmployeeDetails()">
+                    <h5>Payslip</h5>
+                </div>
+                <div class="col-sm-6 col-md-4 details_brief" data-bs-toggle="modal" data-bs-target="#Relieving"
+                    (click)="getEmployeeDetails()">
+                    <h5>Relieving Letter
+                    </h5>
+                </div>
+                <div class="col-sm-6 col-md-4 details_brief" data-bs-toggle="modal" data-bs-target="#Service"
+                    (click)="getEmployeeDetails()">
+                    <h5>Service Letter</h5>
+                </div>
+                <div class="col-sm-6 col-md-4 details_brief" (click)="toggleUpdates()">
+                    <h5>More</h5>
+                </div>
             </div>
         </div>
     </div>

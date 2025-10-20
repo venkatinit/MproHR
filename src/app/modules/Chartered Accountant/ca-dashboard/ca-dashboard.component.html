@@ -3,6 +3,7 @@
         <span class="d-flex flex-row justify-content-between">
             <h1>Hi Welcome Back Boss!!</h1>
             <div class="filter">
+
                 <span>
                     <a class="icon" data-bs-toggle="dropdown">Filter</a>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
@@ -167,25 +168,25 @@
                             <div class="col-lg-4 col-md-5">
                                 <div class="d-flex flex-column gap-3">
                                     <div class="card survey-card p-3 border-0 shadow-sm">
-                                        <h6 class="text-muted mb-1">Reg Companies</h6>
+                                        <h6 class="text-muted mb-1">Reg CA's</h6>
                                         <h4 class="fw-bold mb-0 text-primary">1244</h4>
                                     </div>
                                     <div class="card survey-card p-3 border-0 shadow-sm">
-                                        <h6 class="text-muted mb-1">Active Companies</h6>
+                                        <h6 class="text-muted mb-1">Active CA's</h6>
                                         <h4 class="fw-bold mb-0 text-success">744</h4>
                                     </div>
                                     <div class="card survey-card p-3 border-0 shadow-sm"
-                                        style="margin-bottom: 8px;">
-                                        <h6 class="text-muted mb-1">Inactive Companies</h6>
+                                        style="margin-bottom: 8px !important;">
+                                        <h6 class="text-muted mb-1">Inactive CA's</h6>
                                         <h4 class="fw-bold mb-0 text-danger">500</h4>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-8 col-md-7">
-                                <div style="margin-bottom: 0px;"
-                                    class="card p-3 border-0 shadow-sm h-100 d-flex justify-content-center align-items-center">
+                                <div class="card p-3 border-0 shadow-sm h-100 d-flex justify-content-center align-items-center"
+                                    style="margin-bottom: 0px;">
                                     <div class="w-100 text-center">
-                                        <h5 class="card-title mb-3 fw-semibold">ORG Status Overview</h5>
+                                        <h5 class="card-title mb-3 fw-semibold">CA Status Overview</h5>
                                         <canvas id="caPieChart" style="max-height: 300px;"></canvas>
                                     </div>
                                 </div>
@@ -210,38 +211,40 @@
                 </div>
                 <!-- Body -->
                 <div class="card-body">
-                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-hover  "
-                        id="customerTable">
-                        <thead class="table-light">
-                            <tr>
-                                <th>S No</th>
-                                <th>Name</th>
-                                <th>Email ID</th>
-                                <th>Mobile No</th>
-                                <th>Designation</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-
-                        <tbody *ngIf="applicant_list?.length != 0">
-                            <tr *ngFor="let item of applicant_list; let i = index">
-                                <td>{{ i + 1 }}</td>
-                                <td>{{ item.emp_name }}</td>
-                                <td>{{ item.email }}</td>
-                                <td>{{ item.mbl_no }}</td>
-                                <td>{{ item.designation }}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-success me-1">Approve</button>
-                                    <button class="btn btn-sm btn-danger">Reject</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tbody *ngIf="applicant_list?.length == 0">
-                            <tr>
-                                <td colspan="6" class="text-center">No Customers available!</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+                            class="table table-striped table-bordered nowrap" id="customerTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>S No</th>
+                                    <th>Name</th>
+                                    <th>Email ID</th>
+                                    <th>Mobile No</th>
+                                    <th>Designation</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngIf="applicant_list?.length != 0">
+                                <tr *ngFor="let item of applicant_list; let i = index">
+                                    <td>{{ i + 1 }}</td>
+                                    <td>{{ item.emp_name }}</td>
+                                    <td>{{ item.email }}</td>
+                                    <td>{{ item.mbl_no }}</td>
+                                    <td>{{ item.designation }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-success me-1"
+                                            (click)="handleLeaveAction(item.id)">Approval</button>
+                                        <!-- <button class="btn btn-sm btn-danger">Reject</button> -->
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tbody *ngIf="applicant_list?.length == 0">
+                                <tr>
+                                    <td colspan="6" class="text-center">No Customers available!</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <p stype="width:500px; "><a href=""> View All CA's List <i class="bi bi-arrow-right ml-1 "></i></a>
                     </p>
                 </div>
@@ -261,30 +264,30 @@
                 <!-- Body -->
                 <div class="card-body">
                     <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-hover  "
-                        id="todoTable">
+                        style="border: none;" id="todoTable">
                         <tbody *ngIf="task_list?.length != 0">
                             <tr *ngFor="let item of task_list; let i = index"
                                 class="d-flex flex-row justify-content-between">
                                 <td>{{ item.taskName }}</td>
                                 <td>
-                                    <button class=" btn btn-sm btn-success me-1">Done</button>
+                                    <button class=" btn btn-sm btn-success me-1">Status</button>
                                 </td>
                             </tr>
                         </tbody>
                         <tbody *ngIf="task_list?.length == 0">
                             <tr>
-                                <td colspan="6" class="text-center">No Customers available!</td>
+                                <td colspan="6" class="text-center">No Tasks available!</td>
                             </tr>
                         </tbody>
                     </table>
-                    <form class="d-flex" [formGroup]="addTask" (ngSubmit)="Submit()">
-                        <div class="col-md-8">
+                    <form class=" row d-flex flex-row" [formGroup]="addTask" (ngSubmit)="Submit()">
+                        <div class="col-md-12 col-sm-12">
                             <input type="text" class="form-control form-control-sm" name="task" id="task"
                                 formControlName="task" [ngClass]="{ 'is-invalid': submitted && f.task.errors }">
-                        </div>
-                        <div class="col-md-4">
-                            <button type="submit" class="btn btn-primary btn-sm " [disabled]="addTask.invalid">
-                                Add New
+                            <button type="submit"
+                                style="position:absolute; right:11px; bottom:0px;border-radius: 0px 5px 5px 0px;"
+                                class="btn btn-primary btn-sm " [disabled]="addTask.invalid">
+                                New
                             </button>
                         </div>
                     </form>
