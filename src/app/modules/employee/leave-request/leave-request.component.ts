@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
@@ -7,12 +7,18 @@ import { ApiService } from 'src/app/api.client';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UsersService } from 'src/app/services/users.service';
 import { ToastrService } from 'ngx-toastr';
+import { DataTableDirective } from 'angular-datatables';
+import { Subject } from 'rxjs';
 @Component({
   selector: 'app-leave-request',
   templateUrl: './leave-request.component.html',
   styleUrls: ['./leave-request.component.scss']
 })
 export class LeaveRequestComponent implements OnInit {
+  @ViewChild(DataTableDirective, { static: false }) dtElement!: DataTableDirective;
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions: DataTables.Settings = {};
+  action: 'create' | 'update' = 'create';
   currentMonth = new Date();
   selectedDate: Date | null = null;
   dates: { date: Date; isOtherMonth: boolean }[] = [];
@@ -24,6 +30,7 @@ export class LeaveRequestComponent implements OnInit {
   minDate: Date = new Date();
   fromDate: Date | null = null;
   toDate: Date | null = null;
+  leaves_list: any[] = [];
   get f() {
     return this.addLeave.controls
   }

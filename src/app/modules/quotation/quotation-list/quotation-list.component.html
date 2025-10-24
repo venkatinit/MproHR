@@ -9,20 +9,21 @@
                 <a class="btn btn-primary  btn-sm  me-md-2  float-end" (click)="open_fileUpload()" role="button"><i
                         class="fa fa-arrow-up" aria-hidden="true"></i> Export
                     Excel</a>
-                <a class="btn btn-primary  btn-sm me-md-2  float-end" routerLink="/add_quatation" role="button"><i
-                        class="fa fa-plus" aria-hidden="true"></i> New</a>
+                <a class="btn btn-primary  btn-sm me-md-2  float-end" data-bs-toggle="modal"
+                    data-bs-target="#quotationForm" role="button"><i class="fa fa-plus" aria-hidden="true"></i> New</a>
             </div>
             <div class="card-body table-responsive">
                 <table datatable [dtOptions]="dtOptions" class="row-border hover">
                     <thead>
                         <tr>
-                            <th>S No</th>
-                            <th>Emp Code</th>
-                            <th>Emp Name</th>
-                            <th>Email id</th>
-                            <th>Mbl_no</th>
-                            <th>Department</th>
-                            <th>Designation</th>
+                            <th>S.No</th>
+                            <th>Date</th>
+                            <th>Quote No</th>
+                            <th>Company Name</th>
+                            <th>Mobile Number</th>
+                            <th>Email</th>
+                            <th>Total Price</th>
+                            <th>Validity Upto</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -34,29 +35,175 @@
                             <td>{{ item.email }}</td>
                             <td>{{ item.mbl_no }}</td>
                             <td>{{ item.dept }}</td>
+                            <td>{{ item.dept }}</td>
                             <td>{{ item.designation }}</td>
-
-
                             <td>
-                                <button class="btn btn-sm " type="button" data-toggle="tooltip" data-placement="top"
-                                    title="View"><i class="bi bi-eye-fill text-primary"></i></button>
-                                <button class="btn btn-sm " type="button" data-toggle="tooltip" cls data-placement="top"
+                                <button class="btn btn-sm text-white " type="button" style="border: none;"
+                                    data-bs-toggle="modal" data-bs-target="#quotationModal" title="preview">
+                                    <i class="bi bi-eye-fill text-primary"></i>
+                                </button>
+                                <button class="btn btn-sm" type="button" data-toggle="tooltip" data-placement="top"
                                     (click)="updateEmployee(i)" title="Edit"><i
                                         class="bi bi-pencil-square text-success"></i></button>
 
                                 <button class="btn  btn-sm " type="button" data-toggle="tooltip" data-placement="top"
-                                    (click)="deleteEmployee(i)" title="Delete"><i
+                                    (click)="deleteQuote(i)" title="Delete"><i
                                         class="bi bi-trash3-fill text-danger"></i></button>
                             </td>
                         </tr>
                     </tbody>
-
                     <tbody *ngIf="employee_list?.length == 0">
                         <tr>
                             <td colspan="8" class="no-data-available">No data!</td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="quotationForm" tabindex="-1" aria-labelledby="quotationModalLabel" aria-hidden="true"
+    (hidden.bs.modal)="onModalClose()">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"> <strong>New Quote</strong> </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="addQuotation" (ngSubmit)="action === 'update' ? updateQuote() : onSubmit()">
+                    <div class="card">
+                        <div class="card-body col-md-12">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr align="center">
+                                        <th>Item Details</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Tax (%)</th>
+                                        <th>Amount</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody formArrayName="items">
+                                    <tr *ngFor="let item of items.controls; let i = index" [formGroupName]="i">
+                                        <td>
+                                            <input type="text" formControlName="item"
+                                                class="form-control form-control-sm" />
+                                            <div class="text-danger" *ngIf="submitted && item.get('item')?.invalid">Item
+                                                is required</div>
+                                        </td>
+                                        <td>
+                                            <input type="text" numbersOnly formControlName="quantity"
+                                                class="form-control form-control-sm" (input)="calculateRowAmount(i)" />
+                                            <div class="text-danger" *ngIf="submitted && item.get('quantity')?.invalid">
+                                                Required & min 1</div>
+                                        </td>
+                                        <td>
+                                            <input type="text" numbersOnly formControlName="price"
+                                                class="form-control form-control-sm" (input)="calculateRowAmount(i)" />
+                                            <div class="text-danger" *ngIf="submitted && item.get('price')?.invalid">
+                                                Required</div>
+                                        </td>
+                                        <td>
+                                            <input type="text" numbersOnly formControlName="tax"
+                                                class="form-control form-control-sm" (input)="calculateRowAmount(i)" />
+                                            <div class="text-danger" *ngIf="submitted && item.get('tax')?.invalid">
+                                                0–100% tax</div>
+                                        </td>
+                                        <td>
+                                            <input type="text" formControlName="amount"
+                                                class="form-control form-control-sm" readonly />
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm">
+                                                <i class="fa fa-ellipsis-v text-primary" aria-hidden="true"></i>
+                                            </button>
+                                            <button class="btn btn-sm text-danger" type="button" (click)="removeRow(i)"
+                                                [disabled]="items.length === 1" style="border: none;">
+                                                <i class="fa fa-times"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class=" row d-flex flex-row justify-content-between">
+                                <div class="col-md-5 d-flex flex-column justify-content-between">
+                                    <button class="add_item btn btn-primary col-md-3" (click)="addRow()">+ Add
+                                    </button>
+                                    <label for="message">Customer Notes</label>
+                                    <textarea type="text" formControlName="message"
+                                        placeholder="Looking forward for your business."
+                                        class="form-control form-control-sm"></textarea>
+
+                                </div>
+
+                                <div class="  col-md-5">
+                                    <div class="d-flex flex-row justify-content-between"><strong>Sub Total:
+                                        </strong>
+                                        <strong>{{ grandTotal | number:'1.2-2' }}</strong>
+                                    </div>
+                                    <div class="mt-1 d-flex flex-row justify-content-between">
+                                        <p>Discount: </p>
+                                        <input type="text" formControlName="discount" numbersOnly
+                                            (input)="calculateGrandTotal()"
+                                            class="form-control form-control-sm discount " style="width: 90px;" />
+                                        <p>{{ discountedAmount | number:'1.2-2' }} </p>
+                                    </div>
+                                    <div class="card-footer d-flex flex-row justify-content-between "
+                                        style="padding:10px 3px !important;">
+                                        <strong>Grand Total:(₹) </strong>
+                                        <strong>{{ finalTotal | number:'1.2-2' }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer col-md-12 d-flex flex-row  ">
+                            <div class="col-md-8 p-0">
+                                <label for="termsConditions">Terms & Conditions</label>
+                                <textarea type="text" formControlName="termsConditions" name="termsConditions"
+                                    id="termsConditions" style="height: 60px;"
+                                    placeholder="Write your business Terms and Conditions"
+                                    class="form-control form-control-sm"></textarea>
+                                <input type="checkbox" formControlName="terms" id="terms" name="terms" value="terms">
+                                &nbsp;<label for="terms">Use
+                                    this in future
+                                    for all quotes of all customers.</label>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="attachment">Attach File(s) to Quote</label>
+                                <input type="file" formControlName="attachment" class="form-control form-control-sm " />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex flex-row justify-content-between " style="padding: 10px 10px;">
+                        <button type="button" class="btn btn-outline-dark me-md-2 btn-sm"
+                            data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary  me-md-2 btn-sm">Submit</button>
+                        <!-- <app-save-button [spin]="spinLoader"></app-save-button> -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="quotationModal" tabindex="-1" aria-labelledby="quotationModalLabel" aria-hidden="true"
+    (hidden.bs.modal)="onModalClose()">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Choose Quotation Format</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="d-flex justify-content-around align-items-center gap-3">
+                    <img src="assets/img/format_1.jpg" alt="Format 1"
+                        style="width: 150px; height: auto; cursor: pointer;" (click)="generateQuotationPDF()" />
+
+                    <img src="assets/img/format_2.jpg" alt="Format 2"
+                        style="width: 150px; height: auto; cursor: pointer;" (click)="generateQuotationPDF1()" />
+                </div>
             </div>
         </div>
     </div>

@@ -1,136 +1,133 @@
+<div class="container-fluid">
+  <div class="row d-flex flex-row justify-content-between align-items-center">
+    <div class="col-xxl-3 col-lg-3 col-md-3">
+      <div class="card slide  d-flex flex-column ">
+        <div class="title">Openings Count</div>
+        <div class="count text-end">00</div>
+      </div>
+    </div>
+    <div class="col-xxl-3 col-lg-3 col-md-3">
+      <div class="card slide  d-flex flex-column ">
+        <div class="title">New Applicants Count </div>
+        <div class="count text-end">00</div>
+      </div>
+    </div>
+    <div class="col-xxl-3 col-lg-3 col-md-3">
+      <div class="card slide  d-flex flex-column ">
+        <div class="title">Probition Period Emp Count</div>
+        <div class="count text-end">00</div>
+      </div>
+    </div>
+    <div class="col-xxl-3 col-lg-3 col-md-3">
+      <div class="card slide  d-flex flex-column ">
+        <div class="title">Current Employees Count</div>
+        <div class="count text-end">00</div>
+      </div>
+    </div>
+    <div class="col-xxl-3 col-lg-3 col-md-3">
+      <div class="card slide  d-flex flex-column ">
+        <div class="title">Graduity Employees Count</div>
+        <div class="count text-end">00</div>
+      </div>
+    </div>
+    <div class="col-xxl-3 col-lg-3 col-md-3">
+      <div class="card slide  d-flex flex-column ">
+        <div class="title">Exit Employees Count</div>
+        <div class="count text-end">00</div>
+      </div>
+    </div>
+    <div class="col-xxl-3 col-lg-3 col-md-3">
+      <div class="card slide  d-flex flex-column ">
+        <div class="title">Notice Period Emp Count</div>
+        <div class="count text-end">00</div>
+      </div>
+    </div>
+    <div class="col-xxl-3 col-lg-3 col-md-3">
+      <div class="card slide  d-flex flex-column ">
+        <div class="title">Today Active Emp Count</div>
+        <div class="count text-end">00</div>
+      </div>
+    </div>
+    <div class="col-xxl-3 col-lg-3 col-md-3">
+      <div class="card slide  d-flex flex-column ">
+        <div class="title">Today Inactive Emp Count</div>
+        <div class="count text-end">00</div>
+      </div>
+    </div>
+    <div class="col-xxl-3 col-lg-3 col-md-3">
+      <div class="card slide  d-flex flex-column ">
+        <div class="title">Assigned Tasks Count</div>
+        <div class="count text-end">00</div>
+      </div>
+    </div>
+    <div class="col-xxl-3 col-lg-3 col-md-3">
+      <div class="card slide  d-flex flex-column ">
+        <div class="title">Completed Tasks Count</div>
+        <div class="count text-end">00</div>
+      </div>
+    </div>
+    <div class="col-xxl-3 col-lg-3 col-md-3">
+      <div class="card slide  d-flex flex-column ">
+        <div class="title">Pending Tasks Count</div>
+        <div class="count text-end">00</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class=" card mt-3">
+  <div class="card-header d-flex flex-row justify-content-between align-items-center">
+    <div class="left fw-bold">Monthly Attendance Summary</div>
+    <div class="d-flex">
+      <div class="right d-flex flex-row align-items-baseline">
+        <label class="fw-semibold">Employee: </label> &nbsp;
+        <select class="form-select w-auto" [(ngModel)]="selectedEmployee" (change)="onEmployeeChange()">
+          <option *ngFor="let e of employees" [value]="e.id">{{ e.name }}</option>
+        </select>
+      </div>&nbsp;
+      <button class="btn btn-primary btn-pill" routerLink="/hrm/bulk_attendance">Report</button>
+    </div>
+  </div>
+  <div class="card mt-0 mb-0">
+    <div class="d-flex align-items-center justify-content-between  " style="margin :5px 10px;">
+      <div><strong>{{ viewDate | date: 'MMMM yyyy' }}</strong></div>
+      <div class="ms-auto d-flex gap-2">
+        <button class="btn btn-outline-secondary btn-sm" (click)="prevMonth()">Prev</button>
+        <button class="btn btn-outline-secondary btn-sm" (click)="today()">Current</button>
+        <button class="btn btn-outline-secondary btn-sm" (click)="nextMonth()">Next</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <table class=" table table-bordered text-center align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th *ngFor="let day of ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']">{{ day }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let i of [].constructor(calendarDays.length / 7); let rowIndex = index">
+              <tr>
+                <td *ngFor="let day of calendarDays.slice(rowIndex * 7, rowIndex * 7 + 7)"
+                  [style.background-color]="getStatusColor(getEmployeeStatus(selectedEmployee!, day.date))"
+                  style="height: 70px;">
+                  <div class="fw-bold small">{{ day.date | date:'d' }}</div>
+                  <small>{{ getEmployeeStatus(selectedEmployee!, day.date) }}</small>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="bar-graph col-md-6  ">
+        <canvas baseChart [data]="barChartData" [options]="barChartOptions" type="bar"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="row">
   <div class="col-lg-6"><app-leave-approvals></app-leave-approvals></div>
   <div class="col-lg-6"><app-advance-salary></app-advance-salary></div>
 </div>
-
-<!-- charts start -->
-<!-- <div class="d-flex flex-row mt-2">
-  <div class="col-md-6 stat-card big">
-    <canvas id="pieChart"></canvas>
-  </div>
-  <canvas id="attendanceChart"></canvas>
-  <div class="filter-buttons d-flex flex-column g-2">
-    <button (click)="changeFilter('daily')" [class.active]="filterType === 'daily'">Daily</button>
-    <button (click)="changeFilter('monthly')" [class.active]="filterType === 'monthly'">Monthly</button>
-    <button (click)="changeFilter('yearly')" [class.active]="filterType === 'yearly'">Yearly</button>
-  </div>
-</div>
-<div class="stats-row mt-2">
-  <div class="stat-cards " *ngFor="let item of [
-        {label:'Checked In',value:stats.checkedIn,color:'#4da3ff'},
-        {label:'Not Checked In',value:stats.notCheckedIn,color:'#ff5c5c'},
-        {label:'On Leave',value:stats.onLeave,color:'#4caf50'},
-        {label:'Weekly Off',value:stats.weeklyOff,color:'#999'},
-        {label:'Holiday',value:stats.holiday,color:'#ff9800'},
-        {label:'Checked Out',value:stats.checkedOut,color:'#ffca28'}
-      ]" [style.borderColor]="item.color">
-    <h4>{{ item.label }}</h4>
-    <p>{{ item.value }}</p>
-  </div>
-</div> -->
-<!-- charts end -->
-<div class="container mt-3">
-  <div class="d-flex align-items-center gap-3 mb-3">
-    <label class="fw-semibold">Employee:</label>
-    <select class="form-select w-auto" [(ngModel)]="selectedEmployee" (change)="onEmployeeChange()">
-      <option *ngFor="let e of employees" [value]="e.id">{{ e.name }}</option>
-    </select>
-    <div class="ms-auto d-flex gap-2">
-      <button class="btn btn-outline-secondary btn-sm" (click)="prevMonth()">Prev</button>
-      <button class="btn btn-outline-secondary btn-sm" (click)="today()">Today</button>
-      <button class="btn btn-outline-secondary btn-sm" (click)="nextMonth()">Next</button>
-    </div>
-  </div>
-  <div class="row g-4">
-    <div class="col-lg-7">
-      <div class="card">
-        <div class="card-header fw-bold">Attendance Calendar</div>
-        <div class="card-body">
-          <mwl-calendar-month-view [viewDate]="viewDate" [events]="events">
-          </mwl-calendar-month-view>
-          <small class="text-muted">
-            <span class="badge me-1" style="background:#28a745;">&nbsp;</span> Present
-            <span class="badge ms-3 me-1" style="background:#dc3545;">&nbsp;</span> Absent
-            <span class="badge ms-3 me-1" style="background:#fd7e14;">&nbsp;</span> Delayed
-            <span class="badge ms-3 me-1" style="background:#0d6efd;">&nbsp;</span> Leave
-          </small>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-5">
-      <div class="card h-100">
-        <div class="card-header fw-bold">Monthly Attendance</div>
-        <div class="card-body">
-          <canvas baseChart [data]="barChartData" [options]="barChartOptions" type="bar">
-          </canvas>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!--<div class="dashboard">
-  <div class="row d-flex flex-row justify-content-between">
-    <div class=" profile">
-      <div class="employee grid-cols-6 rounded-2xl shadow-md p-6 d-flex items-center justify-between">
-        <div>
-          <img src="../../../../assets/img/profile-img.jpg" style="width: 75px;" alt="profile" class="rounded-circle" />
-        </div>
-        <div class="ml-2">
-          <h2 class="text-xl font-bold">Venkat</h2>
-          <p class="text-gray-500"> Manager</p>
-        </div>
-      </div>
-    </div>
-    <div class="row d-flex flex-row details ">
-      <div class="details_brief">
-        <h5>Salary</h5>
-        <p>RS.10000</p>
-      </div>
-      <div class="details_brief">
-        <h5>Recruiter</h5>
-        <p>10000</p>
-      </div>
-      <div class="details_brief">
-        <h5>Application</h5>
-        <p>10000</p>
-      </div>
-      <div class="details_brief">
-        <h5>Department</h5>
-        <p>10000</p>
-      </div>
-      <div class="details_brief">
-        <h5>Location</h5>
-        <p>10000</p>
-      </div>
-      <div class="details_brief">
-        <h5>Employment</h5>
-        <p>10000</p>
-      </div>
-    </div>
-  </div>
-  <div class="d-flex flex-row mt-2">
-    <div class="col-md-6 stat-card big">
-      <canvas id="pieChart"></canvas>
-    </div>
-    <canvas id="attendanceChart"></canvas>
-    <div class="filter-buttons d-flex flex-column g-2">
-      <button (click)="changeFilter('daily')" [class.active]="filterType === 'daily'">Daily</button>
-      <button (click)="changeFilter('monthly')" [class.active]="filterType === 'monthly'">Monthly</button>
-      <button (click)="changeFilter('yearly')" [class.active]="filterType === 'yearly'">Yearly</button>
-    </div>
-  </div>
-  <div class="stats-row mt-2">
-    <div class="stat-cards " *ngFor="let item of [
-        {label:'Checked In',value:stats.checkedIn,color:'#4da3ff'},
-        {label:'Not Checked In',value:stats.notCheckedIn,color:'#ff5c5c'},
-        {label:'On Leave',value:stats.onLeave,color:'#4caf50'},
-        {label:'Weekly Off',value:stats.weeklyOff,color:'#999'},
-        {label:'Holiday',value:stats.holiday,color:'#ff9800'},
-        {label:'Checked Out',value:stats.checkedOut,color:'#ffca28'}
-      ]" [style.borderColor]="item.color">
-      <h4>{{ item.label }}</h4>
-      <p>{{ item.value }}</p>
-    </div>
-  </div>
-</div> -->
+<app-employee-work-report></app-employee-work-report>

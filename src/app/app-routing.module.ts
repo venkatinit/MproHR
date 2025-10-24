@@ -141,9 +141,6 @@ export const routes: Routes = [
       // documents
       { path: 'org_folder', component: OrgFolderComponent },
       { path: 'emp_folder', component: EmpFolderComponent },
-
-
-
     ],
   },
 ];

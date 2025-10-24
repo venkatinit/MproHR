@@ -258,12 +258,7 @@ export class EmployeeListComponent implements OnInit {
     // this.router.navigate(['/update-employee']);
 
   }
-  // deleteEmployee(index: number): void {
-  //   if (confirm("Are you sure you want to delete this employee?")) {
-  //     this.employee_list.splice(index, 1);
-  //     // alert("Employee deleted successfully!");
-  //   }
-  // }
+ 
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();

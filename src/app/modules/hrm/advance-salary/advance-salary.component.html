@@ -1,1 +1,217 @@
-<p>advance-salary works!</p>
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <!-- Title Column -->
+                <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6'">
+                    <strong>Advance Salary</strong>
+                </div>
+                <!-- Company Filter (shown only if enabled) -->
+                <div class="col-md-4 d-flex flex-row align-items-center" *ngIf="isCompanyFilterVisible">
+                    <form class="d-flex" [formGroup]="form" (ngSubmit)="PendingLeaves()">
+                        <label for="company"><strong>Company Name</strong></label>
+                        <div>
+                            <select id="companyFilter" class="form-control form-control-sm ml-2"
+                                formControlName="company" [ngClass]="{ 'is-invalid': submitted && f.company.errors }">
+                                <option value="">-- Select Company --</option>
+                                <option *ngFor="let comp of companyList" [value]="comp.Id">
+                                    {{ comp.CompanyName }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="bg-success text-white rounded save"
+                                [disabled]="form.invalid">Search</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- Buttons Column -->
+                <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6 text-end'" class="text-end">
+                    <a class="btn btn-primary btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal">
+                        <i class="fa fa-plus" aria-hidden="true"></i> New
+                    </a>
+                    <!-- <a class="btn btn-primary btn-sm me-2 text-white" role="button" (click)="toggleCompanyFilter()">
+                        <i class="fa-solid fa-filter"></i>
+                    </a> -->
+                </div>
+            </div>
+            <div class="card-body table-responsive">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table   table-hover"
+                    id="bankTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <!-- <th>Created At</th> 
+                                            <th>Bank name</th>
+                                            <th>Branch</th>
+                                            <th>Account Number</th>
+                                            <th>Opening Balance</th>-->
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="banks_list?.length != 0">
+                        <tr *ngFor="let item of banks_list; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <!-- <td>{{ item.created_At | date:'dd-MM-YYYY' }}</td> 
+                                            <td>{{ item.bank_Name || '-' }}</td>
+                                            <td>{{ item.branch || '-' }}</td>
+                                            <td>{{ item.account_Number || '-' }}</td>
+                                            <td>{{ item.opening_Balance || 0 }}</td> -->
+                            <td>
+                                <button class="btn btn-sm" type="button" (click)="handleLeaveAction(item.id)"
+                                    title="Actions">
+                                    <i class="bi bi-pencil-square text-success"></i> </button>
+                                <!-- <button class="btn  btn-sm " type="button" data-toggle="tooltip"
+                                                    data-placement="top" (click)="rejectLeave(item.id)" title="Delete"><i
+                                                        class="bi bi-trash3-fill text-danger"></i></button> -->
+                            </td>
+                        </tr>
+                    </tbody>
+
+                    <tbody *ngIf="banks_list?.length == 0">
+                        <tr>
+                            <td colspan="12" class="no-data-available">No data!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header" *ngIf="this.action !== 'update'">
+                            <strong>Add Bank</strong>
+                        </div>
+                        <div class="modal-header" *ngIf="this.action === 'update'">
+                            <strong>Update Bank</strong>
+                        </div>
+                        <div class="modal-body ">
+                            <!-- <form [formGroup]="addBank" (ngSubmit)="saveBank()">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Select Company</label>
+                                        <select class="form-control form-control-sm" formControlName="company"
+                                            [ngClass]="{ 'is-invalid': submitted && f.company.errors }">
+                                            <option value="">-- Select Company --</option>
+                                            <option *ngFor="let comp of companyList" [value]="comp.Id">
+                                                {{ comp.CompanyName }}
+                                            </option>
+                                        </select>
+                                        <div *ngIf="(submitted || f.company.touched) && f.company.errors?.required"
+                                            class="invalid-feedback">
+                                            Company Name is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Bank Name </label>
+                                        <input type="text" class="form-control form-control-sm" name="bank_name"
+                                            id="bank_name" formControlName="bank_name"
+                                            [ngClass]="{ 'is-invalid': submitted && f.bank_name.errors }">
+                                        <div *ngIf="(submitted || f.bank_name.touched) && f.bank_name.errors?.required"
+                                            class="invalid-feedback">
+                                            Bank Name is
+                                            required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Branch Name</label>
+                                        <input type="text" class="form-control form-control-sm" name="branch_name"
+                                            id="branch_name" formControlName="branch_name"
+                                            [ngClass]="{ 'is-invalid': submitted && f.branch_name.errors }">
+                                        <div *ngIf="(submitted || f.branch_name.touched) && f.branch_name.errors?.required"
+                                            class="invalid-feedback">Branch Name is
+                                            required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Bank Address</label>
+                                        <input type="text" class="form-control form-control-sm" name="bank_address"
+                                            id="bank_address" formControlName="bank_address"
+                                            [ngClass]="{ 'is-invalid': submitted && f.bank_address.errors }">
+                                        <div *ngIf="(submitted || f.bank_address.touched) && f.bank_address.errors?.required"
+                                            class="invalid-feedback">Bank Address is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Account Number</label>
+                                        <input type="text" class="form-control form-control-sm" name="account_number"
+                                            id="account_number" formControlName="account_number" numbersOnly
+                                            [ngClass]="{ 'is-invalid': submitted && f.account_number.errors }">
+                                        <div *ngIf="(submitted || f.account_number.touched) && f.account_number.errors?.required"
+                                            class="invalid-feedback">Account Number is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Account Type</label>
+                                        <input type="text" class="form-control form-control-sm" name="account_type"
+                                            id="account_type" formControlName="account_type"
+                                            [ngClass]="{ 'is-invalid': submitted && f.account_type.errors }">
+                                        <div *ngIf="(submitted || f.account_type.touched) && f.account_type.errors?.required"
+                                            class="invalid-feedback">Bank
+                                            Name is
+                                            required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Bank Manager Name</label>
+                                        <input type="text" class="form-control form-control-sm" name="bm_name"
+                                            id="bm_name" formControlName="bm_name"
+                                            [ngClass]="{ 'is-invalid': submitted && f.bm_name.errors }">
+                                        <div *ngIf="(submitted || f.bm_name.touched) && f.bm_name.errors?.required"
+                                            class="invalid-feedback">Bank
+                                            Manager
+                                            Name is
+                                            required
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label class="form-label">Bank Manager Contact Number</label>
+                                        <input type="text" class="form-control form-control-sm" name="bm_contact_no"
+                                            id="bm_contact_no" formControlName="bm_contact_no" maxlength="10"
+                                            pattern="[0-9]*" inputmode="numeric"
+                                            [ngClass]="{ 'is-invalid': submitted && f.bm_contact_no.errors }"
+                                            numbersOnly />
+                                        <div *ngIf="(submitted || f.bm_contact_no.touched) && f.bm_contact_no.errors?.required"
+                                            class="invalid-feedback">
+                                            Manager Contact Number is required
+                                        </div>
+                                        <div *ngIf="(submitted || f.bm_contact_no.touched) && f.bm_contact_no.errors?.pattern"
+                                            class="invalid-feedback">
+                                            Enter a valid 10-digit contact number
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Start Date </label>
+                                        <input type="date" class="form-control form-control-sm" name="txn_Start_Date"
+                                            id="txn_Start_Date" formControlName="txn_Start_Date"
+                                            [ngClass]="{ 'is-invalid': submitted && f.txn_Start_Date?.errors }">
+                                        <div *ngIf="(submitted || f.txn_Start_Date?.touched) && f.txn_Start_Date?.errors?.required"
+                                            class="invalid-feedback">Start Date is
+                                            required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Opening Balance</label>
+                                        <input type="text" class="form-control form-control-sm" name="opening_Balance"
+                                            id="opening_Balance" formControlName="opening_Balance" numbersOnly
+                                            [ngClass]="{ 'is-invalid': submitted && f.opening_Balance.errors }">
+                                        <div *ngIf="(submitted || f.opening_Balance.touched) && f.opening_Balance.errors?.required"
+                                            class="invalid-feedback">Opening Balance is
+                                            required
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-2 col-md-12 d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-success btn-sm"
+                                        *ngIf="action !== 'update'">Submit</button>
+                                    <button type="submit" class="btn btn-primary btn-sm"
+                                        *ngIf="action === 'update'">Update</button>
+                                </div>
+                            </form> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

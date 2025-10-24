@@ -8,28 +8,29 @@ import { DataTableDirective } from 'angular-datatables';
 import Swal from 'sweetalert2';
 import { ApiResponse } from 'src/app/models/api-response';
 import { ToastrService } from 'ngx-toastr';
+import { FileUploadComponent } from '../file-upload/file-upload.component';
 declare var $: any;
 @Component({
-  selector: 'app-ca-list',
-  templateUrl: './ca-list.component.html',
-  styleUrls: ['./ca-list.component.scss']
+  selector: 'app-employee-work-report',
+  templateUrl: './employee-work-report.component.html',
+  styleUrls: ['./employee-work-report.component.scss']
 })
-export class CaListComponent implements OnInit, OnDestroy {
+export class EmployeeWorkReportComponent implements OnInit, OnDestroy {
   @ViewChild(DataTableDirective, { static: false }) dtElement!: DataTableDirective;
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions: DataTables.Settings = {};
   action: 'create' | 'update' = 'create';
-  addBank: FormGroup;
+  addTask: FormGroup;
   form: FormGroup;
   submitted: boolean = false;
   errors: string[] = [];
   spinLoader = false;
-  banks_list: any[] = [];
+  tast_list: any[] = [];
   cateId: any;
   companyList: any[] = [];
   companyFilter: string = '';
-  originalBankList: any[] = [];
-  filteredBankList: any[] = [];
+  originalReportList: any[] = [];
+  filteredReportList: any[] = [];
   companyId: number = 2;
   constructor(
     private modalService: NgbModal,
@@ -38,8 +39,7 @@ export class CaListComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private api: ApiService
   ) {
-    this.addBank = this.formBuilder.group({
-      // company: ['', [Validators.required]],
+    this.addTask = this.formBuilder.group({
       bank_name: ['', [Validators.required]],
       branch_name: ['', [Validators.required]],
       bank_address: ['', [Validators.required]],
@@ -63,7 +63,7 @@ export class CaListComponent implements OnInit, OnDestroy {
       destroy: true,
       processing: true
     };
-    this.getBanks();
+    this.getReports();
     this.getCompanyList();
 
   }
@@ -78,32 +78,32 @@ export class CaListComponent implements OnInit, OnDestroy {
       companyControl?.setValue('');
     }
   }
-get f() {
-  return this.addBank.controls;
-}
+  get f() {
+    return this.addTask.controls;
+  }
   getCompanyList() {
     this.api.get('api/company/all').subscribe((res: any) => {
       this.companyList = res?.data?.data || [];
     });
   }
-  getBanks() {
+  getReports() {
     if (this.form.invalid) return;
     const companyId = this.util.decrypt_Text(localStorage.getItem('company_id')) || '';
     const queryParams = new URLSearchParams({
       companyId: companyId,
     }).toString();
     this.api.get(`api/accounting/banks/all?${queryParams}`).subscribe((res: ApiResponse<any>) => {
-      this.banks_list = Array.isArray(res.data) ? res.data : [res.data];
+      this.tast_list = Array.isArray(res.data) ? res.data : [res.data];
       this.dtTrigger.next(null);
       if (($.fn.DataTable as any).isDataTable('#bankTable')) {
       }
       this.dtTrigger.next(null); // initialize new
     });
   }
-  saveBank() {
+  saveReport() {
     console.log('✅ create form submitted');
     this.submitted = true;
-    if (!this.addBank.valid) {
+    if (!this.addTask.valid) {
       return;
     }
     this.spinLoader = true;
@@ -112,28 +112,28 @@ get f() {
     const body = {
       id: 0,
       company_Id: companyId,
-      bank_Name: this.addBank.get('bank_name')?.value,
-      branch: this.addBank.get('branch_name')?.value,
-      address: this.addBank.get('bank_address')?.value,
-      account_Number: this.addBank.get('account_number')?.value,
-      account_Type: this.addBank.get('account_type')?.value,
-      bM_Name: this.addBank.get('bm_name')?.value,
-      bM_Contact_No: this.addBank.get('bm_contact_no')?.value,
+      bank_Name: this.addTask.get('bank_name')?.value,
+      branch: this.addTask.get('branch_name')?.value,
+      address: this.addTask.get('bank_address')?.value,
+      account_Number: this.addTask.get('account_number')?.value,
+      account_Type: this.addTask.get('account_type')?.value,
+      bM_Name: this.addTask.get('bm_name')?.value,
+      bM_Contact_No: this.addTask.get('bm_contact_no')?.value,
       branch_Contact_No: '',
-      opening_Balance: this.addBank.get('opening_Balance')?.value,
+      opening_Balance: this.addTask.get('opening_Balance')?.value,
       txn_Start_Date: new Date(),
       created_At: new Date(),
       status: true,
     };
     this.api.post(url, body).subscribe(
       (res: any) => {
-        this.addBank.reset();
+        this.addTask.reset();
         this.submitted = false;
         this.errors = [];
         this.spinLoader = false;
         this.toast.success('Bank Saved successfully', 'Success');
         $('#newModal').modal('hide');
-        this.getBanks();
+        this.getReports();
         window.location.reload();
       },
       (error: any) => {
@@ -151,14 +151,14 @@ get f() {
     this.api.get(`api/accounting/bank/${id}`).subscribe(
       (res: any) => {
         if (res && res.data && res.succeeded && res.data.status) {
-          this.addBank.controls['bank_name'].setValue(res.data.bank_Name);
-          this.addBank.controls['branch_name'].setValue(res.data.branch);
-          this.addBank.controls['bank_address'].setValue(res.data.address);
-          this.addBank.controls['account_number'].setValue(res.data.account_Number);
-          this.addBank.controls['account_type'].setValue(res.data.account_Type);
-          this.addBank.controls['bm_name'].setValue(res.data.bM_Name);
-          this.addBank.controls['bm_contact_no'].setValue(res.data.bM_Contact_No);
-          this.addBank.controls['opening_Balance'].setValue(res.data.opening_Balance);
+          this.addTask.controls['bank_name'].setValue(res.data.bank_Name);
+          this.addTask.controls['branch_name'].setValue(res.data.branch);
+          this.addTask.controls['bank_address'].setValue(res.data.address);
+          this.addTask.controls['account_number'].setValue(res.data.account_Number);
+          this.addTask.controls['account_type'].setValue(res.data.account_Type);
+          this.addTask.controls['bm_name'].setValue(res.data.bM_Name);
+          this.addTask.controls['bm_contact_no'].setValue(res.data.bM_Contact_No);
+          this.addTask.controls['opening_Balance'].setValue(res.data.opening_Balance);
           this.submitted = false;
           this.errors = [];
         }
@@ -173,10 +173,10 @@ get f() {
       }
     );
   }
-  updateBank() {
+  updateReport() {
     console.log('✅ Update form submitted');
     this.submitted = true;
-    if (!this.addBank.valid) {
+    if (!this.addTask.valid) {
       return;
     }
     this.spinLoader = true;
@@ -185,29 +185,29 @@ get f() {
     const body = {
       "id": this.cateId,
       "company_Id": companyId,
-      "bank_Name": this.addBank.get("bank_name").value,
-      "branch": this.addBank.get("branch_name").value,
-      "address": this.addBank.get("bank_address").value,
-      "account_Number": this.addBank.get("account_number").value,
-      "account_Type": this.addBank.get("account_type").value,
-      "bM_Name": this.addBank.get("bm_name").value,
-      "bM_Contact_No": this.addBank.get("bm_contact_no").value,
+      "bank_Name": this.addTask.get("bank_name").value,
+      "branch": this.addTask.get("branch_name").value,
+      "address": this.addTask.get("bank_address").value,
+      "account_Number": this.addTask.get("account_number").value,
+      "account_Type": this.addTask.get("account_type").value,
+      "bM_Name": this.addTask.get("bm_name").value,
+      "bM_Contact_No": this.addTask.get("bm_contact_no").value,
       "branch_Contact_No": " ",
-      "opening_Balance": this.addBank.get("opening_Balance").value,
+      "opening_Balance": this.addTask.get("opening_Balance").value,
       "txn_Start_Date": new Date(),
       "created_At": new Date(),
       "status": true
     };
     this.api.put(url, body).subscribe(
       (res: any) => {
-        this.addBank.reset();
+        this.addTask.reset();
         this.submitted = false;
         this.errors = [];
         this.toast.success('Bank Updated successfully', 'Success');
         this.spinLoader = false;
         // window.location.reload();
         $('#newModal').modal('hide');
-        this.getBanks();
+        this.getReports();
       },
       (error: any) => {
         console.log(error);
@@ -218,7 +218,7 @@ get f() {
       }
     );
   }
-  deleteBank(id: number) {
+  deleteReport(id: number) {
     Swal.fire({
       position: 'center',
       title: 'Are you sure?',
@@ -233,7 +233,7 @@ get f() {
           next: (res: any) => {
             Swal.fire('Deleted!', 'The bank has been deleted.', 'success');
             window.location.reload();
-            this.getBanks(); // refresh list without reloading the page
+            this.getReports(); // refresh list without reloading the page
           },
           error: (err: any) => {
             console.error('Delete failed:', err);
@@ -245,6 +245,23 @@ get f() {
       }
     });
   }
+  open_fileUpload(): void {
+      const modalRef = this.modalService.open(FileUploadComponent, {
+        windowClass: 'custom-ngb-modal-window',
+        backdropClass: 'custom-ngb-modal-backdrop',
+        size: 'md'
+      });
+  
+      modalRef.result.then(
+        (result) => {
+          if (result === 'Success') {
+            this.getCompanyList();
+          }
+        },
+        () => {
+        }
+      );
+    }
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }

@@ -114,7 +114,7 @@ ul li {
 }
 
 /* ==================== Responsive Design ==================== */
-@media (min-width:320px) and (max-width:660px) {
+@media (min-width:320px) and (max-width:999px) {
 
     .main {
         width: 100% !important;
@@ -254,11 +254,17 @@ ul li {
 }
 
 /* Show only on small screens */
-@media (min-width: 768px) {
+// @media (min-width: 768px) {
 
-    .sidebar-mobile,
-    .toggle-btn,
-    .overlay {
+//     .sidebar-mobile,
+//     .toggle-btn,
+//     .overlay {
+//         display: none !important;
+//     }
+// }
+@media (min-width: 999px) {
+
+    .mobileMenu{
         display: none !important;
     }
 }

@@ -1,7 +1,7 @@
 <div class="dashboard">
-    <div class="row d-flex flex-row justify-content-between">
-        <div class="col-lg-6 col-sm-12 profile">
-            <div class="employee grid-cols-6 rounded-2xl shadow-md p-6 d-flex items-center justify-between">
+    <div class="row d-flex flex-row justify-content-around">
+        <div class="col-lg-5 col-sm-12 profile">
+            <div class="employee d-flex items-center justify-between">
                 <div>
                     <img src="../../../../assets/img/profile-img.jpg" style="width: 75px;" alt="profile"
                         class="rounded-circle" />
@@ -12,44 +12,53 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-6 col-sm-12">
+        <div class="col-lg-6 col-sm-12  " style="border-radius: 5px;">
             <div class=" row d-flex flex-row details ">
-                <div class="col-sm-6 col-md-4 details_brief" data-bs-toggle="modal" data-bs-target="#Offer"
+                <div class="col-md-4 details_brief" data-bs-toggle="modal" data-bs-target="#Offer"
                     (click)="getEmployeeDetails()">
                     <h5>Offer Letter </h5>
                 </div>
-                <div class="col-sm-6 col-md-4 details_brief" data-bs-toggle="modal" data-bs-target="#attendances">
+                <div class="col-md-4 details_brief" data-bs-toggle="modal" data-bs-target="#attendances">
                     <h5>Attendance</h5>
                 </div>
-                <div class="col-sm-6 col-md-4 details_brief" data-bs-toggle="modal" data-bs-target="#Payslip"
+                <div class="col-md-4 details_brief" data-bs-toggle="modal" data-bs-target="#Payslip"
                     (click)="getEmployeeDetails()">
                     <h5>Payslip</h5>
                 </div>
-                <div class="col-sm-6 col-md-4 details_brief" data-bs-toggle="modal" data-bs-target="#Relieving"
+                <div class="col-md-4 details_brief" data-bs-toggle="modal" data-bs-target="#Relieving"
                     (click)="getEmployeeDetails()">
                     <h5>Relieving Letter
                     </h5>
                 </div>
-                <div class="col-sm-6 col-md-4 details_brief" data-bs-toggle="modal" data-bs-target="#Service"
+                <div class="col-md-4 details_brief" data-bs-toggle="modal" data-bs-target="#Service"
                     (click)="getEmployeeDetails()">
                     <h5>Service Letter</h5>
                 </div>
-                <div class="col-sm-6 col-md-4 details_brief" (click)="toggleUpdates()">
+                <div class="col-md-4 details_brief" (click)="toggleUpdates()">
                     <h5>More</h5>
                 </div>
             </div>
         </div>
     </div>
-    <div class="updates d-flex flex-row justify-content-between align-items-center" style="margin-top:20px"
+    <div class="row d-flex flex-wrap justify-content-between align-items-center" style="margin-top:20px"
         [@slideToggle]="showUpdates ? 'visible' : 'hidden'">
-        <div class="card slides  p-2 " style="margin-left: 15px" data-bs-toggle="modal" data-bs-target="#qualification"
+        <div class="col-md-2 slides  p-2 " data-bs-toggle="modal" data-bs-target="#qualification"
             (click)="getEmployeeDetails()">
-            Qualification </div>
-        <div class="card slides  p-2 ">Experience </div>
-        <div class="card slides  p-2 ">KYC </div>
-        <div class="card slides  p-2 " data-bs-toggle="modal" data-bs-target="#leaveRequest"
-            (click)="getEmployeeDetails()">Leave Request </div>
-        <div class="card slides  p-2 ">CTC Update</div>
+            <h5>Qualification </h5>
+        </div>
+        <div class="col-md-2 slides  p-2 ">
+            <h5>Experience</h5>
+        </div>
+        <div class="col-md-2 slides  p-2 ">
+            <h5>KYC</h5>
+        </div>
+        <div class="col-md-2 slides  p-2 " data-bs-toggle="modal" data-bs-target="#leaveRequest"
+            (click)="getEmployeeDetails()">
+            <h5>Leave Request </h5>
+        </div>
+        <div class="col-md-2 slides  p-2 ">
+            <h5>CTC Update</h5>
+        </div>
     </div>
 </div>
 <!-- ==== Shared Modal ==== -->

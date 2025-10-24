@@ -1,22 +1,23 @@
 .details_brief {
     width: 32%;
+    height: 60px;
     display: flex;
     background-image: -webkit-linear-gradient(#36a1ea, white);
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border: solid 1px grey;
-    border-radius: 10px;
+    border-radius: 10px 10px 0 0;
 }
 
 .profile {
     background-image: -webkit-linear-gradient(#36a1ea, white);
-    margin-left: 28px;
-    width: 44%;
+    margin-left: 0px;
+    // width: 44%;
     border-radius: 10px;
 
     .employee {
-        margin-left: 110px;
+        justify-content: center;
+        // margin-left: 110px;
         margin-top: 35px
     }
 }
@@ -25,7 +26,6 @@
     border-radius: 10px;
     justify-content: space-between;
     gap: 5px;
-    width: 52%;
 }
 
 .dashboard {
@@ -147,7 +147,8 @@ h4 {
 
 .slides {
     background-image: -webkit-linear-gradient(#fd7400, white);
-    width: 19%;
+    // width: 19%;
+    border-radius: 15px 15px 0 0;
     height: 60px;
     display: flex;
     align-items: center;
@@ -157,12 +158,9 @@ h4 {
 /* Outer container: 2-square layout */
 .outer-square {
     width: min(420px, 80vw);
-    /* responsive max width */
     aspect-ratio: 2 / 1;
-    /* 2 wide, 1 tall for two tiles */
     display: grid;
     grid-template-columns: 1fr 1fr;
-    /* two equal tiles */
     gap: 12px;
     padding: 12px;
     box-sizing: border-box;
@@ -247,7 +245,7 @@ h4 {
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        border: solid 1px grey;
-        border-radius: 10px;
+        // border: solid 1px grey;
+        border-radius: 10px 10px 0 0;
     }
 }

@@ -1,0 +1,40 @@
+.card {
+    width: 100%;
+    height: 130px;
+    margin-bottom: 20px;
+    padding: 10px;
+
+    a {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        font-size: larger;
+        text-decoration: none;
+    }
+}
+
+.epfo {
+    background-color: #5ba7ff;
+    color: #012970;
+}
+
+.esic {
+    background-color: #fff9ae;
+    color: #012970;
+}
+
+.pt {
+    background-color: #2ada52;
+    color: #012970;
+}
+
+.gst {
+    background-color: #44da2a;
+    color: #012970;
+}
+
+.e-filing {
+    background-color: #3e9ae7;
+    color: #012970;
+}

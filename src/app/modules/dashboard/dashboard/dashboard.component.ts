@@ -106,10 +106,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     new Chart(ctx, {
       type: 'pie',
       data: {
-        labels: ['Registered', 'Active', 'Inactive'],
+        labels: ['Registered', 'Active', 'Inactive','Hold'],
         datasets: [{
-          data: [1244, 744, 500],
-          backgroundColor: ['#4e73df', '#1cc88a', '#e74a3b'],
+          data: [1244, 344, 500, 400],
+          backgroundColor: ['#4e73df', '#1cc88a', '#e74a3b', '#ece423'],
           borderWidth: 1
         }]
       },

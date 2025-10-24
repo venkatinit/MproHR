@@ -20,7 +20,7 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <button type="submit" class="bg-success text-white rounded save"
+                            <button type="submit" class="bg-primary text-white rounded save"
                                 [disabled]="form.invalid">Search</button>
                         </div>
                     </form>
@@ -30,9 +30,9 @@
                     <a class="btn btn-primary btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal">
                         <i class="fa fa-plus" aria-hidden="true"></i> New
                     </a>
-                    <!-- <a class="btn btn-primary btn-sm me-2 text-white" role="button" (click)="toggleCompanyFilter()">
+                    <a class="btn btn-primary btn-sm me-2 text-white" role="button" (click)="toggleCompanyFilter()">
                         <i class="fa-solid fa-filter"></i>
-                    </a> -->
+                    </a>
                 </div>
             </div>
             <div class="card-body table-responsive">
@@ -59,8 +59,10 @@
                             <td>{{ item.mobile_No }}</td>
                             <td>{{ item.department }}</td>
                             <td>{{ item.designation }}</td>
-                            <td>
-                                <div class="dropdown">
+                            <td (click)="goToDashboard(item.id)"> <button
+                                    class="btn btn-sm btn-pill btn-primary">DashBoard</button>
+
+                                <!-- <div class="dropdown">
                                     <button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton1"
                                         data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="fa-solid fa-ellipsis-vertical"></i>
@@ -68,9 +70,9 @@
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1"
                                         style="transform: translate3d(-160px, -4px, 0px) !important ;">
                                         <li><a class="dropdown-item text-primary"
-                                                (click)="goToDashboard(item.id)">DashBoard</a></li>
+                                                (click)="goToDashboard(item.id)">DashBoard</a></li>  
 
-                                        <!-- <li><a class="dropdown-item text-primary" data-bs-toggle="modal"
+                                 <li><a class="dropdown-item text-primary" data-bs-toggle="modal"
                                                 data-bs-target="#newModal">Attendance</a></li>
                                         <li><a class="dropdown-item text-primary" (click)="Hike_generatePDF()">Hike
                                                 Letter</a></li>
@@ -85,10 +87,10 @@
                                                 Letter</a></li>
                                         <li><a class="dropdown-item text-primary" href="#">Preview</a></li>
                                         <li><a class="dropdown-item text-success" (click)="updateEmployee(i)">Update</a>
-                                        </li> -->
+                                        </li> 
                                     </ul>
                                 </div>
-                            </td>
+                            </td> -->
                         </tr>
                     </tbody>
                     <tbody *ngIf="employee_list?.length == 0">
@@ -240,8 +242,7 @@
                                     <div class="col-md-4">
                                         <label class="form-label">Join Date*</label>
                                         <input type="date" class="form-control form-control-sm" name="join_date"
-                                            id="join_date" placeholder="Please Select Date"
-                                            formControlName="join_date"
+                                            id="join_date" placeholder="Please Select Date" formControlName="join_date"
                                             [ngClass]="{ 'is-invalid': submitted && f.join_date?.errors }">
                                         <div *ngIf="(submitted||f.join_date)&&f.join_date?.errors?.required"
                                             class="invalid-feedback">Join Date is
@@ -394,7 +395,8 @@
                                             [ngClass]="{ 'is-invalid': submitted && f.ifsc?.errors }"
                                             (input)="convertToUppercase('ifsc')">
                                         <div *ngIf="(submitted||f.ifsc)&&f.ifsc?.errors?.required"
-                                            class="invalid-feedback">IFSC is
+                                            class="invalid-feedback">
+                                            IFSC is
                                             required </div>
                                     </div>
                                     <div class="modal-footer">

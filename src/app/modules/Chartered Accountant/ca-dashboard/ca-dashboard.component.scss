@@ -256,6 +256,19 @@ canvas {
 .survey-card:hover:has(.text-danger) h6 {
     color: #fff !important;
 }
+/* OnHold Company card */
+.survey-card .text-warning {
+    color: #ece423 !important;
+}
+
+.survey-card:hover:has(.text-warning) {
+    background-color: #ece423 !important;
+}
+
+.survey-card:hover:has(.text-warning) h4,
+.survey-card:hover:has(.text-warning) h6 {
+    color: #fff !important;
+}
 
 /* Hover lift effect for mini cards only */
 .survey-card:hover {

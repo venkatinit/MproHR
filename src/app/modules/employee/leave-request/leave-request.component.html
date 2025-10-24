@@ -1,6 +1,5 @@
-<div class="calendar-container" [class.show]="showCalendar">
+<!-- <div class="calendar-container" [class.show]="showCalendar">
     <button class="toggle-btn" [class.inside]="showCalendar" (click)="showCalendar = !showCalendar">
-        <!-- {{ showCalendar ? 'Hide Calendar' : 'Show Calendar' }} -->
         <i class="fa fa-calendar" aria-hidden="true"></i>
     </button>
     <div class="datepicker">
@@ -36,125 +35,161 @@
             </button>
         </div>
     </div>
-</div>
-
+</div> -->
 <div class="row ">
     <div class="col-xs-12">
         <div class="card">
-            <div class="card-body">
-                <form [formGroup]="addLeave">
-                    <h5><strong>Leave Request</strong></h5>
-                    <hr>
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <label class="form-label">Employee ID*</label>
-                            <input type="text" class="form-control form-control-sm" name="emp_id"
-                                placeholder="-- Select Employee ID --" id="emp_id" formControlName="emp_id"
-                                [ngClass]="{ 'is-invalid': submitted && f.emp_id.errors }">
-                            <div *ngIf="(submitted||f.emp_id)&&f.emp_id.errors?.required" class="invalid-feedback">ID is
-                                required
-                            </div>
+            <div class="card-header d-flex align-items-center">
+                <!-- Title Column -->
+                <div class="col-md-6">
+                    <strong>Leave Requests</strong>
+                </div>
+                <!-- Buttons Column -->
+                <div ngClass="col-md-6 text-end">
+                    <a class="btn btn-primary btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal">
+                        <i class="fa fa-plus" aria-hidden="true"></i> New
+                    </a>
+                </div>
+            </div>
+            <div class="card-body table-responsive">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-hover"
+                    id="bankTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Created At</th>
+                            <th>Leave Type</th>
+                            <th>From Date</th>
+                            <th>To Date</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="leaves_list?.length != 0">
+                        <tr *ngFor="let item of leaves_list; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ item.created_At | date:'dd-MM-YYYY' }}</td>
+                            <td>{{ item.bank_Name || '-' }}</td>
+                            <td>{{ item.branch || '-' }}</td>
+                            <td>{{ item.account_Number || '-' }}</td>
+                            <td>{{ item.opening_Balance || 0 }}</td>
+                            <td>
+                                <button class="btn btn-sm" type="button" data-bs-toggle="modal"
+                                    data-bs-target="#newModal" title="Edit">
+                                    <i class="bi bi-pencil-square text-success"></i> </button>
+                                <!-- <button class="btn  btn-sm " type="button" data-toggle="tooltip" data-placement="top"
+                                    (click)="deleteBank(item.id)" title="Delete"><i
+                                        class="bi bi-trash3-fill text-danger"></i></button> -->
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="leaves_list?.length == 0">
+                        <tr>
+                            <td colspan="12" class="no-data-available">No data!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <strong>Leave Request</strong>
                         </div>
-                        <!-- <div class="col-md-4">
-                            <label class="form-label">Employee Name*</label>
-                            <input type="text" class="form-control form-control-sm" name="emp_name" id="emp_name"
-                                formControlName="emp_name" [ngClass]="{ 'is-invalid': submitted && f.emp_name.errors }">
+                        <div class="modal-body ">
+                            <form [formGroup]="addLeave">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Employee ID</label>
+                                        <input type="text" class="form-control form-control-sm" name="emp_id"
+                                            placeholder="-- Select Employee ID --" id="emp_id" formControlName="emp_id"
+                                            [ngClass]="{ 'is-invalid': submitted && f.emp_id.errors }">
+                                        <div *ngIf="(submitted||f.emp_id)&&f.emp_id.errors?.required"
+                                            class="invalid-feedback">ID is
+                                            required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Type of Leave</label>
+                                        <select class="form-control form-control-sm" name="leave_type" id="leave_type"
+                                            formControlName="leave_type"
+                                            [ngClass]="{ 'is-invalid': submitted && f.leave_type.errors }">
+                                            <option value="">-- Select Leave Type --</option>
+                                            <option *ngFor="let type of leaveTypes" [value]="type">{{ type }}</option>
+                                        </select>
+                                        <div *ngIf="(submitted || f.leave_type) && f.leave_type.errors?.required"
+                                            class="invalid-feedback">
+                                            Leave Type is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">From Date</label>
+                                        <input type="date" class="form-control form-control-sm" name="from_date"
+                                            id="from_date" formControlName="from_date"
+                                            [ngClass]="{ 'is-invalid': submitted && f.from_date.errors }">
+                                        <div *ngIf="(submitted||f.from_date)&&f.from_date.errors?.required"
+                                            class="invalid-feedback">From Date is
+                                            required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">To Date</label>
+                                        <input type="date" class="form-control form-control-sm" name="to_date"
+                                            id="to_date" formControlName="to_date"
+                                            [ngClass]="{ 'is-invalid': submitted && f.to_date.errors }">
+                                        <div *ngIf="(submitted||f.to_date)&&f.to_date.errors?.required"
+                                            class="invalid-feedback">To
+                                            Date is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <label class="form-label">Description</label>
+                                        <textarea type="text" class="form-control form-control-sm" name="description"
+                                            id="description" formControlName="description"
+                                            [ngClass]="{ 'is-invalid': submitted && f.description.errors }"></textarea>
+                                        <div *ngIf="(submitted||f.description)&&f.description.errors?.required"
+                                            class="invalid-feedback">Description
+                                            is
+                                            required
+                                        </div>
+                                    </div>
 
-                            <div *ngIf="(submitted||f.emp_name)&&f.emp_name.errors?.required" class="invalid-feedback">
-                                Employee Name is required
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Mobile Number*</label>
-                            <input type="text" class="form-control form-control-sm" maxlength="10" name="mbl_no"
-                                id="mbl_no" formControlName="mbl_no"
-                                [ngClass]="{ 'is-invalid': submitted && f.mbl_no.errors }" numbersOnly>
-                            <div *ngIf="(submitted||f.mbl_no)&&f.mbl_no.errors?.required" class="invalid-feedback">
-                                Mobile No is required
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Department*</label>
-                            <input type="text" class="form-control form-control-sm" name="department" id="department"
-                                formControlName="department"
-                                [ngClass]="{ 'is-invalid': submitted && f.department.errors }">
-                            <div *ngIf="(submitted||f.department)&&f.department.errors?.required"
-                                class="invalid-feedback">Department is
-                                required
-                            </div>
-                        </div> -->
-                        <div class="col-md-4">
-                            <label class="form-label">Type of Leave*</label>
-                            <select class="form-control form-control-sm" name="leave_type" id="leave_type"
-                                formControlName="leave_type"
-                                [ngClass]="{ 'is-invalid': submitted && f.leave_type.errors }">
-                                <option value="">-- Select Leave Type --</option>
-                                <option *ngFor="let type of leaveTypes" [value]="type">{{ type }}</option>
-                            </select>
-                            <div *ngIf="(submitted || f.leave_type) && f.leave_type.errors?.required"
-                                class="invalid-feedback">
-                                Leave Type is required
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">From Date*</label>
-                            <input type="date" class="form-control form-control-sm" name="from_date" id="from_date"
-                                formControlName="from_date"
-                                [ngClass]="{ 'is-invalid': submitted && f.from_date.errors }">
-                            <div *ngIf="(submitted||f.from_date)&&f.from_date.errors?.required"
-                                class="invalid-feedback">From Date is required
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">To Date*</label>
-                            <input type="date" class="form-control form-control-sm" name="to_date" id="to_date"
-                                formControlName="to_date" [ngClass]="{ 'is-invalid': submitted && f.to_date.errors }">
-                            <div *ngIf="(submitted||f.to_date)&&f.to_date.errors?.required" class="invalid-feedback">To
-                                Date is required
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <label class="form-label">Description*</label>
-                            <textarea type="text" class="form-control form-control-sm" name="description"
-                                id="description" formControlName="description"
-                                [ngClass]="{ 'is-invalid': submitted && f.description.errors }"></textarea>
-                            <div *ngIf="(submitted||f.description)&&f.description.errors?.required"
-                                class="invalid-feedback">Description is
-                                required
-                            </div>
-                        </div>
-
-                        <div class="card mt-3">
-                            <div class="card-header">
-                                <strong>Available Leaves</strong>
-                            </div>
-                            <div class="card-body  ">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr align="center">
-                                            <th>Type of Leave</th>
-                                            <th>Assigned Leaves</th>
-                                            <th>Used Leaves</th>
-                                            <th>Available</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr *ngFor="let leave of leaveBalances">
-                                            <td>{{ leave.leaveType }}</td>
-                                            <td align="center">{{ leave.available }}</td>
-                                            <td align="center">{{ leave.available }}</td>
-                                            <td align="center">{{ leave.available }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-dark  me-md-2 btn-sm">Close</button>
-                            <app-save-button [spin]="spinLoader"></app-save-button>
+                                    <div class="card mt-3">
+                                        <div class="card-header">
+                                            <strong>Available Leaves</strong>
+                                        </div>
+                                        <div class="card-body  ">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr align="center">
+                                                        <th>Type of Leave</th>
+                                                        <th>Assigned Leaves</th>
+                                                        <th>Used Leaves</th>
+                                                        <th>Available</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let leave of leaveBalances">
+                                                        <td>{{ leave.leaveType }}</td>
+                                                        <td align="center">{{ leave.available }}</td>
+                                                        <td align="center">{{ leave.available }}</td>
+                                                        <td align="center">{{ leave.available }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button"
+                                            class="btn btn-outline-dark  me-md-2 btn-sm">Close</button>
+                                        <app-save-button [spin]="spinLoader"></app-save-button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>

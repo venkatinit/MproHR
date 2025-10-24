@@ -283,12 +283,17 @@
         </li>
         <li class="nav-item">
           <a class="nav-link collapsed" data-bs-target="#forms-hr" data-bs-toggle="collapse">
-            <span>Muster Roll</span><i class="bi bi-chevron-down ms-auto" *ngIf="!isSidebarCollapsed"></i>
+            <span>Master Roll</span><i class="bi bi-chevron-down ms-auto" *ngIf="!isSidebarCollapsed"></i>
           </a>
           <ul id="forms-hr" class="nav-content collapse " style="text-decoration: none;">
             <li>
               <a routerLink="/hrm/employee-list">
                 <span>Employee List</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/hrm/emply_work_report">
+                <span>Employee Work Report</span>
               </a>
             </li>
             <!-- <li>
@@ -657,7 +662,7 @@
   <button class="btn" type="button" (click)="toggleMobileSidebar()">
     <i class="rounded-circle fas fa-bars"></i>
   </button>
-  <button class="btn" type="button">
+  <button class="btn" type="button" routerLink="/dashboard">
     <i class="rounded-circle fas fa-home"></i>
   </button>
   <button class="btn" type="button">
@@ -1007,12 +1012,17 @@
         </li>
         <li class="nav-item">
           <a class="nav-link collapsed" data-bs-target="#forms-hr" data-bs-toggle="collapse">
-            <span>Muster Roll</span><i class="bi bi-chevron-down ms-auto" *ngIf="!isSidebarCollapsed"></i>
+            <span>Master Roll</span><i class="bi bi-chevron-down ms-auto" *ngIf="!isSidebarCollapsed"></i>
           </a>
           <ul id="forms-hr" class="nav-content collapse " style="text-decoration: none;">
             <li>
               <a routerLink="/hrm/employee-list">
                 <span>Employee List</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/hrm/emply_work_report">
+                <span>Employee Work Report</span>
               </a>
             </li>
             <!-- <li>

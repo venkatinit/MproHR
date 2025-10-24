@@ -1,14 +1,15 @@
+
 <div class="row ">
     <div class="col-xs-12">
         <div class="card">
             <div class="card-header d-flex align-items-center">
                 <!-- Title Column -->
                 <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6'">
-                    <strong>Pending Leave Approvals</strong>
+                    <strong>Employee Work Report</strong>
                 </div>
                 <!-- Company Filter (shown only if enabled) -->
                 <div class="col-md-4 d-flex flex-row align-items-center" *ngIf="isCompanyFilterVisible">
-                    <form class="d-flex" [formGroup]="form" (ngSubmit)="PendingLeaves()">
+                    <form class="d-flex" [formGroup]="form" (ngSubmit)="getReports()">
                         <label for="company"><strong>Company Name</strong></label>
                         <div>
                             <select id="companyFilter" class="form-control form-control-sm ml-2"
@@ -25,52 +26,52 @@
                         </div>
                     </form>
                 </div>
-
                 <!-- Buttons Column -->
                 <div [ngClass]="isCompanyFilterVisible ? 'col-md-4' : 'col-md-6 text-end'" class="text-end">
                     <a class="btn btn-primary btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal">
                         <i class="fa fa-plus" aria-hidden="true"></i> New
                     </a>
-
+                    <a class="btn btn-primary  btn-sm  me-md-2 text-white  float-end" (click)="open_fileUpload()" role="button"><i
+                            class="fa fa-arrow-up" aria-hidden="true"></i>
+                        Excel</a>
                     <!-- <a class="btn btn-primary btn-sm me-2 text-white" role="button" (click)="toggleCompanyFilter()">
                         <i class="fa-solid fa-filter"></i>
                     </a> -->
                 </div>
             </div>
             <div class="card-body table-responsive">
-                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table   table-hover"
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-hover"
                     id="bankTable">
                     <thead>
                         <tr>
                             <th>S.No</th>
-                            <!-- <th>Created At</th> 
-                                            <th>Bank name</th>
-                                            <th>Branch</th>
-                                            <th>Account Number</th>
-                                            <th>Opening Balance</th>-->
+                            <th>Created At</th>
+                            <th>Assigned By</th>
+                            <th>Task Name</th>
+                            <th>Subscription</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody *ngIf="banks_list?.length != 0">
-                        <tr *ngFor="let item of banks_list; let i = index">
+                    <tbody *ngIf="tast_list?.length != 0">
+                        <tr *ngFor="let item of tast_list; let i = index">
                             <td>{{ i + 1 }}</td>
-                            <!-- <td>{{ item.created_At | date:'dd-MM-YYYY' }}</td> 
-                                            <td>{{ item.bank_Name || '-' }}</td>
-                                            <td>{{ item.branch || '-' }}</td>
-                                            <td>{{ item.account_Number || '-' }}</td>
-                                            <td>{{ item.opening_Balance || 0 }}</td> -->
+                            <td>{{ item.created_At | date:'dd-MM-YYYY' }}</td>
+                            <td>{{ item.bank_Name || '-' }}</td>
+                            <td>{{ item.branch || '-' }}</td>
+                            <td>{{ item.account_Number || '-' }}</td>
+                            <td>{{ item.opening_Balance || 0 }}</td>
                             <td>
-                                <button class="btn btn-sm" type="button" (click)="handleLeaveAction(item.id)"
-                                    title="Actions">
+                                <button class="btn btn-sm" type="button" (click)="updateById(item.id)"
+                                    data-bs-toggle="modal" data-bs-target="#newModal" title="Edit">
                                     <i class="bi bi-pencil-square text-success"></i> </button>
-                                <!-- <button class="btn  btn-sm " type="button" data-toggle="tooltip"
-                                                    data-placement="top" (click)="rejectLeave(item.id)" title="Delete"><i
-                                                        class="bi bi-trash3-fill text-danger"></i></button> -->
+                                <button class="btn  btn-sm " type="button" data-toggle="tooltip" data-placement="top"
+                                    (click)="deleteReport(item.id)" title="Delete"><i
+                                      class="bi bi-trash3-fill text-danger"></i></button>
                             </td>
                         </tr>
                     </tbody>
-
-                    <tbody *ngIf="banks_list?.length == 0">
+                    <tbody *ngIf="tast_list?.length == 0">
                         <tr>
                             <td colspan="12" class="no-data-available">No data!</td>
                         </tr>
@@ -87,22 +88,8 @@
                             <strong>Update Bank</strong>
                         </div>
                         <div class="modal-body ">
-                            <!-- <form [formGroup]="addBank" (ngSubmit)="saveBank()">
+                            <form [formGroup]="addTask" (ngSubmit)="action === 'update' ? updateReport() : saveReport()">
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <label class="form-label">Select Company</label>
-                                        <select class="form-control form-control-sm" formControlName="company"
-                                            [ngClass]="{ 'is-invalid': submitted && f.company.errors }">
-                                            <option value="">-- Select Company --</option>
-                                            <option *ngFor="let comp of companyList" [value]="comp.Id">
-                                                {{ comp.CompanyName }}
-                                            </option>
-                                        </select>
-                                        <div *ngIf="(submitted || f.company.touched) && f.company.errors?.required"
-                                            class="invalid-feedback">
-                                            Company Name is required
-                                        </div>
-                                    </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Bank Name </label>
                                         <input type="text" class="form-control form-control-sm" name="bank_name"
@@ -165,7 +152,17 @@
                                             required
                                         </div>
                                     </div>
-                                    
+                                    <!-- <div class="col-md-6">
+                                        <label class="form-label">Bank Manager Contact Number</label>
+                                        <input type="text" class="form-control form-control-sm" name="bm_contact_no"
+                                            id="bm_contact_no" formControlName="bm_contact_no" numbersOnly
+                                            [ngClass]="{ 'is-invalid': submitted && f.bm_contact_no.errors }">
+                                        <div *ngIf="(submitted || f.bm_contact_no.touched) && f.bm_contact_no.errors?.required"
+                                            class="invalid-feedback">Manager COntact Number
+                                            is
+                                            required
+                                        </div>
+                                    </div> -->
                                     <div class="col-md-6">
                                         <label class="form-label">Bank Manager Contact Number</label>
                                         <input type="text" class="form-control form-control-sm" name="bm_contact_no"
@@ -209,7 +206,7 @@
                                     <button type="submit" class="btn btn-primary btn-sm"
                                         *ngIf="action === 'update'">Update</button>
                                 </div>
-                            </form> -->
+                            </form>
                         </div>
                     </div>
                 </div>

@@ -42,6 +42,7 @@ import { StatutoryBonusComponent } from './statutory-bonus/statutory-bonus.compo
 import { StatutoryComponentComponent } from './statutory-component/statutory-component.component';
 import { AdvanceSalaryComponent } from './advance-salary/advance-salary.component';
 import { BulkAttendanceComponent } from './masters/bulk-attendance/bulk-attendance.component';
+import { EmployeeWorkReportComponent } from './masters/employee-work-report/employee-work-report.component';
 
 @NgModule({
   declarations: [
@@ -75,7 +76,8 @@ import { BulkAttendanceComponent } from './masters/bulk-attendance/bulk-attendan
     StatutoryBonusComponent,
     StatutoryComponentComponent,
     AdvanceSalaryComponent,
-    BulkAttendanceComponent
+    BulkAttendanceComponent,
+    EmployeeWorkReportComponent
   ],
   imports: [
     CommonModule,

@@ -30,7 +30,7 @@ import { StatutoryBonusComponent } from './statutory-bonus/statutory-bonus.compo
 import { StatutoryComponentComponent } from './statutory-component/statutory-component.component';
 import { AdvanceSalaryComponent } from './advance-salary/advance-salary.component';
 import { BulkAttendanceComponent } from './masters/bulk-attendance/bulk-attendance.component';
-
+import { EmployeeWorkReportComponent } from './masters/employee-work-report/employee-work-report.component';
 const routes: Routes = [
   { path: 'add-employee', component: AddEmployeeComponent },
   {
@@ -66,6 +66,7 @@ const routes: Routes = [
   { path: 'statutory_components', component: StatutoryComponentComponent },
   { path: 'advance_salary', component: AdvanceSalaryComponent },
   { path: 'bulk_attendance', component: BulkAttendanceComponent },
+  { path: 'emply_work_report', component: EmployeeWorkReportComponent },
 
 ];
 

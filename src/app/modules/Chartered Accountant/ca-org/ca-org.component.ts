@@ -8,6 +8,7 @@ import { DataTableDirective } from 'angular-datatables';
 import Swal from 'sweetalert2';
 import { ToastrService } from 'ngx-toastr';
 import { FileUploadComponent } from '../../hrm/masters/file-upload/file-upload.component';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 // import { FileUploadComponent } from 'src/app/hrm/masters/file-upload/file-upload.component';
 
 @Component({
@@ -25,15 +26,23 @@ export class CaOrgComponent implements OnInit, OnDestroy {
   total: number = 0;
   loading = false;
   company_remove: any;
+  form: FormGroup;
+  submitted: any;
+  CaList: any
 
   constructor(
     private modalService: NgbModal,
     private router: Router,
     private api: ApiService,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private formBuilder: FormBuilder
   ) { }
 
   ngOnInit(): void {
+    this.form = this.formBuilder.group({
+      ca: [{ value: '', disabled: true }, Validators.required],
+      // other controls...
+    });
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -42,8 +51,13 @@ export class CaOrgComponent implements OnInit, OnDestroy {
       processing: true
     };
     this.getCompanyList();
+    // this.getcaList();
+
   }
 
+  get f() {
+    return this.form.controls;
+  }
   getCompanyList() {
     this.api.get(`api/company/all?page=${this.page}&limit=${this.limit}`).subscribe({
       next: (res: any) => {
@@ -58,6 +72,9 @@ export class CaOrgComponent implements OnInit, OnDestroy {
       }
     });
   }
+  // 
+  // CaList required
+  // 
   onPageChange(pageNum: number) {
     this.page = pageNum;
     this.getCompanyList();
@@ -111,6 +128,17 @@ export class CaOrgComponent implements OnInit, OnDestroy {
         Swal.fire('Cancelled', 'Company is safe.', 'info');
       }
     });
+  }
+  isCompanyFilterVisible: boolean = false;
+  toggleCompanyFilter() {
+    this.isCompanyFilterVisible = !this.isCompanyFilterVisible;
+    const companyControl = this.form.get('company');
+    if (this.isCompanyFilterVisible) {
+      companyControl?.enable();
+    } else {
+      companyControl?.disable();
+      companyControl?.setValue('');
+    }
   }
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();

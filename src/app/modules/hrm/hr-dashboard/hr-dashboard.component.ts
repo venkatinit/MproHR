@@ -1,422 +1,226 @@
-import { Component, OnInit } from '@angular/core';
-import { CalendarEvent } from 'angular-calendar';
-import { addDays, startOfMonth, endOfMonth, eachDayOfInterval, format } from 'date-fns';
-import { Chart, ChartData, ChartOptions } from 'chart.js';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-type Status = 'Present' | 'Absent' | 'Delayed' | 'Leave';
+import { Component, ElementRef, OnInit } from '@angular/core';
+import { addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
+import { ChartData, ChartOptions } from 'chart.js';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import { ApiService } from 'src/app/api.client';
+import { UtilsServiceService } from 'src/app/utils/utils-service.service';
+
 @Component({
   selector: 'app-hr-dashboard',
   templateUrl: './hr-dashboard.component.html',
   styleUrls: ['./hr-dashboard.component.scss']
 })
 export class HrDashboardComponent implements OnInit {
-  // Calendar state
-  attendanceChart!: Chart;
+  employees: any[] = [];
+  attendanceData: any[] = [];
+  selectedEmployee: string | null = null;
+  wagesPeriodFrom = '';
+  wagesPeriodTo = '';
+  years: number[] = [];
 
-  viewDate: Date = new Date();
-  filterType: 'daily' | 'monthly' | 'yearly' = 'daily';
-
-  // Employee filter
-  employees = [
-    { id: 'emp1', name: 'Venkat' },
-    { id: 'emp2', name: 'Siva' },
-    { id: 'emp3', name: 'Anitha' }
+  months = [
+    { name: 'January', value: 1 },
+    { name: 'February', value: 2 },
+    { name: 'March', value: 3 },
+    { name: 'April', value: 4 },
+    { name: 'May', value: 5 },
+    { name: 'June', value: 6 },
+    { name: 'July', value: 7 },
+    { name: 'August', value: 8 },
+    { name: 'September', value: 9 },
+    { name: 'October', value: 10 },
+    { name: 'November', value: 11 },
+    { name: 'December', value: 12 }
   ];
-  selectedEmployee = this.employees[0].id;
-  private attendance: Record<string, Record<string, Status>> = {
-    emp1: { },
-    emp2: {},
-    emp3: {}
-  };
 
-  stats = {
-    totalEmployees: 5000,
-    checkedIn: 4500,
-    notCheckedIn: 500,
-    onLeave: 456,
-    weeklyOff: 145,
-    holiday: 12,
-    checkedOut: 250
-  };
-  attendanceData = {
-    daily: {
-      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      present: [90, 85, 88, 92, 87, 80, 70],
-      absent: [10, 15, 12, 8, 13, 20, 30]
-    },
-    monthly: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-      present: [88, 90, 92, 87, 85, 89, 10],
-      absent: [12, 10, 8, 13, 15, 11, 20]
-    },
-    yearly: {
-      labels: ['2021', '2022', '2023', '2024'],
-      present: [89, 91, 90, 88],
-      absent: [11, 9, 10, 12]
-    }
-  };
-  loadAttendanceChart() {
-    const selectedData = this.attendanceData[this.filterType];
+  BulkAttendance!: FormGroup;
+  viewDate = new Date();
+  calendarDays: any[] = [];
+  submitted = false;
 
-    if (this.attendanceChart) {
-      this.attendanceChart.destroy(); // Destroy old chart before creating a new one
-    }
-
-    this.attendanceChart = new Chart('attendanceChart', {
-      type: 'bar',
-      data: {
-        labels: selectedData.labels,
-        datasets: [
-          {
-            label: 'Present %',
-            data: selectedData.present,
-            backgroundColor: '#4da3ff'
-          },
-          {
-            label: 'Absent %',
-            data: selectedData.absent,
-            backgroundColor: '#f44336'
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 100,
-            ticks: {
-              callback: function (value) {
-                return value + '%';
-              }
-            }
-          }
-        }
-      }
-    });
-  }
-  // Calendar events (built for the current month + employee)
-  events: CalendarEvent[] = [];
-
-  // Chart
+  barChartData: ChartData<'bar'> = { labels: [], datasets: [] };
   barChartOptions: ChartOptions<'bar'> = {
     responsive: true,
-    plugins: {
-      legend: { display: false },
-      title: { display: true, text: 'Monthly Attendance' }
-    },
+    plugins: { legend: { display: false } },
     scales: {
-      x: { ticks: { autoSkip: false } }
+      y: { beginAtZero: true, ticks: { stepSize: 1 } }
     }
   };
 
-  barChartData: ChartData<'bar'> = {
-    labels: ['Present', 'Absent', 'Delayed', 'Leave'],
-    datasets: [
-      {
-        data: [0, 0, 0, 0]
-      }
-    ]
-  };
-  api: any;
+  constructor(
+    private fb: FormBuilder,
+    private el: ElementRef,
+    private api: ApiService,
+    private util: UtilsServiceService,
+    private toast: ToastrService
+  ) { }
 
-  constructor(private formBuilder:FormBuilder) {
-    // seed a little fake data for demo so you see colors immediately
-    this.seedSample(this.selectedEmployee, this.viewDate);
-    this.refreshForEmployeeAndMonth();
+  ngOnInit(): void {
+    // Default to current month/year
+    const currentYear = this.viewDate.getFullYear();
+    const currentMonth = this.viewDate.getMonth() + 1;
+
+    this.BulkAttendance = this.fb.group({
+      year: [currentYear, Validators.required],
+      month: [currentMonth, Validators.required]
+    });
+
+    this.generateCalendarDays();
+    this.onSubmitBulkAttendance(); // 🔹 Load current month attendance initially
   }
 
-  // Build month’s events + chart totals
-  refreshForEmployeeAndMonth() {
-    this.events = this.buildEventsForMonth(this.selectedEmployee, this.viewDate);
-    const totals = this.countMonthlyTotals(this.selectedEmployee, this.viewDate);
-    this.barChartData = {
-      labels: ['Present', 'Absent', 'Delayed', 'Leave'],
-      datasets: [{ data: [totals.Present, totals.Absent, totals.Delayed, totals.Leave] }]
-    };
+  /** 📅 Build calendar grid for the selected month */
+  generateCalendarDays() {
+    const start = startOfMonth(this.viewDate);
+    const end = endOfMonth(this.viewDate);
+    const days = eachDayOfInterval({ start, end });
+
+    const firstDay = days[0].getDay();
+    const lastDay = days[days.length - 1].getDay();
+    const prepend = Array.from({ length: firstDay }, (_, i) => ({
+      date: new Date(start.getFullYear(), start.getMonth(), start.getDate() - (firstDay - i))
+    }));
+    const append = Array.from({ length: 6 - lastDay }, (_, i) => ({
+      date: new Date(end.getFullYear(), end.getMonth(), end.getDate() + (i + 1))
+    }));
+
+    this.calendarDays = [...prepend, ...days.map(d => ({ date: d })), ...append];
   }
 
-  // Month navigation
+  /** 🔁 Fetch Attendance Data from API */
+  onSubmitBulkAttendance(): void {
+    this.submitted = true;
+    if (this.BulkAttendance.invalid) return;
+
+    const { year, month } = this.BulkAttendance.value;
+    const companyId = this.util.decrypt_Text(localStorage.getItem('company_id')) || '';
+
+    this.api
+      .get(`attendance/monthly-summary?month=${month}&year=${year}&companyId=${companyId}`)
+      .subscribe({
+        next: (res: any) => {
+          this.attendanceData = res || [];
+
+          this.employees = this.attendanceData.map(emp => ({
+            id: emp.employeeCode,
+            name: emp.employeeName,
+            department: emp.department
+          }));
+
+          this.selectedEmployee = this.selectedEmployee || this.employees[0]?.id || null;
+
+          this.updateWagesPeriod();
+          this.updateBarChart();
+          this.toast.success('Attendance data fetched successfully!');
+        },
+        error: (err) => {
+          console.error(err);
+          this.toast.error('Failed to fetch attendance data');
+        }
+      });
+  }
+
+  /** 🧮 Update wages period display */
+  updateWagesPeriod(): void {
+    const { month, year } = this.BulkAttendance.value;
+    const fromDate = new Date(year, month - 1, 1);
+    const toDate = new Date(year, month, 0);
+
+    const formatDate = (d: Date) =>
+      `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+
+    this.wagesPeriodFrom = formatDate(fromDate);
+    this.wagesPeriodTo = formatDate(toDate);
+  }
+
+  /** 🧠 Map short code (P/A/L/D) to readable */
+  mapStatus(code: string): string {
+    switch (code) {
+      case 'P': return 'Present';
+      case 'A': return 'Absent';
+      case 'L': return 'Leave';
+      case 'D': return 'Delayed';
+      default: return '-';
+    }
+  }
+
+  getEmployeeStatus(empCode: string, date: Date): string {
+    const emp = this.attendanceData.find(e => e.employeeCode === empCode);
+    if (!emp) return '';
+    const dayIndex = date.getDate() - 1;
+    const code = emp.days[dayIndex] || '-';
+    return this.mapStatus(code);
+  }
+
+  getStatusColor(status: string): string {
+    switch (status) {
+      case 'Present': return '#28a745';
+      case 'Absent': return '#fd7400';
+      case 'Leave': return '#0d6efd';
+      case 'Delayed': return '#fd7e14';
+      default: return '#f8f9fa';
+    }
+  }
+
+  /** ⏪ Previous Month */
   prevMonth() {
-    this.viewDate = addDays(startOfMonth(this.viewDate), -1);
-    this.viewDate = startOfMonth(this.viewDate);
-    this.refreshForEmployeeAndMonth();
+    this.viewDate = subMonths(this.viewDate, 1);
+    this.updateMonthYearAndFetch();
   }
+
+  /** ⏩ Next Month */
   nextMonth() {
-    this.viewDate = addDays(endOfMonth(this.viewDate), 1);
-    this.viewDate = startOfMonth(this.viewDate);
-    this.refreshForEmployeeAndMonth();
+    this.viewDate = addMonths(this.viewDate, 1);
+    this.updateMonthYearAndFetch();
   }
+
+  /** 📅 Today (current month) */
   today() {
     this.viewDate = new Date();
-    this.refreshForEmployeeAndMonth();
+    this.updateMonthYearAndFetch();
+  }
+
+  /** 🧭 Update form month/year and re-fetch API */
+  updateMonthYearAndFetch() {
+    const newYear = this.viewDate.getFullYear();
+    const newMonth = this.viewDate.getMonth() + 1;
+    this.BulkAttendance.patchValue({ year: newYear, month: newMonth });
+    this.generateCalendarDays();
+    this.onSubmitBulkAttendance();
+  }
+
+  /** 📊 Bar chart refresh */
+  updateBarChart() {
+    if (!this.selectedEmployee) return;
+
+    const emp = this.attendanceData.find(e => e.employeeCode === this.selectedEmployee);
+    if (!emp) return;
+
+    const statusCounts = { Present: 0, Absent: 0, Leave: 0, Delayed: 0 };
+    emp.days.forEach(code => {
+      const status = this.mapStatus(code);
+      if (status in statusCounts) statusCounts[status]++;
+    });
+
+    this.barChartData = {
+      labels: ['Present', 'Absent', 'Leave', 'Delayed'],
+      datasets: [
+        {
+          data: [
+            statusCounts.Present,
+            statusCounts.Absent,
+            statusCounts.Leave,
+            statusCounts.Delayed
+          ],
+          backgroundColor: ['#28a745', '#fd7400', '#0d6efd', '#fd7e14'],
+          borderRadius: 6
+        }
+      ]
+    };
   }
 
   onEmployeeChange() {
-    this.refreshForEmployeeAndMonth();
+    this.updateBarChart();
   }
-
-  // Helpers
-  private dateKey(d: Date) {
-    return format(d, 'yyyy-MM-dd');
-  }
-
-  private colorFor(status: Status) {
-    switch (status) {
-      case 'Present': return { primary: '#28a745', secondary: '#DFF2E1' }; // green
-      case 'Absent': return { primary: '#dc3545', secondary: '#F8D7DA' }; // red
-      case 'Delayed': return { primary: '#fd7e14', secondary: '#FFE5D0' }; // orange
-      case 'Leave': return { primary: '#0d6efd', secondary: '#CCE5FF' }; // blue
-    }
-  }
-
-  private buildEventsForMonth(empId: string, month: Date): CalendarEvent[] {
-    const start = startOfMonth(month);
-    const end = endOfMonth(month);
-    const days = eachDayOfInterval({ start, end });
-
-    const records = this.attendance[empId] || {};
-    return days
-      .filter(day => !!records[this.dateKey(day)])
-      .map(day => {
-        const status = records[this.dateKey(day)];
-        return {
-          start: day,
-          title: status,
-          color: this.colorFor(status),
-          allDay: true
-        } as CalendarEvent;
-      });
-  }
-
-  private countMonthlyTotals(empId: string, month: Date) {
-    const tally: Record<Status, number> = {
-      Present: 0,
-      Absent: 0,
-      Delayed: 0,
-      Leave: 0
-    };
-    const start = startOfMonth(month);
-    const end = endOfMonth(month);
-    const records = this.attendance[empId] || {};
-
-    eachDayOfInterval({ start, end }).forEach(day => {
-      const s = records[this.dateKey(day)];
-      if (s) tally[s]++;
-    });
-
-    return tally;
-  }
-
-  // Demo seed so you’ll see colors on load
-  private seedSample(empId: string, month: Date) {
-    const start = startOfMonth(month);
-    const k1 = this.dateKey(start);
-    const k2 = this.dateKey(addDays(start, 1));
-    const k3 = this.dateKey(addDays(start, 2));
-    const k4 = this.dateKey(addDays(start, 3));
-    const k5 = this.dateKey(addDays(start, 4));
-
-    this.attendance[empId] = {
-      ...this.attendance[empId],
-      [k1]: 'Present',
-      [k2]: 'Absent',
-      [k3]: 'Delayed',
-      [k4]: 'Leave',
-      [k5]: 'Present'
-    };
-  }
-
-
-  changeFilter(type: 'daily' | 'monthly' | 'yearly') {
-    this.filterType = type;
-    this.loadAttendanceChart();
-  }
-  // payslip
-  payslipForm:FormGroup;
-
-ngOnInit(): void {
-   this.payslipForm = this.formBuilder.group({
-        employeeId: ['', Validators.required],
-        ctc: ['', Validators.required],
-        allowances: this.formBuilder.array([]),
-        deductions: this.formBuilder.array([]),
-        otherAllowance: [''],
-        total_Allowances: [{ value: 0, disabled: true }],
-        total_Deductions: [{ value: 0, disabled: true }],
-        take_Home_Salary: [{ value: 0, disabled: true }]
-      });
-  this.loadAttendanceChart();
-  new Chart('pieChart', {
-    type: 'pie',
-    data: {
-      labels: ['Checked In', 'Not Checked In', 'On Leave', 'On Week off', 'Holiday', 'Checked Out'],
-      datasets: [
-        {
-          data: [350, 50, 50, 20, 20, 10],
-          // backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          labels: {
-            color: '#333',       // Label color
-            font: {
-              size: 16,          // Label font size
-              weight: 'bold'
-            }
-          },
-          position: 'right'    // Legend position
-        }
-      }
-    }
-  });
 }
-}
-
-// import { Component, OnInit } from '@angular/core';
-// import { Chart, registerables } from 'chart.js';
-
-// Chart.register(...registerables);
-// @Component({
-//   selector: 'app-employee-dashboard',
-//   templateUrl: './employee-dashboard.component.html',
-//   styleUrls: ['./employee-dashboard.component.scss']
-// })
-// export class EmployeeDashboardComponent implements OnInit {
-//   attendanceChart!: Chart;
-//   filterType: 'daily' | 'monthly' | 'yearly' = 'daily';
-//   constructor() {
-//     Chart.register(...registerables);
-//   }
-
-//   ngOnInit() {
-//     this.loadAttendanceChart();
-//     new Chart('pieChart', {
-//       type: 'pie',
-//       data: {
-//         labels: ['Checked In', 'Not Checked In', 'On Leave', 'On Week off', 'Holiday', 'Checked Out'],
-//         datasets: [
-//           {
-//             data: [350, 50, 50, 20, 20, 10],
-//             // backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-//           },
-//         ],
-//       },
-//       options: {
-//         responsive: true,
-//         plugins: {
-//           legend: {
-//             labels: {
-//               color: '#333',       // Label color
-//               font: {
-//                 size: 16,          // Label font size
-//                 weight: 'bold'
-//               }
-//             },
-//             position: 'right'    // Legend position
-//           }
-//         }
-//       }
-//     });
-//   }
-//   attendanceData = {
-//     daily: {
-//       labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-//       present: [90, 85, 88, 92, 87, 80, 70],
-//       absent: [10, 15, 12, 8, 13, 20, 30]
-//     },
-//     monthly: {
-//       labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-//       present: [88, 90, 92, 87, 85, 89,10],
-//       absent: [12, 10, 8, 13, 15, 11,20]
-//     },
-//     yearly: {
-//       labels: ['2021', '2022', '2023', '2024'],
-//       present: [89, 91, 90, 88],
-//       absent: [11, 9, 10, 12]
-//     }
-//   };
-//   loadAttendanceChart() {
-//     const selectedData = this.attendanceData[this.filterType];
-
-//     if (this.attendanceChart) {
-//       this.attendanceChart.destroy(); // Destroy old chart before creating a new one
-//     }
-
-//     this.attendanceChart = new Chart('attendanceChart', {
-//       type: 'bar',
-//       data: {
-//         labels: selectedData.labels,
-//         datasets: [
-//           {
-//             label: 'Present %',
-//             data: selectedData.present,
-//             backgroundColor: '#4da3ff'
-//           },
-//           {
-//             label: 'Absent %',
-//             data: selectedData.absent,
-//             backgroundColor: '#f44336'
-//           }
-//         ]
-//       },
-//       options: {
-//         responsive: true,
-//         scales: {
-//           y: {
-//             beginAtZero: true,
-//             max: 100,
-//             ticks: {
-//               callback: function (value) {
-//                 return value + '%';
-//               }
-//             }
-//           }
-//         }
-//       }
-//     });
-//   }
-
-//   changeFilter(type: 'daily' | 'monthly' | 'yearly') {
-//     this.filterType = type;
-//     this.loadAttendanceChart();
-//   }
-
-//   stats = {
-//     totalEmployees: 5000,
-//     checkedIn: 4500,
-//     notCheckedIn: 500,
-//     onLeave: 456,
-//     weeklyOff: 145,
-//     holiday: 12,
-//     checkedOut: 250
-//   };
-
- 
-
-//   // onTimeCheckInData = {
-//   //   labels: ['5 Sep', '6 Sep', '7 Sep', '8 Sep', '9 Sep', '10 Sep', '11 Sep'],
-//   //   datasets: [
-//   //     {
-//   //       label: 'Employees',
-//   //       data: [5, 10, 12, -5, 0, 8, -2],
-//   //       backgroundColor: '#4da3ff'
-//   //     }
-//   //   ]
-//   // };
-
-//   // overtimeData = {
-//   //   labels: ['5 Sep', '6 Sep', '7 Sep', '8 Sep', '9 Sep', '10 Sep', '11 Sep'],
-//   //   datasets: [
-//   //     {
-//   //       label: 'Hours',
-//   //       data: [10, 15, 40, 5, 8, 3, 6],
-//   //       backgroundColor: '#4da3ff'
-//   //     }
-//   //   ]
-//   // };
-// }
