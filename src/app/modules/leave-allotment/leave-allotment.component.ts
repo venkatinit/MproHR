@@ -26,7 +26,7 @@ export class LeaveAllotmentComponent implements OnInit, OnDestroy {
   spinLoader = false;
   leaves_list: any;
   companyList: any[] = [];
-  employee_List: any[] = [];
+  employee_list: any;
   allotment_list: any;
   cateId: any;
   constructor(
@@ -35,7 +35,7 @@ export class LeaveAllotmentComponent implements OnInit, OnDestroy {
     private util: UtilsServiceService,
     private formBuilder: FormBuilder,
     private api: ApiService,
-    private toast:ToastrService
+    private toast: ToastrService
   ) {
     this.addLeaves = this.formBuilder.group({
       leave_type: ['', [Validators.required]],
@@ -64,18 +64,28 @@ export class LeaveAllotmentComponent implements OnInit, OnDestroy {
       this.companyList = res?.data?.data || [];
     });
   }
-  getEmployeeList() {
-    this.api.get('1').subscribe((res: any) => {
-      this.companyList = res?.data?.data || [];
-    });
-  }
   getLeaves() {
-    this.api.get('api/admin/leave/types?companyId=2').subscribe((res: ApiResponse<any>) => {
+    const companyId = this.util.decrypt_Text(localStorage.getItem('company_id')) || '';
+    const queryParams = new URLSearchParams({
+      companyId: companyId,
+    }).toString();
+    this.api.get(`api/admin/leave/types?${queryParams}`).subscribe((res: ApiResponse<any>) => {
       this.leaves_list = res;
     });
   }
+  getEmployeeList() {
+    const compannyId = this.util.decrypt_Text(localStorage.getItem('company_id'));
+    const queryParams = new URLSearchParams({ compannyId }).toString();
+    this.api.get(`all_employees?${queryParams}`).subscribe((res: ApiResponse<any>) => {
+      this.employee_list = res;
+      this.dtTrigger.next(null);
+      if (($.fn.DataTable as any).isDataTable('#employeeTable')) {
+      }
+      this.dtTrigger.next(null); // initialize new
+    });
+  }
   getAllotments() {
-    this.api.get('api/admin/leave/allotments/1').subscribe((res: ApiResponse<any>) => {
+    this.api.get('api/admin/leave/allotments/8').subscribe((res: ApiResponse<any>) => {
       this.allotment_list = res;
       this.dtTrigger.next(null);
       if (($.fn.DataTable as any).isDataTable('#allotmentTable')) {

@@ -1,14 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { DatePipe } from '@angular/common';
-import { Router } from '@angular/router';
 import { UtilsServiceService } from 'src/app/utils/utils-service.service';
 import { ApiService } from 'src/app/api.client';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { UsersService } from 'src/app/services/users.service';
 import { ToastrService } from 'ngx-toastr';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
+import { ApiResponse } from 'src/app/models/api-response';
+declare var bootstrap: any;
+
 @Component({
   selector: 'app-leave-request',
   templateUrl: './leave-request.component.html',
@@ -30,37 +29,110 @@ export class LeaveRequestComponent implements OnInit {
   minDate: Date = new Date();
   fromDate: Date | null = null;
   toDate: Date | null = null;
-  leaves_list: any[] = [];
-  get f() {
-    return this.addLeave.controls
-  }
-  constructor(private formBuilder: FormBuilder, private router: Router, private util: UtilsServiceService, private api: ApiService, private modalService: NgbModal, private userService: UsersService,
-    public toast: ToastrService) { }
+  leaves_list: any;
+  allotment_list: any
+  leaveTypes: any;
+  errors: string[] = [];
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private util: UtilsServiceService,
+    private api: ApiService,
+    public toast: ToastrService,
+  ) { }
   ngOnInit() {
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 10,
+      lengthMenu: [5, 10, 25, 50],
+      destroy: true,
+      processing: true
+    };
     this.minDate = new Date();
     this.minDate.setDate(this.minDate.getDate());
     this.addLeave = this.formBuilder.group({
-      emp_id: ['', [Validators.required]],
-      emp_name: ['', [Validators.required]],
+      emp_id: [''],
       leave_type: ['', [Validators.required]],
       description: ['', [Validators.required]],
-      department: ['', [Validators.required]],
-      mbl_no: ['', [Validators.required]],
       from_date: ['', [Validators.required]],
       to_date: ['', [Validators.required]],
     });
     this.generateCalendar();
+    this.getAllotments();
+    this.getLeaves();
+    this.getPendingLeaves();
   }
-
-  jumpMonths(count: number) {
-    this.currentMonth = new Date(
-      this.currentMonth.getFullYear(),
-      this.currentMonth.getMonth() + count,
-      1
-    );
-    this.generateCalendar();
+  get f() {
+    return this.addLeave.controls
   }
+  getPendingLeaves() {
+    this.api.get('leave/pending/8').subscribe((res: ApiResponse<any>) => {
+      this.leaves_list = res;
+      this.toast.success('Pending Requests Retrived successfully', 'Success');
 
+    });
+  }
+  getAllotments() {
+    this.api.get('api/admin/leave/allotments/8').subscribe((res: ApiResponse<any>) => {
+      this.allotment_list = res;
+    });
+  }
+  onSubmit() {
+    console.log('✅ create form submitted');
+    this.submitted = true;
+
+    if (this.addLeave.invalid) {
+      return;
+    }
+    this.spinLoader = true;
+    const employeeId = this.util.decrypt_Text(localStorage.getItem('employeeId')) || '';
+
+    const body = {
+      id: 0,
+      employee_Id: 8, // ✅ use decrypted ID dynamically
+      leave_Type_Id: this.addLeave.get('leave_type')?.value,
+      from_Date: this.addLeave.get('from_date')?.value,
+      to_Date: this.addLeave.get('to_date')?.value,
+      status: 'pending',
+      remarks: this.addLeave.get('description')?.value
+    };
+
+    this.api.post('leave/request', body).subscribe({
+      next: (res: any) => {
+        this.toast.success('Request sent successfully', 'Success');
+        // ✅ Reset form
+        this.addLeave.reset();
+        this.submitted = false;
+        this.errors = [];
+        this.spinLoader = false;
+
+        // ✅ Close modal
+        const modalElement = document.getElementById('LeavesTable');
+        if (modalElement) {
+          const modalInstance = bootstrap.Modal.getInstance(modalElement);
+          modalInstance?.hide();
+        }
+
+        // ✅ Refresh leave list (no page reload)
+        this.getLeaves();
+      },
+      error: (error: any) => {
+        this.submitted = false;
+        this.spinLoader = false;
+        const errorMessage = error?.error?.message || 'Request not sent successfully';
+        this.errors = [errorMessage];
+      }
+    });
+  }
+  getLeaves() {
+    const companyId = this.util.decrypt_Text(localStorage.getItem('company_id')) || '';
+    const queryParams = new URLSearchParams({
+      companyId: companyId,
+    }).toString();
+    this.api.get(`api/admin/leave/types?${queryParams}`).subscribe((res: ApiResponse<any>) => {
+      this.leaveTypes = res;
+    });
+  }
   generateCalendar() {
     const start = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth(), 1);
     const end = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() + 1, 0);
@@ -99,7 +171,14 @@ export class LeaveRequestComponent implements OnInit {
 
     this.dates = dates;
   }
-
+  jumpMonths(count: number) {
+    this.currentMonth = new Date(
+      this.currentMonth.getFullYear(),
+      this.currentMonth.getMonth() + count,
+      1
+    );
+    this.generateCalendar();
+  }
   prevMonth() {
     this.currentMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() - 1, 1);
     this.generateCalendar();
@@ -121,16 +200,6 @@ export class LeaveRequestComponent implements OnInit {
   isDisabled(date: Date): boolean {
     return false;
   }
-  // Leaves Balance
-  leaveBalances = [
-    { leaveType: 'Casual Leave', available: 5 },
-    { leaveType: 'Sick Leave', available: 3 },
-    { leaveType: 'Earned Leave', available: 10 },
-    { leaveType: 'Maternity Leave', available: 10 },
-    { leaveType: 'Paternity Leave', available: 10 },
-  ];
-
-  leaveTypes = ['Casual Leave', 'Sick Leave', 'Earned Leave', 'Maternity Leave', 'Paternity Leave'];
 
   isLeaveDate(date: Date): boolean {
     if (!this.fromDate || !this.toDate) return false;

@@ -1,13 +1,13 @@
 <div class="dashboard">
-    <div class="row d-flex flex-row justify-content-around">
+    <div class="row d-flex flex-row justify-content-between">
         <div class="col-lg-5 col-sm-12 profile">
-            <div class="employee d-flex items-center justify-between">
+            <div class="employee d-flex items-center  ">
                 <div>
                     <img src="../../../../assets/img/profile-img.jpg" style="width: 75px;" alt="profile"
                         class="rounded-circle" />
                 </div>
                 <div class="ml-2">
-                    <h2 class="text-xl font-bold">{{employeeDetails?.full_Name}}</h2>
+                    <h2 class="employee_name text-xl font-bold">{{employeeDetails?.full_Name}}</h2>
                     <p class="text-gray-500"> {{employeeDetails?.designation}}</p>
                 </div>
             </div>
@@ -34,30 +34,243 @@
                     (click)="getEmployeeDetails()">
                     <h5>Service Letter</h5>
                 </div>
-                <div class="col-md-4 details_brief" (click)="toggleUpdates()">
+                <div class="col-md-4 details_brief" (click)="toggleSection('activeSection')">
                     <h5>More</h5>
                 </div>
             </div>
         </div>
     </div>
     <div class="row d-flex flex-wrap justify-content-between align-items-center" style="margin-top:20px"
-        [@slideToggle]="showUpdates ? 'visible' : 'hidden'">
-        <div class="col-md-2 slides  p-2 " data-bs-toggle="modal" data-bs-target="#qualification"
-            (click)="getEmployeeDetails()">
-            <h5>Qualification </h5>
+        [@slideToggle]="activeSection ? 'visible' : 'hidden'">
+
+        <div class="col-md-2 slides p-2" (click)="toggleSection('qualification')">
+            <h5>Qualification</h5>
         </div>
-        <div class="col-md-2 slides  p-2 ">
+        <div class="col-md-2 slides p-2" (click)="toggleSection('experience')">
             <h5>Experience</h5>
         </div>
-        <div class="col-md-2 slides  p-2 ">
+        <div class="col-md-2 slides p-2" (click)="toggleSection('kyc')">
             <h5>KYC</h5>
         </div>
-        <div class="col-md-2 slides  p-2 " data-bs-toggle="modal" data-bs-target="#leaveRequest"
-            (click)="getEmployeeDetails()">
-            <h5>Leave Request </h5>
+        <div class="col-md-2 slides p-2" (click)="toggleSection('leave')">
+            <h5>Leave Request</h5>
         </div>
-        <div class="col-md-2 slides  p-2 ">
+        <div class="col-md-2 slides p-2" (click)="toggleSection('ctc')">
             <h5>CTC Update</h5>
+        </div>
+    </div>
+
+    <!-- Dynamic Section Display -->
+    <div class="row mt-3" *ngIf="activeSection === 'qualification'" [@slideToggle]="'visible'">
+        <div class="card mt-3 shadow-sm">
+            <div class="card-header bg-info d-flex justify-content-between">
+                <h5 class="mb-0">Employee Education Details</h5>
+                <button class="btn btn-primary btn-sm btn-pill" data-bs-toggle="modal"
+                    data-bs-target="#qualification"><i class="fa fa-plus" aria-hidden="true"></i>
+                    New</button>
+            </div>
+
+            <div class="card-body table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-info text-center">
+                        <tr>
+                            <th>#</th>
+                            <th>Qualification</th>
+                            <th>Institution</th>
+                            <th>University / Board</th>
+                            <th>Passing Year</th>
+                            <th>Percentage</th>
+                            <th>Certificate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let edu of educationDetails; let i = index" class="text-center">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ edu.class }}</td>
+                            <td>{{ edu.institute }}</td>
+                            <td>{{ edu.board_University }}</td>
+                            <td>{{ edu.year_Of_Passing }}</td>
+                            <td>{{ edu.marks_Grade }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary"
+                                    (click)="viewCertificate(edu.document_Path)">
+                                    <i class="bi bi-file-earmark-pdf"></i> View
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3" *ngIf="activeSection === 'experience'" [@slideToggle]="'visible'">
+        <div class="card mt-3 shadow-sm">
+            <div class="card-header bg-info d-flex justify-content-between">
+                <h5 class="mb-0">Employee Experience Details</h5>
+                <button class="btn btn-primary btn-sm btn-pill" data-bs-toggle="modal" data-bs-target="#experience"><i
+                        class="fa fa-plus" aria-hidden="true"></i>
+                    New</button>
+
+            </div>
+
+            <div class="card-body table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-info text-center">
+                        <tr>
+                            <th>#</th>
+                            <th>Company Name</th>
+                            <th>Designation</th>
+                            <th>From Date</th>
+                            <th>To Date</th>
+                            <th>Total Experience</th>
+                            <th>Certificate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let exp of experienceDetails; let i = index" class="text-center">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ exp.companyName }}</td>
+                            <td>{{ exp.designation }}</td>
+                            <td>{{ exp.fromDate }}</td>
+                            <td>{{ exp.toDate }}</td>
+                            <td>{{ exp.totalExperience }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary"
+                                    (click)="viewCertificate(exp.certificateUrl)">
+                                    <i class="bi bi-file-earmark-pdf"></i> View
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3" *ngIf="activeSection === 'kyc'" [@slideToggle]="'visible'">
+        <div class="card mt-3 shadow-sm">
+            <div class="card-header bg-info d-flex justify-content-between">
+                <h5 class="mb-0">Employee KYC Documents</h5>
+                <button class="btn btn-primary btn-sm btn-pill" data-bs-toggle="modal" data-bs-target="#kyc"><i
+                        class="fa fa-plus" aria-hidden="true"></i>
+                    New</button>
+            </div>
+            <div class="card-body table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-info text-center">
+                        <tr>
+                            <th>#</th>
+                            <th>Document Name</th>
+                            <th>Document Type</th>
+                            <th>Document Number</th>
+                            <th>Uploaded On</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let doc of kycDocuments; let i = index" class="text-center">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ doc.title }}</td>
+                            <td>{{ doc.title }}</td>
+                            <td>{{ doc.title }}</td>
+                            <td>{{ doc.title }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary" (click)="viewCertificate(doc.path)">
+                                    <i class="bi bi-eye"></i> View
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3" *ngIf="activeSection === 'leave'" [@slideToggle]="'visible'">
+        <app-leave-request></app-leave-request>
+    </div>
+
+    <div class="row mt-3" *ngIf="activeSection === 'ctc'" [@slideToggle]="'visible'">
+        <div class="card shadow-sm mt-3">
+            <div class="card-header bg-info   d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Employee CTC Summary</h5>
+                <button class="btn btn-primary btn-sm btn-pill" data-bs-toggle="modal" data-bs-target="#ctc"><i
+                        class="fa fa-plus" aria-hidden="true"></i>
+                    New</button>
+            </div>
+            <!-- <span>CTC: ₹{{ employeeCtc.ctc | number }}</span> -->
+            <div class="card-body ">
+                <div class="row">
+                    <!-- ALLOWANCES TABLE -->
+                    <div class="col-md-6 mb-3">
+                        <h6 class="fw-bold mb-2">Allowances</h6>
+                        <table class="table table-bordered table-responsive table-hover align-middle">
+                            <thead class="table-info text-center">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Allowance Name</th>
+                                    <th>Type</th>
+                                    <th>Amount (₹)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let allow of employeeCtc.allowances; let i = index"
+                                    [class.table-secondary]="!allow.enabled">
+                                    <td>{{ i + 1 }}</td>
+                                    <td>{{ allow.name }}</td>
+                                    <td>{{ allow.type }}</td>
+                                    <td class="text-end">{{ allow.amount | number }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- DEDUCTIONS TABLE -->
+                    <div class="col-md-6 mb-3">
+                        <h6 class="fw-bold mb-2">Deductions</h6>
+                        <table class="table table-bordered table-responsive table-hover align-middle">
+                            <thead class="table-info text-center">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Deduction Name</th>
+                                    <th>Type</th>
+                                    <th>Amount (₹)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let ded of employeeCtc.deductions; let i = index"
+                                    [class.table-secondary]="!ded.enabled">
+                                    <td>{{ i + 1 }}</td>
+                                    <td>{{ ded.name }}</td>
+                                    <td>{{ ded.type }}</td>
+                                    <td class="text-end">{{ ded.amount | number }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- SUMMARY -->
+                <div class="mt-3">
+                    <h6 class="fw-bold">Summary</h6>
+                    <table class="table table-sm table-borderless w-50">
+                        <tr>
+                            <td>Total Allowances:</td>
+                            <td class="text-end fw-bold">₹{{ employeeCtc.total_Allowances | number }}</td>
+                        </tr>
+                        <tr>
+                            <td>Total Deductions:</td>
+                            <td class="text-end fw-bold text-danger">₹{{ employeeCtc.total_Deductions | number }}</td>
+                        </tr>
+                        <tr class="table-light">
+                            <td><strong>Take Home Salary:</strong></td>
+                            <td class="text-end text-success fw-bold fs-5">₹{{ employeeCtc.take_Home_Salary | number }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -206,7 +419,7 @@
                                 required
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <!-- <div class="col-md-4">
                             <label class="form-label">Work Location</label>
                             <input type="text" class="form-control form-control-sm" name="location" id="location"
                                 formControlName="location" [ngClass]="{ 'is-invalid': submitted && f.location.errors }">
@@ -214,7 +427,7 @@
                                 location is
                                 required
                             </div>
-                        </div>
+                        </div> -->
                         <div class="col-md-4">
                             <label class="form-label">Date of Joining</label>
                             <input type="date" class="form-control form-control-sm" name="doj" id="doj"
@@ -299,6 +512,8 @@
                         </div>
                     </div>
                     <div class="mt-2 col-md-12 d-flex justify-content-end">
+                        <!-- <button type="preview" class="btn btn-success btn-sm "
+                            (click)="generateOfferPDF(employeeData)">Preview</button> -->
                         <button type="submit" class="btn btn-success btn-sm">Submit</button>
                     </div>
                 </form>
@@ -443,9 +658,9 @@
                                 <div class="col-md-3"><input type="text" class="form-control" placeholder="Type"
                                         formControlName="type">
                                 </div>
-                                <div class="col-md-3"><input type="number" class="form-control" placeholder="Amount"
+                                <!-- <div class="col-md-3"><input type="number" class="form-control" placeholder="Amount"
                                         formControlName="amount" (input)="calculateTotals()">
-                                </div>
+                                </div> -->
                                 <div class="col-md-3">
                                     <button type="button" class="btn btn-sm btn-danger" (click)="removeAllowance(i)">
                                         Remove
@@ -470,9 +685,9 @@
                                 <div class="col-md-3"><input type="text" class="form-control" placeholder="Type"
                                         formControlName="type">
                                 </div>
-                                <div class="col-md-3"><input type="number" class="form-control" placeholder="Amount"
+                                <!-- <div class="col-md-3"><input type="number" class="form-control" placeholder="Amount"
                                         formControlName="amount" (input)="calculateTotals()">
-                                </div>
+                                </div> -->
                                 <div class="col-md-3">
                                     <button type="button" class="btn btn-sm btn-danger" (click)="removeDeduction(i)">
                                         Remove
@@ -699,48 +914,157 @@
             </div>
             <div class="modal-body ">
                 <form [formGroup]="qualificationForm" (ngSubmit)="newQualification()">
-                    <div class="mb-3">
-                        <label>Employee Id</label>
-                        <input type="text" formControlName="employeeId" class="form-control" />
-                    </div>
-                    <div class="col-md-12" formArrayName="qualifications">
-                        <div *ngFor="let qualification of qualifications.controls; let i = index" [formGroupName]="i"
-                            class="card p-3 mb-2">
-                            <h5>Qualification {{ i + 1 }}</h5>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>Class</label>
-                                    <input type="text" formControlName="class" class="form-control" />
-                                </div>
-                                <div class="col-md-6">
-                                    <label>Institute</label>
-                                    <input type="text" formControlName="institute" class="form-control" />
-                                </div>
-                                <div class="col-md-6">
-                                    <label>Board / University</label>
-                                    <input type="text" formControlName="board_University" class="form-control" />
-                                </div>
-                                <div class="col-md-6">
-                                    <label>Year of Passing</label>
-                                    <input type="number" formControlName="year_Of_Passing" class="form-control" />
-                                </div>
-                                <div class="col-md-6">
-                                    <label>Marks / Grade</label>
-                                    <input type="text" formControlName="marks_Grade" class="form-control" />
-                                </div>
-                                <div class="col-md-6">
-                                    <label>Attachment</label>
-                                    <input type="file" (change)="onFileChange($event, i)" class="form-control" />
+                    <div class="card p-3 mb-2">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Qualification</label>
+                                <input type="text" class="form-control form-control-sm" formControlName="class"
+                                    [ngClass]="{ 'is-invalid': submitted && qualificationForm.get('class')?.invalid }" />
+                                <div *ngIf="submitted && qualificationForm.get('class')?.errors"
+                                    class="invalid-feedback">
+                                    Qualification is required
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-danger col-md-2 mt-2" (click)="removeQualification(i)"
-                                *ngIf="qualifications.length > 1">
-                                Remove
-                            </button>
+
+                            <div class="col-md-6">
+                                <label>Institution</label>
+                                <input type="text" class="form-control form-control-sm" formControlName="institute"
+                                    [ngClass]="{ 'is-invalid': submitted && qualificationForm.get('institute')?.invalid }" />
+                                <div *ngIf="submitted && qualificationForm.get('institute')?.errors"
+                                    class="invalid-feedback">
+                                    Institution is required
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label>Board / University</label>
+                                <input type="text" class="form-control form-control-sm"
+                                    formControlName="board_University"
+                                    [ngClass]="{ 'is-invalid': submitted && qualificationForm.get('board_University')?.invalid }" />
+                                <div *ngIf="submitted && qualificationForm.get('board_University')?.errors"
+                                    class="invalid-feedback">
+                                    Board / University is required
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label>Passing Year</label>
+                                <input type="text" class="form-control form-control-sm"
+                                    formControlName="year_Of_Passing" numbersOnly
+                                    [ngClass]="{ 'is-invalid': submitted && qualificationForm.get('year_Of_Passing')?.invalid }" />
+                                <div *ngIf="submitted && qualificationForm.get('year_Of_Passing')?.errors"
+                                    class="invalid-feedback">
+                                    Enter a valid 4-digit passing year
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label>Marks / Grade</label>
+                                <input type="text" class="form-control form-control-sm" formControlName="marks_Grade"
+                                    numbersOnly
+                                    [ngClass]="{ 'is-invalid': submitted && qualificationForm.get('marks_Grade')?.invalid }" />
+                                <div *ngIf="submitted && qualificationForm.get('marks_Grade')?.errors"
+                                    class="invalid-feedback">
+                                    Grade is required
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label>Certificate</label>
+                                <input type="file" class="form-control form-control-sm" formControlName="E_attachment"
+                                    (change)="onFileChange($event)"
+                                    [ngClass]="{ 'is-invalid': submitted && qualificationForm.get('E_attachment')?.invalid }" />
+                                <div *ngIf="submitted && qualificationForm.get('E_attachment')?.errors"
+                                    class="invalid-feedback">
+                                    Certificate is required
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="d-flex flex-row justify-content-between">
-                        <button type="button" class="btn btn-primary mt-3" (click)="addQualification()">+ More</button>
+
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-success mt-3">Submit</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Add Experience -->
+<div class="modal fade" id="experience" tabindex="-1" aria-labelledby="experienceLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <strong>Add Experience </strong>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body ">
+                <form [formGroup]="experienceForm" (ngSubmit)="newExperience()">
+                    <div class="card p-3 mb-2">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Company Name</label>
+                                <input type="text" class="form-control form-control-sm" formControlName="companyName"
+                                    [ngClass]="{ 'is-invalid': submitted && qualificationForm.get('companyName')?.invalid }" />
+                                <div *ngIf="submitted && qualificationForm.get('companyName')?.errors"
+                                    class="invalid-feedback">
+                                    Name is required
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label>Designation</label>
+                                <input type="text" class="form-control form-control-sm" formControlName="designation"
+                                    [ngClass]="{ 'is-invalid': submitted && qualificationForm.get('designation')?.invalid }" />
+                                <div *ngIf="submitted && qualificationForm.get('designation')?.errors"
+                                    class="invalid-feedback">
+                                    Designation is required
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label>From Date</label>
+                                <input type="date" class="form-control form-control-sm" formControlName="formDate"
+                                    [ngClass]="{ 'is-invalid': submitted && qualificationForm.get('formDate')?.invalid }" />
+                                <div *ngIf="submitted && qualificationForm.get('formDate')?.errors"
+                                    class="invalid-feedback">
+                                    From Date is required
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label>To Date</label>
+                                <input type="date" class="form-control form-control-sm" formControlName="toDate"
+                                    [ngClass]="{ 'is-invalid': submitted && qualificationForm.get('toDate')?.invalid }" />
+                                <div *ngIf="submitted && qualificationForm.get('toDate')?.errors"
+                                    class="invalid-feedback">
+                                    To Date is required
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Total Experience</label>
+                                <input type="text" class="form-control form-control-sm"
+                                    formControlName="totalExperience"
+                                    [ngClass]="{ 'is-invalid': submitted && qualificationForm.get('totalExperience')?.invalid }" />
+                                <div *ngIf="submitted && qualificationForm.get('totalExperience')?.errors"
+                                    class="invalid-feedback">
+                                    Experience is required
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Attachment</label>
+                                <input type="file" class="form-control form-control-sm" formControlName="attachment"
+                                    (change)="onFileChange($event)"
+                                    [ngClass]="{ 'is-invalid': submitted && qualificationForm.get('attachment')?.invalid }" />
+                                <div *ngIf="submitted && qualificationForm.get('attachment')?.errors"
+                                    class="invalid-feedback">
+                                    Attachment is required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
                         <button type="submit" class="btn btn-success mt-3">Submit</button>
                     </div>
                 </form>
@@ -748,71 +1072,187 @@
         </div>
     </div>
 </div>
-<!-- Add LEave Request -->
-<div class="modal fade" id="leaveRequest" tabindex="-1" aria-labelledby="leaveRequestLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-md">
+<!-- Add KYC -->
+<div class="modal fade" id="kyc" tabindex="-1" aria-labelledby="kycLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <strong>Raise a Request</strong>
+                <strong>Add KYC Docs </strong>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-
             <div class="modal-body ">
-                <form [formGroup]="leaveRequest" (ngSubmit)="saveRequest()">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="form-label"> From Date </label>
-                            <input type="date" class="form-control form-control-sm" name="fromDate" id="fromDate"
-                                formControlName="fromDate"
-                                [ngClass]="{ 'is-invalid': submitted && f.fromDate?.errors }">
-                            <div *ngIf="(submitted || f.fromDate?.touched) && f.fromDate?.errors?.required"
-                                class="invalid-feedback"> Date is
-                                required
+                <form [formGroup]="kycForm" (ngSubmit)="newKyc()">
+                    <div class="card p-3 mb-2">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Document Name</label>
+                                <input type="text" class="form-control form-control-sm" formControlName="name"
+                                    [ngClass]="{ 'is-invalid': submitted && qualificationForm.get('name')?.invalid }" />
+                                <div *ngIf="submitted && qualificationForm.get('name')?.errors"
+                                    class="invalid-feedback">
+                                    Name is required
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label"> To Date </label>
-                            <input type="date" class="form-control form-control-sm" name="toDate" id="toDate"
-                                formControlName="toDate" [ngClass]="{ 'is-invalid': submitted && f.toDate?.errors }">
-                            <div *ngIf="(submitted || f.toDate?.touched) && f.toDate?.errors?.required"
-                                class="invalid-feedback"> Date is
-                                required
+
+                            <div class="col-md-6">
+                                <label>Document Type</label>
+                                <input type="text" class="form-control form-control-sm" formControlName="type"
+                                    [ngClass]="{ 'is-invalid': submitted && qualificationForm.get('type')?.invalid }" />
+                                <div *ngIf="submitted && qualificationForm.get('type')?.errors"
+                                    class="invalid-feedback">
+                                    Document Type is required
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label"> Leave Type </label>
-                            <select class="form-control form-control-sm ml-2" formControlName="leaveType"
-                                [ngClass]="{ 'is-invalid': submitted && f.leaveType?.errors }">
-                                <option value="">-- Select Type --</option>
-                                <option *ngFor="let comp of LeaveTypeList" [value]="comp.id">
-                                    {{ comp.name }}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label"> Remarks </label>
-                            <input type="text" class="form-control form-control-sm" name="remarks" id="remarks"
-                                formControlName="remarks" [ngClass]="{ 'is-invalid': submitted && f.remarks?.errors }">
-                            <div *ngIf="(submitted || f.remarks?.touched) && f.remarks?.errors?.required"
-                                class="invalid-feedback"> Date is
-                                required
+
+                            <div class="col-md-6">
+                                <label>Document Number</label>
+                                <input type="text" class="form-control form-control-sm" formControlName="doc_number"
+                                    [ngClass]="{ 'is-invalid': submitted && qualificationForm.get('doc_number')?.invalid }" />
+                                <div *ngIf="submitted && qualificationForm.get('doc_number')?.errors"
+                                    class="invalid-feedback">
+                                    Document Number is required
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label">Reason for Leave </label>
-                            <textarea type="text" class="form-control form-control-sm" name="reason" id="reason"
-                                formControlName="reason"
-                                [ngClass]="{ 'is-invalid': submitted && f.reason?.errors }"></textarea>
-                            <div *ngIf="(submitted || f.reason?.touched) && f.reason?.errors?.required"
-                                class="invalid-feedback"> Date is
-                                required
+
+
+                            <div class="col-md-6">
+                                <label>Attachment</label>
+                                <input type="file" class="form-control form-control-sm" formControlName="attachment"
+                                    (change)="onFileChange($event)"
+                                    [ngClass]="{ 'is-invalid': submitted && qualificationForm.get('attachment')?.invalid }" />
+                                <div *ngIf="submitted && qualificationForm.get('attachment')?.errors"
+                                    class="invalid-feedback">
+                                    Attachment is required
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="mt-2 col-md-12 d-flex justify-content-end">
-                        <button type="submit" class="btn btn-success btn-sm">Submit</button>
+
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-success mt-3">Submit</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Add CTC SUMMARY -->
+<div class="modal fade" id="ctc" tabindex="-1" aria-labelledby="ctcLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <strong>Add CTC </strong>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- <form [formGroup]="salaryForm" (ngSubmit)="onSubmit()">
+                    <div class="card p-4">
+                        <h4 class="mb-3">Employee Salary Structure</h4>
+                
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label>Employee ID</label>
+                                <input type="number" formControlName="employeeId" class="form-control" />
+                            </div>
+                
+                            <div class="col-md-6 mb-3">
+                                <label>CTC</label>
+                                <input type="number" formControlName="ctc" class="form-control" (input)="updateTotals()" />
+                            </div>
+                
+                            <div class="col-md-6 mb-3">
+                                <label>Basic Salary</label>
+                                <input type="number" formControlName="basic" class="form-control" (input)="updateTotals()" />
+                            </div>
+                
+                            <div class="col-md-6 mb-3">
+                                <label>Other Allowance</label>
+                                <input type="number" formControlName="otherAllowance" class="form-control" (input)="updateTotals()" />
+                            </div>
+                        </div>
+                
+                        <hr />
+                
+                        <h5>Allowances</h5>
+                        <div formArrayName="allowances">
+                            <div class="row mb-2" *ngFor="let allow of allowances.controls; let i = index" [formGroupName]="i">
+                                <div class="col-md-3">
+                                    <input type="text" placeholder="Name" formControlName="name" class="form-control form-control-sm" />
+                                </div>
+                                <div class="col-md-3">
+                                    <select formControlName="type" class="form-select form-select-sm" (change)="updateTotals()">
+                                        <option value="">Select Type</option>
+                                        <option value="flat">Flat</option>
+                                        <option value="% of CTC">% of CTC</option>
+                                        <option value="% of Basic">% of Basic</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="number" placeholder="Value" formControlName="amount"
+                                        class="form-control form-control-sm" (input)="updateTotals()" />
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="number" [value]="getAllowanceValue(i)" class="form-control form-control-sm" readonly />
+                                </div>
+                                <div class="col-md-1 text-end">
+                                    <button class="btn btn-danger btn-sm" type="button" (click)="removeAllowance(i)">×</button>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary btn-sm mt-2" type="button" (click)="addAllowance()">+ Add Allowance</button>
+                        </div>
+                
+                        <hr />
+                
+                        <h5>Deductions</h5>
+                        <div formArrayName="deductions">
+                            <div class="row mb-2" *ngFor="let ded of deductions.controls; let j = index" [formGroupName]="j">
+                                <div class="col-md-3">
+                                    <input type="text" placeholder="Name" formControlName="name" class="form-control form-control-sm" />
+                                </div>
+                                <div class="col-md-3">
+                                    <select formControlName="type" class="form-select form-select-sm" (change)="updateTotals()">
+                                        <option value="">Select Type</option>
+                                        <option value="flat">Flat</option>
+                                        <option value="% of CTC">% of CTC</option>
+                                        <option value="% of Basic">% of Basic</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="number" placeholder="Value" formControlName="amount"
+                                        class="form-control form-control-sm" (input)="updateTotals()" />
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="number" [value]="getDeductionValue(j)" class="form-control form-control-sm" readonly />
+                                </div>
+                                <div class="col-md-1 text-end">
+                                    <button class="btn btn-danger btn-sm" type="button" (click)="removeDeduction(j)">×</button>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary btn-sm mt-2" type="button" (click)="addDeduction()">+ Add Deduction</button>
+                        </div>
+                
+                        <hr />
+                
+                        <div class="row mt-3">
+                            <div class="col-md-4">
+                                <label>Total Allowances</label>
+                                <input type="number" formControlName="total_Allowances" class="form-control" readonly />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Total Deductions</label>
+                                <input type="number" formControlName="total_Deductions" class="form-control" readonly />
+                            </div>
+                            <div class="col-md-4">
+                                <label>Take Home Salary</label>
+                                <input type="number" formControlName="take_Home_Salary" class="form-control" readonly />
+                            </div>
+                        </div>
+                
+                        <div class="mt-4 d-flex justify-content-end">
+                            <button type="submit" class="btn btn-success">Submit</button>
+                        </div>
+                    </div>
+                </form> -->
             </div>
         </div>
     </div>

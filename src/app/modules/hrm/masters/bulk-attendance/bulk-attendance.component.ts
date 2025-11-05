@@ -5,7 +5,6 @@ import { UtilsServiceService } from 'src/app/utils/utils-service.service';
 import { ToastrService } from 'ngx-toastr';
 import * as bootstrap from 'bootstrap';
 import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-bulk-attendance',
@@ -13,7 +12,6 @@ import { saveAs } from 'file-saver';
   styleUrls: ['./bulk-attendance.component.scss']
 })
 export class BulkAttendanceComponent implements OnInit, AfterViewInit {
-
   BulkAttendance!: FormGroup;
   submitted = false;
   attendanceData: any[] = [];
@@ -49,7 +47,6 @@ export class BulkAttendanceComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
-    // Build form
     this.BulkAttendance = this.fb.group({
       year: ['', Validators.required],
       month: ['', Validators.required]
@@ -69,10 +66,8 @@ export class BulkAttendanceComponent implements OnInit, AfterViewInit {
         backdrop: 'static',
         keyboard: false
       });
-
       // Auto-show modal
       this.modalInstance.show();
-
       // Clear backdrop on modal close
       modalElement.addEventListener('hidden.bs.modal', () => {
         const backdrops = document.querySelectorAll('.modal-backdrop');
@@ -86,11 +81,9 @@ export class BulkAttendanceComponent implements OnInit, AfterViewInit {
   // 🟢 Update wages period when user selects month/year
   updateWagesPeriod(): void {
     const { month, year } = this.BulkAttendance.value;
-
     if (month && year) {
       const fromDate = new Date(year, month - 1, 1);
       const toDate = new Date(year, month, 0);
-
       // ✅ Format as dd/mm/yyyy
       const formatDate = (date: Date): string => {
         const day = String(date.getDate()).padStart(2, '0');
@@ -98,7 +91,6 @@ export class BulkAttendanceComponent implements OnInit, AfterViewInit {
         const year = date.getFullYear();
         return `${day}/${month}/${year}`;
       };
-
       this.wagesPeriodFrom = formatDate(fromDate);
       this.wagesPeriodTo = formatDate(toDate);
     } else {
@@ -123,10 +115,8 @@ export class BulkAttendanceComponent implements OnInit, AfterViewInit {
   onSubmitBulkAttendance(): void {
     this.submitted = true;
     if (this.BulkAttendance.invalid) return;
-
     const { year, month } = this.BulkAttendance.value;
     const companyId = this.util.decrypt_Text(localStorage.getItem('company_id')) || '';
-
     this.api
       .get(`attendance/monthly-summary?month=${month}&year=${year}&companyId=${companyId}`)
       .subscribe({
@@ -228,7 +218,6 @@ export class BulkAttendanceComponent implements OnInit, AfterViewInit {
       { s: { r: 2, c: 23 }, e: { r: 2, c: 29 } },
       { s: { r: 2, c: 30 }, e: { r: 2, c: 36 } },
     ];
-
     // Column width adjustment
     ws['!cols'] = Array(37).fill({ wch: 12 });
 
@@ -238,5 +227,65 @@ export class BulkAttendanceComponent implements OnInit, AfterViewInit {
 
     const fileName = `Attendance_${monthName}_${year}.xlsx`;
     XLSX.writeFile(wb, fileName);
+  }
+  employees = [
+    {
+      name: 'John Doe',
+      basic: 25000,
+      hra: 10000,
+      da: 5000,
+      conveyance: 2000,
+      otherAllow: 1500,
+      pf: 1800,
+      esi: 600,
+      tds: 1000,
+      loan: 0
+    },
+    {
+      name: 'Mary Smith',
+      basic: 28000,
+      hra: 12000,
+      da: 7000,
+      conveyance: 2500,
+      otherAllow: 2000,
+      pf: 2100,
+      esi: 800,
+      tds: 1200,
+      loan: 500
+    },
+    {
+      name: 'Raj Kumar',
+      basic: 30000,
+      hra: 11000,
+      da: 8000,
+      conveyance: 3000,
+      otherAllow: 2500,
+      pf: 2200,
+      esi: 900,
+      tds: 1500,
+      loan: 1000
+    }
+  ];
+
+  getTotalEarnings(emp: any) {
+    return emp.basic + emp.hra + emp.da + emp.conveyance + emp.otherAllow;
+  }
+
+  getTotalDeductions(emp: any) {
+    return emp.pf + emp.esi + emp.tds + emp.loan;
+  }
+
+  getNetPay(emp: any) {
+    return this.getTotalEarnings(emp) - this.getTotalDeductions(emp);
+  }
+
+  getGrandTotal(type: 'earnings' | 'deductions' | 'net') {
+    if (type === 'earnings') {
+      return this.employees.reduce((sum, e) => sum + this.getTotalEarnings(e), 0);
+    } else if (type === 'deductions') {
+      return this.employees.reduce((sum, e) => sum + this.getTotalDeductions(e), 0);
+    } else {
+      return this.employees.reduce((sum, e) => sum + this.getNetPay(e), 0);
+    }
   }
 }

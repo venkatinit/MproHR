@@ -97,3 +97,86 @@
         </div>
     </div>
 </div>
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header fw-bold d-flex justify-content-between align-items-center">
+            Employee Pay Scale
+            <button class="btn btn-primary btn-sm" (click)="exportToExcel()">Export</button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered text-center align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th rowspan="2">#</th>
+                        <th rowspan="2">Employee Name</th>
+                        <th colspan="6" class="bg-success text-white">Earnings</th>
+                        <th colspan="5" class="bg-danger text-white">Deductions</th>
+                        <th rowspan="2">Net Pay</th>
+                    </tr>
+                    <tr>
+                        <!-- Earnings -->
+                        <th>Basic Pay</th>
+                        <th>HRA</th>
+                        <th>DA</th>
+                        <th>Conveyance</th>
+                        <th>Other Allowances</th>
+                        <th>Total Earnings</th>
+
+                        <!-- Deductions -->
+                        <th>PF</th>
+                        <th>ESI</th>
+                        <th>TDS</th>
+                        <th>Loan</th>
+                        <th>Total Deductions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let emp of employees; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td class="text-start ps-3">{{ emp.name }}</td>
+
+                        <!-- Earnings -->
+                        <td>{{ emp.basic | number:'1.2-2' }}</td>
+                        <td>{{ emp.hra | number:'1.2-2' }}</td>
+                        <td>{{ emp.da | number:'1.2-2' }}</td>
+                        <td>{{ emp.conveyance | number:'1.2-2' }}</td>
+                        <td>{{ emp.otherAllow | number:'1.2-2' }}</td>
+                        <td class="fw-bold text-success">
+                            {{ getTotalEarnings(emp) | number:'1.2-2' }}
+                        </td>
+
+                        <!-- Deductions -->
+                        <td>{{ emp.pf | number:'1.2-2' }}</td>
+                        <td>{{ emp.esi | number:'1.2-2' }}</td>
+                        <td>{{ emp.tds | number:'1.2-2' }}</td>
+                        <td>{{ emp.loan | number:'1.2-2' }}</td>
+                        <td class="fw-bold text-danger">
+                            {{ getTotalDeductions(emp) | number:'1.2-2' }}
+                        </td>
+
+                        <!-- Net Pay -->
+                        <td class="fw-bold text-primary">
+                            {{ getNetPay(emp) | number:'1.2-2' }}
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot class="table-light fw-semibold">
+                    <tr>
+                        <td colspan="7" class="text-end">Grand Total Earnings</td>
+                        <td class="text-success">
+                            {{ getGrandTotal('earnings') | number:'1.2-2' }}
+                        </td>
+                        <td colspan="4" class="text-end">Grand Total Deductions</td>
+                        <td class="text-danger">
+                            {{ getGrandTotal('deductions') | number:'1.2-2' }}
+                        </td>
+                        <td class="text-primary">
+                            {{ getGrandTotal('net') | number:'1.2-2' }}
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>

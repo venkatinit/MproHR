@@ -216,7 +216,8 @@ export class CaCompanyEmployeeComponent implements OnInit {
     this.api.get(`all_employees?${queryParams}`).subscribe((res: ApiResponse<any>) => {
       this.employee_list = res;
       this.dtTrigger.next(null);
-      if (($.fn.DataTable as any).isDataTable('#bankTable')) {
+      this.toast.success('Employees Data Retrieved successfully', 'Success');
+      if (($.fn.DataTable as any).isDataTable('#employeeTable')) {
       }
       this.dtTrigger.next(null); // initialize new
     });

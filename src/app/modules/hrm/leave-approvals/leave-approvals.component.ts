@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from 'src/app/api.client';
 import { UtilsServiceService } from 'src/app/utils/utils-service.service';
@@ -20,18 +20,12 @@ export class LeaveApprovalsComponent implements OnInit, OnDestroy {
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions: DataTables.Settings = {};
   action: 'create' | 'update' = 'create';
-  addBank: FormGroup;
   form!: FormGroup;
   submitted: boolean = false;
   errors: string[] = [];
   spinLoader = false;
-  banks_list: any[] = [];
+  leaves_list: any;
   cateId: any;
-  companyList: any[] = [];
-  companyFilter: string = '';
-  originalBankList: any[] = [];
-  filteredBankList: any[] = [];
-  companyId: number = 2;
   acceptLeave: any;
   rejectLeaves: any;
   constructor(
@@ -40,16 +34,8 @@ export class LeaveApprovalsComponent implements OnInit, OnDestroy {
     private util: UtilsServiceService,
     private formBuilder: FormBuilder,
     private api: ApiService
-  ) {
-    // this.addBank = this.formBuilder.group({
-    //   company: ['', [Validators.required]],
-    //   bank_name: ['', [Validators.required]],
-    // });
-  }
+  ) { }
   ngOnInit(): void {
-    this.form = this.formBuilder.group({
-      company: ['', [Validators.required]],
-    });
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -58,52 +44,23 @@ export class LeaveApprovalsComponent implements OnInit, OnDestroy {
       processing: true
     };
     this.PendingLeaves();
-
   }
-  isCompanyFilterVisible: boolean = false;
-
-  toggleCompanyFilter() {
-    this.isCompanyFilterVisible = !this.isCompanyFilterVisible;
-
-    const companyControl = this.form.get('company');
-
-    if (this.isCompanyFilterVisible) {
-      companyControl?.enable();
-    } else {
-      companyControl?.disable();
-      companyControl?.setValue('');
-    }
-  }
-  get f() {
-    return this.addBank.controls;
-  }
-  getCompanyList() {
-    this.api.get('api/company/all').subscribe((res: any) => {
-      this.companyList = res?.data?.data || [];
-    });
-  }
-  // filterBanks() {
-  //   const search = this.companyFilter.trim().toLowerCase();
-  //   this.filteredBankList = this.originalBankList.filter(bank =>
-  //     bank.companyName?.toLowerCase().includes(search)
-  //   );
-  // }
   PendingLeaves() {
-    if (this.form.invalid) return;
+    const companyId = this.util.decrypt_Text(localStorage.getItem('company_id')) || '';
     const queryParams = new URLSearchParams({
-      companyId: this.form.get('company')?.value || '',
+      companyId: companyId,
     }).toString();
     // const statusQuery = this.companyId; // Get the current selected status
     this.api.get('api/admin/leave/pending-for-approval').subscribe((res: ApiResponse<any>) => {
-      this.banks_list = Array.isArray(res.data) ? res.data : [res.data];
+      this.leaves_list = res;
       this.dtTrigger.next(null);
-      if (($.fn.DataTable as any).isDataTable('#bankTable')) {
+      if (($.fn.DataTable as any).isDataTable('#LeavesTable')) {
       }
       this.dtTrigger.next(null); // initialize new
     });
   }
 
-  handleLeaveAction(id: number) {
+  handleLeaveAction(Id: number) {
     Swal.fire({
       title: 'Choose an action',
       text: 'What would you like to do with this leave request?',
@@ -118,11 +75,11 @@ export class LeaveApprovalsComponent implements OnInit, OnDestroy {
       if (result.isConfirmed) {
         // Approve
         const body = {
-          id: id,
+          Id: Id,
           status: 'Approved',
           role: 'Admin',
         };
-        this.api.put(`leave/approve/${id}`, body).subscribe({
+        this.api.put(`leave/approve/${Id}`, body).subscribe({
           next: (res: any) => {
             Swal.fire('Approved!', 'Leave has been approved.', 'success');
             this.PendingLeaves();
@@ -136,11 +93,11 @@ export class LeaveApprovalsComponent implements OnInit, OnDestroy {
       } else if (result.isDenied) {
         // Reject
         const body = {
-          id: id,
+          Id: Id,
           status: 'Rejected',
           role: 'Admin',
         };
-        this.api.put(`leave/reject/${id}`, body).subscribe({
+        this.api.put(`leave/reject/${Id}`, body).subscribe({
           next: (res: any) => {
             Swal.fire('Rejected!', 'Leave has been rejected.', 'info');
             this.PendingLeaves();
@@ -162,7 +119,7 @@ export class LeaveApprovalsComponent implements OnInit, OnDestroy {
           cancelButtonText: 'No, cancel',
         }).then((confirmDelete) => {
           if (confirmDelete.isConfirmed) {
-            this.api.delete(`api/admin/leave/allotment/${id}`).subscribe({
+            this.api.delete(`api/admin/leave/allotment/${Id}`).subscribe({
               next: (res: any) => {
                 Swal.fire('Deleted!', 'The leave has been deleted.', 'success');
                 this.PendingLeaves();
@@ -179,7 +136,6 @@ export class LeaveApprovalsComponent implements OnInit, OnDestroy {
       }
     });
   }
-
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }

@@ -1,0 +1,17 @@
+table th,
+table td {
+    vertical-align: middle;
+}
+
+.table thead th {
+    text-align: center;
+}
+
+.table tfoot td {
+    font-weight: 600;
+}
+
+.bg-success,
+.bg-danger {
+    background-color: #eaf8ea !important;
+}

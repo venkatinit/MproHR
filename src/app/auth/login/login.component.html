@@ -9,7 +9,7 @@
       </div>
       <span>or use your account</span>
       <div class="col-md-12">
-        <input type="email" class="email" placeholder="Email" formControlName="email" name="email" id="email"
+        <input type="email" class="email" placeholder="Email" formControlName="email" name="email" 
           [ngClass]="{ 'is-invalid': submitted && f.email?.errors }" required>
         <div *ngIf="submitted && f.email?.errors" class="invalid-feedback">
           <div *ngIf="f.email?.errors.required">Username is required</div>
@@ -50,7 +50,7 @@
           <div class="row">
             <div class="col-12" style="display: flex;align-items: start; flex-direction: column;">
               <label for="password">Registered Email</label>
-              <input type="email" class="email" placeholder="Email" formControlName="email" name="email" id="email"
+              <input type="email" class="email" placeholder="Email" formControlName="email" name="email" 
                 [ngClass]="{ 'is-invalid': submitted && f.email?.errors }" required>
               <div *ngIf="submitted && f.email?.errors" class="invalid-feedback">
                 <div *ngIf="f.email?.errors.required">Username is required</div>

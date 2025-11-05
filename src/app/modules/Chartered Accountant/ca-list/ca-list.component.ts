@@ -19,17 +19,17 @@ export class CaListComponent implements OnInit, OnDestroy {
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions: DataTables.Settings = {};
   action: 'create' | 'update' = 'create';
-  addBank: FormGroup;
+  addCA: FormGroup;
   form: FormGroup;
   submitted: boolean = false;
   errors: string[] = [];
   spinLoader = false;
-  banks_list: any[] = [];
+  ca_list: any[] = [];
   cateId: any;
   companyList: any[] = [];
   companyFilter: string = '';
-  originalBankList: any[] = [];
-  filteredBankList: any[] = [];
+  originalCaList: any[] = [];
+  filteredCaList: any[] = [];
   companyId: number = 2;
   constructor(
     private modalService: NgbModal,
@@ -38,7 +38,7 @@ export class CaListComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private api: ApiService
   ) {
-    this.addBank = this.formBuilder.group({
+    this.addCA = this.formBuilder.group({
       // company: ['', [Validators.required]],
       bank_name: ['', [Validators.required]],
       branch_name: ['', [Validators.required]],
@@ -63,7 +63,7 @@ export class CaListComponent implements OnInit, OnDestroy {
       destroy: true,
       processing: true
     };
-    this.getBanks();
+    this.getCa();
     this.getCompanyList();
 
   }
@@ -78,32 +78,39 @@ export class CaListComponent implements OnInit, OnDestroy {
       companyControl?.setValue('');
     }
   }
-get f() {
-  return this.addBank.controls;
-}
+  get f() {
+    return this.addCA.controls;
+  }
   getCompanyList() {
     this.api.get('api/company/all').subscribe((res: any) => {
       this.companyList = res?.data?.data || [];
     });
   }
-  getBanks() {
+  getCa() {
     if (this.form.invalid) return;
     const companyId = this.util.decrypt_Text(localStorage.getItem('company_id')) || '';
     const queryParams = new URLSearchParams({
       companyId: companyId,
     }).toString();
     this.api.get(`api/accounting/banks/all?${queryParams}`).subscribe((res: ApiResponse<any>) => {
-      this.banks_list = Array.isArray(res.data) ? res.data : [res.data];
+      this.ca_list = Array.isArray(res.data) ? res.data : [res.data];
       this.dtTrigger.next(null);
-      if (($.fn.DataTable as any).isDataTable('#bankTable')) {
+      this.toast.success('CA Data Retrieved successfully', 'Success');
+      if (($.fn.DataTable as any).isDataTable('#caTable')) {
+      }
+      (error: any) => {
+        this.submitted = false;
+        this.spinLoader = false;
+        const errorMessage = error?.error?.message || 'CA  Data not Retrieved successfully';
+        this.errors = [errorMessage];
       }
       this.dtTrigger.next(null); // initialize new
     });
   }
-  saveBank() {
+  saveCA() {
     console.log('✅ create form submitted');
     this.submitted = true;
-    if (!this.addBank.valid) {
+    if (!this.addCA.valid) {
       return;
     }
     this.spinLoader = true;
@@ -112,34 +119,34 @@ get f() {
     const body = {
       id: 0,
       company_Id: companyId,
-      bank_Name: this.addBank.get('bank_name')?.value,
-      branch: this.addBank.get('branch_name')?.value,
-      address: this.addBank.get('bank_address')?.value,
-      account_Number: this.addBank.get('account_number')?.value,
-      account_Type: this.addBank.get('account_type')?.value,
-      bM_Name: this.addBank.get('bm_name')?.value,
-      bM_Contact_No: this.addBank.get('bm_contact_no')?.value,
+      bank_Name: this.addCA.get('bank_name')?.value,
+      branch: this.addCA.get('branch_name')?.value,
+      address: this.addCA.get('bank_address')?.value,
+      account_Number: this.addCA.get('account_number')?.value,
+      account_Type: this.addCA.get('account_type')?.value,
+      bM_Name: this.addCA.get('bm_name')?.value,
+      bM_Contact_No: this.addCA.get('bm_contact_no')?.value,
       branch_Contact_No: '',
-      opening_Balance: this.addBank.get('opening_Balance')?.value,
+      opening_Balance: this.addCA.get('opening_Balance')?.value,
       txn_Start_Date: new Date(),
       created_At: new Date(),
       status: true,
     };
     this.api.post(url, body).subscribe(
       (res: any) => {
-        this.addBank.reset();
+        this.addCA.reset();
         this.submitted = false;
         this.errors = [];
         this.spinLoader = false;
-        this.toast.success('Bank Saved successfully', 'Success');
+        this.toast.success('CA Saved successfully', 'Success');
         $('#newModal').modal('hide');
-        this.getBanks();
+        this.getCa();
         window.location.reload();
       },
       (error: any) => {
         this.submitted = false;
         this.spinLoader = false;
-        const errorMessage = error?.error?.message || 'Bank not added successfully';
+        const errorMessage = error?.error?.message || 'CA not Saved successfully';
         this.errors = [errorMessage];
       }
     );
@@ -151,14 +158,14 @@ get f() {
     this.api.get(`api/accounting/bank/${id}`).subscribe(
       (res: any) => {
         if (res && res.data && res.succeeded && res.data.status) {
-          this.addBank.controls['bank_name'].setValue(res.data.bank_Name);
-          this.addBank.controls['branch_name'].setValue(res.data.branch);
-          this.addBank.controls['bank_address'].setValue(res.data.address);
-          this.addBank.controls['account_number'].setValue(res.data.account_Number);
-          this.addBank.controls['account_type'].setValue(res.data.account_Type);
-          this.addBank.controls['bm_name'].setValue(res.data.bM_Name);
-          this.addBank.controls['bm_contact_no'].setValue(res.data.bM_Contact_No);
-          this.addBank.controls['opening_Balance'].setValue(res.data.opening_Balance);
+          this.addCA.controls['bank_name'].setValue(res.data.bank_Name);
+          this.addCA.controls['branch_name'].setValue(res.data.branch);
+          this.addCA.controls['bank_address'].setValue(res.data.address);
+          this.addCA.controls['account_number'].setValue(res.data.account_Number);
+          this.addCA.controls['account_type'].setValue(res.data.account_Type);
+          this.addCA.controls['bm_name'].setValue(res.data.bM_Name);
+          this.addCA.controls['bm_contact_no'].setValue(res.data.bM_Contact_No);
+          this.addCA.controls['opening_Balance'].setValue(res.data.opening_Balance);
           this.submitted = false;
           this.errors = [];
         }
@@ -168,15 +175,15 @@ get f() {
         console.log(error);
         this.submitted = false;
         this.errors = [error.error.Message];
-        this.toast.error(this.errors[0], 'Bank Not added successfully');
+        this.toast.error(this.errors[0], 'CA Not added successfully');
         this.spinLoader = false;
       }
     );
   }
-  updateBank() {
+  updateCA() {
     console.log('✅ Update form submitted');
     this.submitted = true;
-    if (!this.addBank.valid) {
+    if (!this.addCA.valid) {
       return;
     }
     this.spinLoader = true;
@@ -185,40 +192,40 @@ get f() {
     const body = {
       "id": this.cateId,
       "company_Id": companyId,
-      "bank_Name": this.addBank.get("bank_name").value,
-      "branch": this.addBank.get("branch_name").value,
-      "address": this.addBank.get("bank_address").value,
-      "account_Number": this.addBank.get("account_number").value,
-      "account_Type": this.addBank.get("account_type").value,
-      "bM_Name": this.addBank.get("bm_name").value,
-      "bM_Contact_No": this.addBank.get("bm_contact_no").value,
+      "bank_Name": this.addCA.get("bank_name").value,
+      "branch": this.addCA.get("branch_name").value,
+      "address": this.addCA.get("bank_address").value,
+      "account_Number": this.addCA.get("account_number").value,
+      "account_Type": this.addCA.get("account_type").value,
+      "bM_Name": this.addCA.get("bm_name").value,
+      "bM_Contact_No": this.addCA.get("bm_contact_no").value,
       "branch_Contact_No": " ",
-      "opening_Balance": this.addBank.get("opening_Balance").value,
+      "opening_Balance": this.addCA.get("opening_Balance").value,
       "txn_Start_Date": new Date(),
       "created_At": new Date(),
       "status": true
     };
     this.api.put(url, body).subscribe(
       (res: any) => {
-        this.addBank.reset();
+        this.addCA.reset();
         this.submitted = false;
         this.errors = [];
-        this.toast.success('Bank Updated successfully', 'Success');
+        this.toast.success('CA Updated successfully', 'Success');
         this.spinLoader = false;
         // window.location.reload();
         $('#newModal').modal('hide');
-        this.getBanks();
+        this.getCa();
       },
       (error: any) => {
         console.log(error);
         this.submitted = false;
         this.errors = [error.error.Message];
-        this.toast.error(this.errors[0], 'Bank Not Updated successfully');
+        this.toast.error(this.errors[0], 'CA Not Updated successfully');
         this.spinLoader = false;
       }
     );
   }
-  deleteBank(id: number) {
+  deleteCA(id: number) {
     Swal.fire({
       position: 'center',
       title: 'Are you sure?',
@@ -231,9 +238,9 @@ get f() {
       if (result.isConfirmed) {
         this.api.delete(`api/accounting/bank/delete/${id}`).subscribe({
           next: (res: any) => {
-            Swal.fire('Deleted!', 'The bank has been deleted.', 'success');
+            Swal.fire('Deleted!', 'The CA has been deleted.', 'success');
             window.location.reload();
-            this.getBanks(); // refresh list without reloading the page
+            this.getCa(); // refresh list without reloading the page
           },
           error: (err: any) => {
             console.error('Delete failed:', err);

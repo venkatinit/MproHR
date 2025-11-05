@@ -47,6 +47,7 @@
                             <th>Mobile No</th>
                             <th>Department</th>
                             <th>Designation</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -59,6 +60,7 @@
                             <td>{{ item.mobile_No }}</td>
                             <td>{{ item.department }}</td>
                             <td>{{ item.designation }}</td>
+                            <td>{{item.status}}</td>
                             <td (click)="goToDashboard(item.id)"> <button class="btn btn-sm btn-pill btn-primary">DashBoard</button>
                                 <!--<div class="dropdown">
                                     <button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton1"
@@ -229,7 +231,7 @@
                                     <div class="col-md-4">
                                         <label class="form-label">Offer Date*</label>
                                         <input type="text" class="form-control form-control-sm" name="offer_date"
-                                            id="offer_date" bsDatepicker [minDate]="minDate"
+                                            id="offer_date" bsDatepicker
                                             placeholder="Please Select Date"
                                             [bsConfig]="{isAnimated:true,dateInputFormat: 'DD-MM-YYYY'}"
                                             formControlName="offer_date"
@@ -242,7 +244,7 @@
                                     <div class="col-md-4">
                                         <label class="form-label">Join Date*</label>
                                         <input type="text" class="form-control form-control-sm" name="join_date"
-                                            id="join_date" bsDatepicker [minDate]="minDate"
+                                            id="join_date" bsDatepicker
                                             placeholder="Please Select Date"
                                             [bsConfig]="{isAnimated:true,dateInputFormat: 'DD-MM-YYYY'}"
                                             formControlName="join_date"

@@ -10,6 +10,13 @@ import { User } from '../models/user';
   providedIn: 'root'
 })
 export class AuthService {
+  clearSession(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    sessionStorage.clear();
+    console.log('Session cleared');
+  }
+
   // loginUSer(loginUserData: any) 
   // {
   //   throw new Error('Method not implemented.');
@@ -24,8 +31,6 @@ export class AuthService {
 
     return this.currentUserSubject.value;
   }
-
-
   constructor(private httpClient: HttpClient, public router: Router, public util: UtilsServiceService) {
     var user_data = this.util.decrypt_Text(localStorage.getItem('currentUser'));
     this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(user_data|| null));
@@ -52,10 +57,7 @@ export class AuthService {
   }
   getUserName() {
     return this.util.decrypt_Text(localStorage.getItem('user_data'));
-
-
   }
-
   logout() {
     localStorage.clear();
     if (localStorage.removeItem('access_token') == null) {
@@ -63,14 +65,3 @@ export class AuthService {
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
- 

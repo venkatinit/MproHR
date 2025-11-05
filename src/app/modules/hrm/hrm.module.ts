@@ -43,6 +43,13 @@ import { StatutoryComponentComponent } from './statutory-component/statutory-com
 import { AdvanceSalaryComponent } from './advance-salary/advance-salary.component';
 import { BulkAttendanceComponent } from './masters/bulk-attendance/bulk-attendance.component';
 import { EmployeeWorkReportComponent } from './masters/employee-work-report/employee-work-report.component';
+import { ToastrModule } from 'ngx-toastr';
+import { RaisePoshComponent } from './masters/raise-posh/raise-posh.component';
+import { LeaveRequestComponent } from './masters/leave-request/leave-request.component';
+import { ShortlistedListComponent } from './career/shortlisted-list/shortlisted-list.component';
+import { InterviewReportComponent } from './career/interview-report/interview-report.component';
+import { AddAttendanceComponent } from './masters/add-attendance/add-attendance.component';
+import { AdvancesalaryLoanComponent } from './masters/advancesalary-loan/advancesalary-loan.component';
 
 @NgModule({
   declarations: [
@@ -77,7 +84,13 @@ import { EmployeeWorkReportComponent } from './masters/employee-work-report/empl
     StatutoryComponentComponent,
     AdvanceSalaryComponent,
     BulkAttendanceComponent,
-    EmployeeWorkReportComponent
+    EmployeeWorkReportComponent,
+    RaisePoshComponent,
+    LeaveRequestComponent,
+    ShortlistedListComponent,
+    InterviewReportComponent,
+    AddAttendanceComponent,
+    AdvancesalaryLoanComponent
   ],
   imports: [
     CommonModule,
@@ -95,6 +108,12 @@ import { EmployeeWorkReportComponent } from './masters/employee-work-report/empl
       provide: DateAdapter,
       useFactory: adapterFactory
     }),
+    ToastrModule.forRoot({
+          timeOut: 5000,
+          positionClass: 'toast-top-right',
+          // closeButton: true,
+          progressBar: true
+        }),
     // IMPORTANT: BaseChartDirective is standalone – import it here
     BaseChartDirective
   ],

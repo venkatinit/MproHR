@@ -38,44 +38,45 @@
           <a class="nav-link collapsed" data-bs-target="#forms-super_admin" data-bs-toggle="collapse">
             <span>Chartered Accountant</span><i class="bi bi-chevron-down ms-auto"></i>
           </a>
-          <ul id="forms-super_admin" class="nav-content collapse " style="text-decoration: none;">
+          <ul id="forms-super_admin" class="nav-content collapse " data-bs-parent="#sidebar-nav"
+            style="text-decoration: none;">
             <li>
-              <a routerLink="/ca_list">
+              <a routerLink="/ca_list" routerLinkActive="active">
                 <span>List</span>
               </a>
             </li>
             <li>
-              <a routerLink="/ca_organizations">
+              <a routerLink="/ca_organizations" routerLinkActive="active">
                 <span>Organizations</span>
               </a>
             </li>
             <li>
-              <a routerLink="/ca_company_employee">
+              <a routerLink="/ca_company_employee" routerLinkActive="active">
                 <span>Employees</span>
               </a>
             </li>
             <li>
-              <a routerLink="/ca_assign">
+              <a routerLink="/ca_assign" routerLinkActive="active">
                 <span>Task Assing</span>
               </a>
             </li>
             <li>
-              <a routerLink="/ca_tickets">
+              <a routerLink="/ca_tickets" routerLinkActive="active">
                 <span>Tickets</span>
               </a>
             </li>
             <li>
-              <a routerLink="/roles">
+              <a routerLink="/roles" routerLinkActive="active">
                 <span>Roles</span>
               </a>
             </li>
             <li>
-              <a routerLink="/plans">
+              <a routerLink="/plans" routerLinkActive="active">
                 <span>Plans</span>
               </a>
             </li>
             <li>
-              <a routerLink="/user_plan_status">
+              <a routerLink="/user_plan_status" routerLinkActive="active">
                 <span>Active Clients</span>
               </a>
             </li>
@@ -226,11 +227,11 @@
                 <span>Statutory Components</span>
               </a>
             </li>
-            <li>
+            <!-- <li>
               <a routerLink="/web_portals">
                 <span> Web Portal </span>
               </a>
-            </li>
+            </li> -->
             <li>
               <a routerLink="/Emp_claim_status">
                 <span>Employee Claim Status</span>
@@ -279,6 +280,16 @@
                 <span>Applicant List</span>
               </a>
             </li>
+            <li>
+              <a routerLink="/hrm/shortListed">
+                <span>Shortlisted</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/hrm/interview_Reoprt">
+                <span>Interview Report</span>
+              </a>
+            </li>
           </ul>
         </li>
         <li class="nav-item">
@@ -310,18 +321,29 @@
           </a>
           <ul id="emp-dashboard" class="nav-content collapse " style="text-decoration: none;">
             <li>
-              <a routerLink="/hrm/employee-attendance">
+              <a routerLink="/hrm/add_attendance">
                 <span>Attendance</span>
-              </a>
-            </li>
-            <li>
-              <a routerLink="/hrm/leave_balance_list">
-                <span>Balance Leaves</span>
               </a>
             </li>
             <li>
               <a routerLink="/holiday_calendar">
                 <span>Holiday Calendar</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/type_of_leave">
+                <span>Leave Type</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/leave_allotment">
+                <span>Leave
+                  Allotment</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/hrm/leave_balance_list">
+                <span>Balance Leaves</span>
               </a>
             </li>
           </ul>
@@ -360,6 +382,7 @@
             </li>
           </ul>
         </li>
+
         <!-- <li class="nav-item">
           <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse">
            <span>Modifications</span><i class="bi bi-chevron-down ms-auto" *ngIf="!isSidebarCollapsed"></i>
@@ -406,22 +429,25 @@
             <li><a routerLink="/invoice"><i class="bi bi-journal-text"></i><span>Invoice</span></a></li>
             <li><a routerLink="/receipts"><i class="bi bi-journal-text"></i><span>Receipts</span></a></li>
             <li><a routerLink="/payments"><i class="bi bi-cash-coin"></i><span>Payments</span></a></li>
-            <li><a routerLink="/bankList"><i class="bi bi-bank"></i><span>Banks</span></a></li>
-            <li><a routerLink="/serviceList"><i class="bi bi-journal-text"></i><span>Services</span></a></li>
-            <li><a routerLink="/subserviceList"><i class="bi bi-journal-text"></i><span>SubServices</span></a>
-            </li>
-            <li><a routerLink="/state"><i class="bi bi-journal-text"></i><span>States</span></a></li>
-            <li><a routerLink="/district"><i class="bi bi-journal-text"></i><span>Districts</span></a></li>
-            <li><a routerLink="/type_of_leave"><i class="bi bi-journal-text"></i><span>Leave Type</span></a>
-            </li>
-            <li><a routerLink="/leave_allotment"><i class="bi bi-journal-text"></i><span>Leave
-                  Allotment</span></a></li>
-            <li><a routerLink="/pricings"><i class="bi bi-journal-text"></i><span>Prices modal</span></a></li>
+            <!-- <li><a routerLink="/pricings"><i class="bi bi-journal-text"></i><span>Prices modal</span></a></li> -->
             <li><a routerLink="/bankBook"><i class="bi bi-journal-text"></i><span>Bank Book</span></a></li>
             <li><a routerLink="/cashBook"><i class="bi bi-journal-text"></i><span>Cash Book</span></a></li>
             <li><a routerLink="/all_Transactions"><i class="bi bi-journal-text"></i><span>Accounts
                   Statement</span></a>
             </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse">
+            <span>Masters</span><i class="bi bi-chevron-down ms-auto" *ngIf="!isSidebarCollapsed"></i>
+          </a>
+          <ul id="tables-nav" class="nav-content collapse ">
+            <li><a routerLink="/bankList"><span>Banks</span></a></li>
+            <li><a routerLink="/serviceList"><span>Services</span></a></li>
+            <li><a routerLink="/subserviceList"><span>SubServices</span></a>
+            </li>
+            <li><a routerLink="/state"><span>States</span></a></li>
+            <li><a routerLink="/district"><span>Districts</span></a></li>
           </ul>
         </li>
       </ul>
@@ -438,26 +464,36 @@
           </a>
           <ul id="forms-employee" class="nav-content collapse " style="text-decoration: none;">
             <li>
-              <a routerLink="/employee/leave-request">
+              <a routerLink="/hrm/leave-request">
                 <span>Leave Request</span>
               </a>
             </li>
             <li>
-              <a routerLink="/Emp_claim_status">
+              <a routerLink="/hrm/request_Adv_salary_loan">
+                <span>Salary/Loan Request</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/hrm/Emp_claim_status">
                 <span>Employee Claim Status</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/hrm/raise_a_posh_complaint">
+                <span>Posh Complaint</span>
               </a>
             </li>
           </ul>
         </li>
       </ul>
     </li>
-    <li class="nav-item " style="margin-top:133px;">
+    <!-- <li class="nav-item " style="margin-top:133px;">
       <a class="nav-link collapsed" routerLink="/notifications">
         <i class="bi bi-bell"></i>
         <span>Notifications</span>
       </a>
-    </li>
-    <li class="nav-item">
+    </li> -->
+    <li class="nav-item" style="margin-top:260px;">
       <a class="nav-link collapsed" (click)="do_logout()">
         <i class="bi bi-box-arrow-right"></i>
         <span>Sign Out</span>
@@ -493,7 +529,7 @@
         <li class="nav-item dropdown  ">
           <a class="nav-link nav-profile d-flex align-items-center pe-0  " data-bs-toggle="dropdown">
             <button class="btn" type="button">
-              <img src="../../../assets/img/animate_icons/help.gif" style="width:35px" alt="Profile"
+              <img src="../../../assets/img/animate_icons/ticket.gif" style="width:35px" alt="Profile"
                 class="rounded-circle">
             </button>
           </a>
@@ -534,7 +570,7 @@
             <li>
               <hr class="dropdown-divider">
             </li>
-            <li class="d-flex align-items-center m-2"> <a href="" style="text-decoration: none;">View All Activities</a>
+            <li class="d-flex align-items-center m-2"> <a routerLink="/org_tickets"style="text-decoration: none;">View All Activities</a>
             </li>
           </ul>
         </li>
@@ -581,7 +617,7 @@
             <li>
               <hr class="dropdown-divider">
             </li>
-            <li class="d-flex align-items-center m-2"> <a href="" style="text-decoration: none;">View All Activities</a>
+            <li class="d-flex align-items-center m-2"> <a routerLink="/notifications" style="text-decoration: none;">View All Activities</a>
             </li>
           </ul>
         </li>
@@ -767,44 +803,45 @@
           <a class="nav-link collapsed" data-bs-target="#forms-super_admin" data-bs-toggle="collapse">
             <span>Chartered Accountant</span><i class="bi bi-chevron-down ms-auto"></i>
           </a>
-          <ul id="forms-super_admin" class="nav-content collapse " style="text-decoration: none;">
+          <ul id="forms-super_admin" class="nav-content collapse " data-bs-parent="#sidebar-nav"
+            style="text-decoration: none;">
             <li>
-              <a routerLink="/ca_list">
+              <a routerLink="/ca_list" routerLinkActive="active">
                 <span>List</span>
               </a>
             </li>
             <li>
-              <a routerLink="/ca_organizations">
+              <a routerLink="/ca_organizations" routerLinkActive="active">
                 <span>Organizations</span>
               </a>
             </li>
             <li>
-              <a routerLink="/ca_company_employee">
+              <a routerLink="/ca_company_employee" routerLinkActive="active">
                 <span>Employees</span>
               </a>
             </li>
             <li>
-              <a routerLink="/ca_assign">
+              <a routerLink="/ca_assign" routerLinkActive="active">
                 <span>Task Assing</span>
               </a>
             </li>
             <li>
-              <a routerLink="/ca_tickets">
+              <a routerLink="/ca_tickets" routerLinkActive="active">
                 <span>Tickets</span>
               </a>
             </li>
             <li>
-              <a routerLink="/roles">
+              <a routerLink="/roles" routerLinkActive="active">
                 <span>Roles</span>
               </a>
             </li>
             <li>
-              <a routerLink="/plans">
+              <a routerLink="/plans" routerLinkActive="active">
                 <span>Plans</span>
               </a>
             </li>
             <li>
-              <a routerLink="/user_plan_status">
+              <a routerLink="/user_plan_status" routerLinkActive="active">
                 <span>Active Clients</span>
               </a>
             </li>
@@ -840,20 +877,20 @@
               </a>
             </li>
             <!-- <li>
-              <a routerLink="/org_rar">
-                <span>Users and Roles</span>
-              </a>
-            </li> -->
+                <a routerLink="/org_rar">
+                  <span>Users and Roles</span>
+                </a>
+              </li> -->
             <li>
               <a routerLink="/ca_company_employee">
                 <span>Employees</span>
               </a>
             </li>
             <!-- <li>
-              <a routerLink="/org_assign">
-                <span>Task Assing</span>
-              </a>
-            </li> -->
+                <a routerLink="/org_assign">
+                  <span>Task Assing</span>
+                </a>
+              </li> -->
             <li>
               <a routerLink="/org_tickets">
                 <span>Tickets</span>
@@ -929,10 +966,10 @@
               </a>
             </li>
             <!-- <li>
-              <a routerLink="/roles">
-                <span>Roles</span>
-              </a>
-            </li> -->
+                <a routerLink="/roles">
+                  <span>Roles</span>
+                </a>
+              </li> -->
           </ul>
         </li>
         <li class="nav-item">
@@ -955,11 +992,11 @@
                 <span>Statutory Components</span>
               </a>
             </li>
-            <li>
-              <a routerLink="/web_portals">
-                <span> Web Portal </span>
-              </a>
-            </li>
+            <!-- <li>
+                <a routerLink="/web_portals">
+                  <span> Web Portal </span>
+                </a>
+              </li> -->
             <li>
               <a routerLink="/Emp_claim_status">
                 <span>Employee Claim Status</span>
@@ -1008,6 +1045,16 @@
                 <span>Applicant List</span>
               </a>
             </li>
+            <li>
+              <a routerLink="/hrm/shortListed">
+                <span>Shortlisted</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/hrm/interview_Reoprt">
+                <span>Interview Report</span>
+              </a>
+            </li>
           </ul>
         </li>
         <li class="nav-item">
@@ -1026,10 +1073,10 @@
               </a>
             </li>
             <!-- <li>
-              <a routerLink="/hrm/background-verification">
-               <span>BGV</span>
-              </a>
-            </li> -->
+                <a routerLink="/hrm/background-verification">
+                 <span>BGV</span>
+                </a>
+              </li> -->
           </ul>
         </li>
         <li class="nav-item">
@@ -1039,18 +1086,29 @@
           </a>
           <ul id="emp-dashboard" class="nav-content collapse " style="text-decoration: none;">
             <li>
-              <a routerLink="/hrm/employee-attendance">
+              <a routerLink="/hrm/add_attendance">
                 <span>Attendance</span>
-              </a>
-            </li>
-            <li>
-              <a routerLink="/hrm/leave_balance_list">
-                <span>Balance Leaves</span>
               </a>
             </li>
             <li>
               <a routerLink="/holiday_calendar">
                 <span>Holiday Calendar</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/type_of_leave">
+                <span>Leave Type</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/leave_allotment">
+                <span>Leave
+                  Allotment</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/hrm/leave_balance_list">
+                <span>Balance Leaves</span>
               </a>
             </li>
           </ul>
@@ -1089,33 +1147,34 @@
             </li>
           </ul>
         </li>
+
         <!-- <li class="nav-item">
-          <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse">
-           <span>Modifications</span><i class="bi bi-chevron-down ms-auto" *ngIf="!isSidebarCollapsed"></i>
-          </a>
-          <ul id="tables-nav" class="nav-content collapse ">
-            <li>
-              <a routerLink="/hrm/offer-letter">
-               <span>Offer Letter </span>
-              </a>
-            </li>
-            <li>
-              <a routerLink="/hrm/hike">
-               <span>Hike</span>
-              </a>
-            </li>
-            <li>
-              <a routerLink="/hrm/experience-letter">
-               <span>Experience Letter </span>
-              </a>
-            </li>
-            <li>
-              <a routerLink="/hrm/service-letter">
-               <span>Service Letter </span>
-              </a>
-            </li>
-          </ul>
-        </li> -->
+            <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse">
+             <span>Modifications</span><i class="bi bi-chevron-down ms-auto" *ngIf="!isSidebarCollapsed"></i>
+            </a>
+            <ul id="tables-nav" class="nav-content collapse ">
+              <li>
+                <a routerLink="/hrm/offer-letter">
+                 <span>Offer Letter </span>
+                </a>
+              </li>
+              <li>
+                <a routerLink="/hrm/hike">
+                 <span>Hike</span>
+                </a>
+              </li>
+              <li>
+                <a routerLink="/hrm/experience-letter">
+                 <span>Experience Letter </span>
+                </a>
+              </li>
+              <li>
+                <a routerLink="/hrm/service-letter">
+                 <span>Service Letter </span>
+                </a>
+              </li>
+            </ul>
+          </li> -->
       </ul>
     </li>
     <!-- Company Accountant -->
@@ -1135,22 +1194,25 @@
             <li><a routerLink="/invoice"><i class="bi bi-journal-text"></i><span>Invoice</span></a></li>
             <li><a routerLink="/receipts"><i class="bi bi-journal-text"></i><span>Receipts</span></a></li>
             <li><a routerLink="/payments"><i class="bi bi-cash-coin"></i><span>Payments</span></a></li>
-            <li><a routerLink="/bankList"><i class="bi bi-bank"></i><span>Banks</span></a></li>
-            <li><a routerLink="/serviceList"><i class="bi bi-journal-text"></i><span>Services</span></a></li>
-            <li><a routerLink="/subserviceList"><i class="bi bi-journal-text"></i><span>SubServices</span></a>
-            </li>
-            <li><a routerLink="/state"><i class="bi bi-journal-text"></i><span>States</span></a></li>
-            <li><a routerLink="/district"><i class="bi bi-journal-text"></i><span>Districts</span></a></li>
-            <li><a routerLink="/type_of_leave"><i class="bi bi-journal-text"></i><span>Leave Type</span></a>
-            </li>
-            <li><a routerLink="/leave_allotment"><i class="bi bi-journal-text"></i><span>Leave
-                  Allotment</span></a></li>
-            <li><a routerLink="/pricings"><i class="bi bi-journal-text"></i><span>Prices modal</span></a></li>
+            <!-- <li><a routerLink="/pricings"><i class="bi bi-journal-text"></i><span>Prices modal</span></a></li> -->
             <li><a routerLink="/bankBook"><i class="bi bi-journal-text"></i><span>Bank Book</span></a></li>
             <li><a routerLink="/cashBook"><i class="bi bi-journal-text"></i><span>Cash Book</span></a></li>
             <li><a routerLink="/all_Transactions"><i class="bi bi-journal-text"></i><span>Accounts
                   Statement</span></a>
             </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse">
+            <span>Masters</span><i class="bi bi-chevron-down ms-auto" *ngIf="!isSidebarCollapsed"></i>
+          </a>
+          <ul id="tables-nav" class="nav-content collapse ">
+            <li><a routerLink="/bankList"><span>Banks</span></a></li>
+            <li><a routerLink="/serviceList"><span>Services</span></a></li>
+            <li><a routerLink="/subserviceList"><span>SubServices</span></a>
+            </li>
+            <li><a routerLink="/state"><span>States</span></a></li>
+            <li><a routerLink="/district"><span>Districts</span></a></li>
           </ul>
         </li>
       </ul>
@@ -1167,31 +1229,41 @@
           </a>
           <ul id="forms-employee" class="nav-content collapse " style="text-decoration: none;">
             <li>
-              <a routerLink="/employee/leave-request">
+              <a routerLink="/hrm/leave-request">
                 <span>Leave Request</span>
               </a>
             </li>
             <li>
-              <a routerLink="/Emp_claim_status">
+              <a routerLink="/hrm/request_Adv_salary_loan">
+                <span>Salary/Loan Request</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/hrm/Emp_claim_status">
                 <span>Employee Claim Status</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/hrm/raise_a_posh_complaint">
+                <span>Posh Complaint</span>
               </a>
             </li>
           </ul>
         </li>
       </ul>
     </li>
-    <li class="nav-item " style="margin-top:40px;">
+    <!-- <li class="nav-item " style="margin-top:133px;">
       <a class="nav-link collapsed" routerLink="/notifications">
         <i class="bi bi-bell"></i>
         <span>Notifications</span>
       </a>
-    </li>
-    <li class="nav-item">
+    </li> -->
+    <li class="nav-item" style="margin-top:90px;">
       <a class="nav-link collapsed" (click)="do_logout()">
         <i class="bi bi-box-arrow-right"></i>
         <span>Sign Out</span>
       </a>
     </li>
   </ul>
-</aside>
+</aside> 
 <div class="overlay" *ngIf="isMobileSidebarOpen" (click)="toggleMobileSidebar()"></div>

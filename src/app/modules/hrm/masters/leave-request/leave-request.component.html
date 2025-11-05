@@ -51,45 +51,43 @@
                     </a>
                 </div>
             </div>
-            <div class="card-body table-responsive">
-                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-hover"
-                    id="bankTable">
+            <div class="card-body ">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-responsive table-hover"
+                    id="LeavesTable">
                     <thead>
                         <tr>
                             <th>S.No</th>
-                            <th>Created At</th>
                             <th>Leave Type</th>
                             <th>From Date</th>
                             <th>To Date</th>
-                            <th>Description</th>
-                            <th>Status</th>
+                            <th>Remarks</th>
                             <th>Action</th>
                         </tr>
                     </thead>
+
                     <tbody *ngIf="leaves_list?.length != 0">
                         <tr *ngFor="let item of leaves_list; let i = index">
                             <td>{{ i + 1 }}</td>
-                            <td>{{ item.created_At | date:'dd-MM-YYYY' }}</td>
-                            <td>{{ item.bank_Name || '-' }}</td>
-                            <td>{{ item.branch || '-' }}</td>
-                            <td>{{ item.account_Number || '-' }}</td>
-                            <td>{{ item.opening_Balance || 0 }}</td>
+                            <td>{{ item.LeaveType || '-' }}</td>
+                            <td>{{ item.FromDate || '-' }}</td>
+                            <td>{{ item.ToDate === '01-01-0001' ? '-' : item.ToDate }}</td>
+                            <td>{{ item.Remarks || '-' }}</td>
                             <td>
                                 <button class="btn btn-sm" type="button" data-bs-toggle="modal"
                                     data-bs-target="#newModal" title="Edit">
-                                    <i class="bi bi-pencil-square text-success"></i> </button>
-                                <!-- <button class="btn  btn-sm " type="button" data-toggle="tooltip" data-placement="top"
-                                    (click)="deleteBank(item.id)" title="Delete"><i
-                                        class="bi bi-trash3-fill text-danger"></i></button> -->
+                                    <i class="bi bi-pencil-square text-success"></i>
+                                </button>
                             </td>
                         </tr>
                     </tbody>
+
                     <tbody *ngIf="leaves_list?.length == 0">
                         <tr>
-                            <td colspan="12" class="no-data-available">No data!</td>
+                            <td colspan="6" class="text-center">No data available!</td>
                         </tr>
                     </tbody>
                 </table>
+
             </div>
             <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -98,7 +96,7 @@
                             <strong>Leave Request</strong>
                         </div>
                         <div class="modal-body ">
-                            <form [formGroup]="addLeave">
+                            <form [formGroup]="addLeave" (ngSubmit)="onSubmit()">
                                 <div class="row g-3">
                                     <div class="col-md-4">
                                         <label class="form-label">Employee ID</label>
@@ -116,7 +114,8 @@
                                             formControlName="leave_type"
                                             [ngClass]="{ 'is-invalid': submitted && f.leave_type.errors }">
                                             <option value="">-- Select Leave Type --</option>
-                                            <option *ngFor="let type of leaveTypes" [value]="type">{{ type }}</option>
+                                            <option *ngFor="let type of leaveTypes" [value]="type.id">{{ type.name }}
+                                            </option>
                                         </select>
                                         <div *ngIf="(submitted || f.leave_type) && f.leave_type.errors?.required"
                                             class="invalid-feedback">
@@ -154,7 +153,6 @@
                                             required
                                         </div>
                                     </div>
-
                                     <div class="card mt-3">
                                         <div class="card-header">
                                             <strong>Available Leaves</strong>
@@ -170,9 +168,9 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr *ngFor="let leave of leaveBalances">
-                                                        <td>{{ leave.leaveType }}</td>
-                                                        <td align="center">{{ leave.available }}</td>
+                                                    <tr *ngFor="let leave of allotment_list">
+                                                        <td>{{ leave.leaveTypeId }}</td>
+                                                        <td align="center">{{ leave.totalDays }}</td>
                                                         <td align="center">{{ leave.available }}</td>
                                                         <td align="center">{{ leave.available }}</td>
                                                     </tr>

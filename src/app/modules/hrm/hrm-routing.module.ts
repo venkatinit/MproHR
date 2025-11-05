@@ -31,6 +31,13 @@ import { StatutoryComponentComponent } from './statutory-component/statutory-com
 import { AdvanceSalaryComponent } from './advance-salary/advance-salary.component';
 import { BulkAttendanceComponent } from './masters/bulk-attendance/bulk-attendance.component';
 import { EmployeeWorkReportComponent } from './masters/employee-work-report/employee-work-report.component';
+import { LeaveRequestComponent } from './masters/leave-request/leave-request.component';
+import { RaisePoshComponent } from './masters/raise-posh/raise-posh.component';
+import { EmpClaimRepComponent } from '../Organisation/emp-claim-rep/emp-claim-rep.component';
+import { ShortlistedListComponent } from './career/shortlisted-list/shortlisted-list.component';
+import { InterviewReportComponent } from './career/interview-report/interview-report.component';
+import { AddAttendanceComponent } from './masters/add-attendance/add-attendance.component';
+import { AdvancesalaryLoanComponent } from './masters/advancesalary-loan/advancesalary-loan.component';
 const routes: Routes = [
   { path: 'add-employee', component: AddEmployeeComponent },
   {
@@ -41,6 +48,10 @@ const routes: Routes = [
   { path: 'offer-letter', component: OfferLetterComponent },
   { path: 'employee-list', component: EmployeeListComponent },
   { path: 'applicant-list', component: ApplicantListComponent },
+  { path: 'shortListed', component: ShortlistedListComponent },
+  { path: 'interview_Reoprt', component: InterviewReportComponent },
+
+
   { path: 'experience-letter', component: ExperienceLetterComponent },
   { path: 'offer-letter', component: OfferLetterComponent },
   { path: 'hike', component: HikeComponent },
@@ -54,6 +65,7 @@ const routes: Routes = [
   { path: 'allowances', component: PayrollAllowancesComponent },
   { path: 'deductions', component: PayrollDeductionsComponent },
   { path: 'reimbersement', component: PayrollReimbursementComponent },
+  { path: 'add_attendance', component: AddAttendanceComponent },
   { path: 'employee-attendance/:id', component: AttendanceComponent },
   { path: 'hrm', component: HrDashboardComponent },
   { path: 'employee_dashboard/:id', component: EmployeeDashboardComponent },
@@ -66,7 +78,11 @@ const routes: Routes = [
   { path: 'statutory_components', component: StatutoryComponentComponent },
   { path: 'advance_salary', component: AdvanceSalaryComponent },
   { path: 'bulk_attendance', component: BulkAttendanceComponent },
+  { path: 'leave-request', component: LeaveRequestComponent },
   { path: 'emply_work_report', component: EmployeeWorkReportComponent },
+  { path: 'Emp_claim_status', component: EmpClaimRepComponent },
+  { path: 'raise_a_posh_complaint', component: RaisePoshComponent },
+  { path: 'request_Adv_salary_loan', component: AdvancesalaryLoanComponent },
 
 ];
 

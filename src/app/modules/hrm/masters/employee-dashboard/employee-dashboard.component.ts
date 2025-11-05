@@ -7,6 +7,8 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { UtilsServiceService } from 'src/app/utils/utils-service.service';
+import autoTable from 'jspdf-autotable';
+import jsPDF from 'jspdf';
 
 Chart.register(...registerables);
 @Component({
@@ -23,10 +25,12 @@ Chart.register(...registerables);
     ])
   ]
 })
-export class EmployeeDashboardComponent implements OnInit  {
+export class EmployeeDashboardComponent implements OnInit {
   selectedSection: string = '';
   employeeId!: number;
   employeeDetails: any;
+  educationDetails: any;
+  kycDocuments: any;
   form: FormGroup;
   loading = true;
   generateOL: FormGroup;
@@ -37,11 +41,15 @@ export class EmployeeDashboardComponent implements OnInit  {
   serviceForm: FormGroup;
   qualificationForm: FormGroup;
   leaveRequest: FormGroup;
+  kycForm: FormGroup;
+  experienceForm: FormGroup;
+  ctcForm: FormGroup;
+  salaryForm: FormGroup;
   result: any;
   errors: string[] = [];
   LeaveTypeList: any[] = [];
   attendanceData: any[] = [];
-
+  selectedFile: File | null = null;
   months = [
     { name: 'January', value: 1 },
     { name: 'February', value: 2 },
@@ -56,7 +64,6 @@ export class EmployeeDashboardComponent implements OnInit  {
     { name: 'November', value: 11 },
     { name: 'December', value: 12 }
   ];
-
   years: number[] = [];
   selectedMonth: number = new Date().getMonth() + 1;
   selectedYear: number = new Date().getFullYear();
@@ -68,9 +75,7 @@ export class EmployeeDashboardComponent implements OnInit  {
     private util: UtilsServiceService,
     private router: Router
 
-  ) {
-    // Chart.register(...registerables);
-  }
+  ) { }
   ngOnInit() {
     this.generateOL = this.formBuilder.group({
       full_name: ['', [Validators.required]],
@@ -80,7 +85,7 @@ export class EmployeeDashboardComponent implements OnInit  {
       designation: ['', [Validators.required]],
       department: ['', [Validators.required]],
       reportingTo: ['', [Validators.required]],
-      location: ['', [Validators.required]],
+      // location: ['', [Validators.required]],
       doj: ['', [Validators.required]],
       employmentType: ['', [Validators.required]],
       gross: ['', [Validators.required]],
@@ -96,29 +101,48 @@ export class EmployeeDashboardComponent implements OnInit  {
       doj: ['', [Validators.required]],
       doe: ['', [Validators.required]],
       designation: ['', [Validators.required]],
-      hr_email: ['', [Validators.required]],
+      hr_mail: ['', [Validators.required]],
       hr_number: ['', [Validators.required]],
       auth_name: ['', [Validators.required]],
       auth_designation: ['', [Validators.required]],
     });
-
     this.payslipView = this.formBuilder.group({
       payslip_month: ['', Validators.required],
       payslip_year: ['', Validators.required]
       // other controls...
     });
     this.qualificationForm = this.formBuilder.group({
-      employeeId: [''],  // main field for employeeId
-      qualifications: this.formBuilder.array([
-        this.createQualification()
-      ])
+      class: ['', Validators.required],
+      institute: ['', Validators.required],
+      board_University: ['', Validators.required],
+      year_Of_Passing: ['', [Validators.required, Validators.pattern(/^\d{4}$/)]],
+      marks_Grade: ['', Validators.required],
+      E_attachment: [null, Validators.required]
     });
-    this.leaveRequest = this.formBuilder.group({
-      fromDate: ['', [Validators.required]],
-      toDate: ['', [Validators.required]],
-      leaveType: ['', [Validators.required]],
-      reason: ['', [Validators.required]],
-      remarks: ['', [Validators.required]],
+    this.kycForm = this.formBuilder.group({
+      name: ['', Validators.required],
+      type: ['', Validators.required],
+      doc_number: ['', Validators.required],
+      attachment: [null, Validators.required]
+    });
+    this.experienceForm = this.formBuilder.group({
+      companyName: ['', Validators.required],
+      designation: ['', Validators.required],
+      fromdate: ['', Validators.required],
+      todate: ['', Validators.required],
+      totalExperience: ['', Validators.required],
+      attachment: [null, Validators.required]
+    });
+    this.salaryForm = this.formBuilder.group({
+      employeeId: ['', Validators.required],
+      ctc: [0, [Validators.required, Validators.min(1)]],
+      basic: [0, [Validators.required, Validators.min(0)]],
+      // allowances: this.formBuilder.array([this.createAllowance()]),
+      // deductions: this.formBuilder.array([this.createDeduction()]),
+      otherAllowance: [0],
+      total_Allowances: [0],
+      total_Deductions: [0],
+      take_Home_Salary: [0]
     });
     this.payslipForm = this.formBuilder.group({
       employeeId: ['', Validators.required],
@@ -130,10 +154,9 @@ export class EmployeeDashboardComponent implements OnInit  {
       total_Deductions: [0],
       take_Home_Salary: [0],
     });
-    this.addQualification();
 
     // Get ID from URL
-    this.employeeId = Number(this.route.snapshot.paramMap.get('id'));
+    this.employeeId = Number(this.route.snapshot.paramMap?.get('id'));
     // Fetch Employee Details
     this.getEmployeeDetails();
 
@@ -144,10 +167,233 @@ export class EmployeeDashboardComponent implements OnInit  {
       this.years.push(y);
     }
   }
+  onFileChange(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+      this.qualificationForm.patchValue({ E_attachment: file.name });
+    }
+  }
+  newQualification(): void {
+    this.submitted = true;
 
+    if (this.qualificationForm.invalid) {
+      return;
+    }
+    const employeeId = Number(this.route.snapshot.paramMap?.get('id'));
+    const formData = new FormData();
+    formData.append('ID', '');
+    formData.append('EmployeeId', employeeId.toString());
+    formData.append('Class', this.qualificationForm.value.class);
+    formData.append('Institute', this.qualificationForm.value.institute);
+    formData.append('Board_University', this.qualificationForm.value.board_University);
+    formData.append('Year_Of_Passing', this.qualificationForm.value.year_Of_Passing);
+    formData.append('Marks_Grade', this.qualificationForm.value.marks_Grade);
+    formData.append('Document_Path', '');
+
+
+    if (this.selectedFile) {
+      formData.append('Attachment', this.selectedFile);
+    }
+
+    // ✅ Example API call
+    this.api.post('education', formData).subscribe({
+      next: (res) => {
+        alert('Qualification submitted successfully!');
+        console.log(res);
+        this.qualificationForm.reset();
+        this.submitted = false;
+      },
+      error: (err) => {
+        console.error('Error submitting qualification', err);
+      }
+    });
+  }
+  newKyc(): void {
+    this.submitted = true;
+
+    if (this.kycForm.invalid) {
+      return;
+    }
+    const employeeId = Number(this.route.snapshot.paramMap?.get('id'));
+    const formData = new FormData();
+    formData.append('Id', '');
+    formData.append('employeeId', employeeId.toString());
+    formData.append('Title', this.kycForm.value.name);
+    formData.append('type', this.kycForm.value.type);
+    formData.append('doc_number', this.kycForm.value.doc_number);
+    formData.append('Path', '');
+    if (this.selectedFile) {
+      formData.append('Attachment', this.selectedFile);
+    }
+
+    // ✅ Example API call
+    this.api.post('kyc', formData).subscribe({
+      next: (res) => {
+        alert('KYC Document submitted successfully!');
+        console.log(res);
+        this.kycForm.reset();
+        this.submitted = false;
+      },
+      error: (err) => {
+        console.error('Error submitting kyc', err);
+      }
+    });
+  }
+  newExperience() {
+    this.submitted = true;
+    if (this.experienceForm.invalid) {
+      return;
+    }
+    const employeeId = Number(this.route.snapshot.paramMap?.get('id'));
+    const formData = new FormData();
+    formData.append('Id', '');
+    formData.append('employeeId', employeeId.toString());
+    formData.append('companyName', this.experienceForm.value.companyName);
+    formData.append('designation', this.experienceForm.value.designation);
+    formData.append('formDate', this.experienceForm.value.fromDate);
+    formData.append('toDate', this.experienceForm.value.toDate);
+    formData.append('totalExperience', this.experienceForm.value.totelExperience);
+    formData.append('Path', '');
+    if (this.selectedFile) {
+      formData.append('Attachment', this.selectedFile);
+    }
+    // ✅ Example API call
+    this.api.post('kyc', formData).subscribe({
+      next: (res) => {
+        alert('KYC Document submitted successfully!');
+        console.log(res);
+        this.experienceForm.reset();
+        this.submitted = false;
+      },
+      error: (err) => {
+        console.error('Error submitting kyc', err);
+      }
+    });
+  }
+  // Salary Form 
+
+  // get allowances(): FormArray {
+  //   return this.salaryForm.get('allowances') as FormArray;
+  // }
+
+  // get deductions(): FormArray {
+  //   return this.salaryForm.get('deductions') as FormArray;
+  // }
+
+  // createAllowance(): FormGroup {
+  //   return this.formBuilder.group({
+  //     name: ['', Validators.required],
+  //     type: ['', Validators.required],
+  //     amount: [0, [Validators.required, Validators.min(0)]]
+  //   });
+  // }
+
+  // createDeduction(): FormGroup {
+  //   return this.formBuilder.group({
+  //     name: ['', Validators.required],
+  //     type: ['', Validators.required],
+  //     amount: [0, [Validators.required, Validators.min(0)]]
+  //   });
+  // }
+
+  // addAllowance() {
+  //   this.allowances.push(this.createAllowance());
+  // }
+
+  // removeAllowance(i: number) {
+  //   this.allowances.removeAt(i);
+  //   this.updateTotals();
+  // }
+
+  // addDeduction() {
+  //   this.deductions.push(this.createDeduction());
+  // }
+
+  // removeDeduction(i: number) {
+  //   this.deductions.removeAt(i);
+  //   this.updateTotals();
+  // }
+
+  // // ✅ Compute allowance value
+  // getAllowanceValue(index: number): number {
+  //   const ctc = this.salaryForm.value.ctc || 0;
+  //   const basic = this.salaryForm.value.basic || 0;
+  //   const allowance = this.allowances.at(index).value;
+  //   if (!allowance) return 0;
+
+  //   if (allowance.type === 'flat') return allowance.amount;
+  //   if (allowance.type === '% of CTC') return (ctc * allowance.amount) / 100;
+  //   if (allowance.type === '% of Basic') return (basic * allowance.amount) / 100;
+  //   return 0;
+  // }
+
+  // // ✅ Compute deduction value
+  // getDeductionValue(index: number): number {
+  //   const ctc = this.salaryForm.value.ctc || 0;
+  //   const basic = this.salaryForm.value.basic || 0;
+  //   const deduction = this.deductions.at(index).value;
+  //   if (!deduction) return 0;
+
+  //   if (deduction.type === 'flat') return deduction.amount;
+  //   if (deduction.type === '% of CTC') return (ctc * deduction.amount) / 100;
+  //   if (deduction.type === '% of Basic') return (basic * deduction.amount) / 100;
+  //   return 0;
+  // }
+
+  // updateTotals(): void {
+  //   const ctc = this.salaryForm.value.ctc || 0;
+
+  //   const totalAllowances =
+  //     this.allowances.controls.reduce((sum, _, i) => sum + this.getAllowanceValue(i), 0) +
+  //     Number(this.salaryForm.value.otherAllowance || 0);
+
+  //   const totalDeductions = this.deductions.controls.reduce((sum, _, i) => sum + this.getDeductionValue(i), 0);
+
+  //   // Prevent exceeding CTC
+  //   if (totalAllowances > ctc) {
+  //     alert('Total allowances cannot exceed CTC!');
+  //     return;
+  //   }
+  //   if (totalDeductions > ctc) {
+  //     alert('Total deductions cannot exceed CTC!');
+  //     return;
+  //   }
+
+  //   const takeHome = ctc + totalAllowances - totalDeductions;
+
+  //   this.salaryForm.patchValue(
+  //     {
+  //       total_Allowances: totalAllowances,
+  //       total_Deductions: totalDeductions,
+  //       take_Home_Salary: takeHome
+  //     },
+  //     { emitEvent: false }
+  //   );
+  // }
+
+  // onSubmit(): void {
+  //   this.submitted = true;
+  //   if (this.salaryForm.invalid) return;
+
+  //   const payload = this.salaryForm.value;
+  //   console.log('Submitting payload:', payload);
+
+  //   this.api.post('api/payroll/calculate-ctc', payload).subscribe({
+  //     next: (res) => {
+  //       alert('Salary structure submitted successfully!');
+  //       console.log(res);
+  //     },
+  //     error: (err) => {
+  //       console.error('Error submitting salary structure', err);
+  //     }
+  //   });
+  // }
+
+  // Leave Form
   getLeaveTypes() {
     const companyId = this.util.decrypt_Text(localStorage.getItem('company_id')) || '';
-    this.api.get(`api/admin/leave/types?companyId=${companyId}`)
+    this.api?.get(`api/admin/leave/types?companyId=${companyId}`)
       .subscribe({
         next: (res: any) => {
           this.LeaveTypeList = res;   // API already returns array
@@ -158,7 +404,6 @@ export class EmployeeDashboardComponent implements OnInit  {
         }
       });
   }
-
   saveRequest() {
     console.log('✅ create form submitted');
     this.submitted = true;
@@ -170,11 +415,11 @@ export class EmployeeDashboardComponent implements OnInit  {
     const body = {
       id: 0,
       employee_Id: this.employeeId,
-      leave_Type_Id: this.leaveRequest.get('leaveType')?.value,
-      from_Date: this.leaveRequest.get('fromDate')?.value,
-      to_Date: this.leaveRequest.get('toDate')?.value,
-      status: this.leaveRequest.get('reason')?.value,
-      remarks: this.leaveRequest.get('remarks')?.value
+      leave_Type_Id: this.leaveRequest?.get('leaveType')?.value,
+      from_Date: this.leaveRequest?.get('fromDate')?.value,
+      to_Date: this.leaveRequest?.get('toDate')?.value,
+      status: this.leaveRequest?.get('reason')?.value,
+      remarks: this.leaveRequest?.get('remarks')?.value
     };
     this.api.post('leave/request', body).subscribe({
       next: (res) => {
@@ -185,108 +430,9 @@ export class EmployeeDashboardComponent implements OnInit  {
       }
     });
   }
-  get qualifications(): FormArray {
-    return this.qualificationForm.get('qualifications') as FormArray;
-  }
-
-  createQualification(): FormGroup {
-    return this.formBuilder.group({
-      class: [''],
-      institute: [''],
-      board_University: [''],
-      year_Of_Passing: [''],
-      marks_Grade: [''],
-      attachment: [null],
-      document_Path: ['']
-    });
-  }
-
-  addQualification() {
-    this.qualifications.push(this.createQualification());
-  }
-
-  removeQualification(index: number) {
-    this.qualifications.removeAt(index);
-  }
-
-  onFileChange(event: any, index: number) {
-    const file = event.target.files?.[0];
-    const control = this.qualifications?.at(index);
-
-    if (file && control) {
-      (control as FormGroup).patchValue({ attachment: file });
-    } else {
-      console.warn(`No qualification form found at index ${index}`);
-    }
-  }
-
-  EducationUpdate() {
-    if (this.qualificationForm.invalid) {
-      this.qualificationForm.markAllAsTouched();
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('employeeId', this.qualificationForm.get('employeeId')?.value);
-
-    this.qualifications.controls.forEach((control, i) => {
-      Object.keys(control.value).forEach(key => {
-        formData.append(`qualifications[${i}].${key}`, control.get(key)?.value);
-      });
-    });
-
-    console.log('FormData prepared:', formData);
-
-    // this.api.post('endpoint', formData).subscribe(res => console.log(res));
-  }
-  newQualification() {
-    this.submitted = true;
-
-    if (this.qualificationForm.invalid) {
-      return;
-    }
-
-    const formData = new FormData();
-
-    // append employeeId
-    formData.append('employeeId', this.qualificationForm.get('employeeId')?.value);
-
-    // append qualifications
-    this.qualifications.controls.forEach((control, i) => {
-      const qualification = control.value;
-
-      formData.append(`qualifications[${i}].id`, qualification.id || 0);
-      formData.append(`qualifications[${i}].class`, qualification.class);
-      formData.append(`qualifications[${i}].institute`, qualification.institute);
-      formData.append(`qualifications[${i}].board_University`, qualification.board_University);
-      formData.append(`qualifications[${i}].year_Of_Passing`, qualification.year_Of_Passing);
-      formData.append(`qualifications[${i}].marks_Grade`, qualification.marks_Grade);
-
-      if (qualification.attachment) {
-        formData.append(`qualifications[${i}].attachment`, qualification.attachment);
-      }
-      formData.append(`qualifications[${i}].document_Path`, qualification.document_Path || '');
-    });
-
-    console.log('Submitting FormData:', formData);
-
-    this.api.post('your-api-endpoint', formData).subscribe({
-      next: (res) => {
-        this.toast.success("Qualification saved successfully", "Success");
-        this.qualificationForm.reset();
-        this.qualifications.clear();
-        this.addQualification(); // reset with one row
-      },
-      error: (err) => {
-        this.toast.error(err.error?.message || "Error saving qualification");
-      }
-    });
-  }
   get f() {
     return this.generateOL.controls;
   }
-
-  // =============================
   dateFormat(dateString: string | Date): string {
     if (!dateString) return '';
     const date = new Date(dateString);
@@ -296,57 +442,59 @@ export class EmployeeDashboardComponent implements OnInit  {
     const year = date.getFullYear();
     return `${day}-${month}-${year}`;
   }
-  showUpdates: boolean = false;
-
-  toggleUpdates() {
-    this.showUpdates = !this.showUpdates;
+  activeSection: string | null = null;
+  toggleSection(section: string) {
+    this.activeSection = this.activeSection === section ? null : section;
   }
   getEmployeeDetails(): void {
-    this.api.get(`${this.employeeId}`).subscribe(
+    this.api?.get(`${this.employeeId}`).subscribe(
       (res: any) => {
         if (res || res.data) {
           this.employeeDetails = res.data || res;
-          this.employeeId = this.employeeDetails.id;
+          this.employeeId = this.employeeDetails?.id;
+          this.educationDetails = this.employeeDetails?.educationDetails;
+          this.experienceDetails = this.employeeDetails?.experienceDetails;
+          this.kycDocuments = this.employeeDetails?.kycDocuments;
           // patch values to form
-          this.generateOL.patchValue({
-            full_name: this.employeeDetails.full_Name,
-            permanent_address: this.employeeDetails.permanent_Address,
-            mobileNumber: this.employeeDetails.mobile_No,
-            email: this.employeeDetails.email,
-            designation: this.employeeDetails.designation,
-            department: this.employeeDetails.department,
+          this.generateOL?.patchValue({
+            full_name: this.employeeDetails?.full_Name,
+            permanent_address: this.employeeDetails?.permanent_Address,
+            mobileNumber: this.employeeDetails?.mobile_No,
+            email: this.employeeDetails?.email,
+            designation: this.employeeDetails?.designation,
+            department: this.employeeDetails?.department,
             reportingTo: '', // this is not in API, keep empty
-            location: this.employeeDetails.present_Address, // or assign office location if available
-            doj: this.employeeDetails.joining_Date ? this.employeeDetails.joining_Date.split('T')[0] : '',
-            employmentType: this.employeeDetails.employee_Type,
-            gross: this.employeeDetails.offer_CTC,
+            location: this.employeeDetails?.present_Address, // or assign office location if available
+            doj: this.employeeDetails?.joining_Date ? this.employeeDetails?.joining_Date.split('T')[0] : '',
+            employmentType: this.employeeDetails?.employee_Type,
+            gross: this.employeeDetails?.offer_CTC,
             probition: '',
-            reportDate: this.employeeDetails.offer_Date ? this.employeeDetails.offer_Date.split('T')[0] : '',
+            reportDate: this.employeeDetails?.offer_Date ? this.employeeDetails?.offer_Date.split('T')[0] : '',
             noticePeriod: '',
-            issueDate: this.employeeDetails.offer_Date ? this.employeeDetails.offer_Date.split('T')[0] : '',
+            issueDate: this.employeeDetails?.offer_Date ? this.employeeDetails?.offer_Date.split('T')[0] : '',
             authoriserName: ''
           });
-          this.relievingForm.patchValue({
-            employee_id: this.employeeDetails.employee_Code,
-            full_name: this.employeeDetails.full_Name,
-            doj: this.employeeDetails.joining_Date ? this.employeeDetails.joining_Date.split('T')[0] : '',
+          this.relievingForm?.patchValue({
+            employee_id: this.employeeDetails?.employee_Code,
+            full_name: this.employeeDetails?.full_Name,
+            doj: this.employeeDetails?.joining_Date ? this.employeeDetails?.joining_Date.split('T')[0] : '',
             doe: '',
-            designation: this.employeeDetails.designation,
+            designation: this.employeeDetails?.designation,
             hr_mail: '',
             hr_number: '',
             auth_name: '',
             auth_number: ''
           });
-          this.serviceForm.patchValue({
-            employee_id: this.employeeDetails.employee_Code,
-            full_name: this.employeeDetails.full_Name,
-            doj: this.employeeDetails.joining_Date ? this.employeeDetails.joining_Date.split('T')[0] : '',
+          this.serviceForm?.patchValue({
+            employee_id: this.employeeDetails?.employee_Code,
+            full_name: this.employeeDetails?.full_Name,
+            doj: this.employeeDetails?.joining_Date ? this.employeeDetails?.joining_Date.split('T')[0] : '',
             doe: '',
-            designation: this.employeeDetails.designation,
-            location: this.employeeDetails.designation,
+            designation: this.employeeDetails?.designation,
+            location: this.employeeDetails?.designation,
           });
-          this.qualificationForm.patchValue({
-            employeeId: this.employeeDetails.employee_Code,
+          this.qualificationForm?.patchValue({
+            employeeId: this.employeeDetails?.id,
           });
         }
         this.loading = false;
@@ -357,7 +505,6 @@ export class EmployeeDashboardComponent implements OnInit  {
       }
     );
   }
-
   getBase64ImageFromURL(url) {
     return new Promise((resolve, reject) => {
       var img = new Image();
@@ -385,505 +532,227 @@ export class EmployeeDashboardComponent implements OnInit  {
   }
   // Offer Letter 
   async Offer_generatePDF(action = 'open') {
-    let docDefinition = {
-      pageMargins: [40, 160, 40, 160],
+    const docDefinition: any = {
+      pageMargins: [40, 140, 40, 60],
       pageSize: 'A4',
       background: [
         {
-          image: await this.getBase64ImageFromURL(
-            "assets/img/ng.jpg"
-          ), fit: [595, 852]
-        }
+          image: await this.getBase64ImageFromURL('assets/img/ng.jpg'),
+          fit: [595, 842],
+        },
       ],
       content: [
         {
           text: 'OFFER LETTER',
           fontSize: 20,
           bold: true,
-          margin: 10,
+          margin: [0, 10, 0, 20],
           alignment: 'center',
           decoration: 'underline',
-          color: 'black'
+          color: 'black',
         },
+
+        // Employee Name + Address + Date
         {
           columns: [
             [
               {
-                text: this.generateOL?.get('full_name')?.value,
-                bold: true
+                fontSize: 11,
+                text: 'TO,',
+                bold: true,
               },
               {
-                text: this.generateOL?.get('permanent_address')?.value
-              }
+                fontSize: 11,
+                text: this.generateOL?.get('full_name')?.value,
+                bold: true,
+              },
+              {
+                text: this.generateOL?.get('permanent_address')?.value,
+                fontSize: 10,
+              },
             ],
             [
               {
                 text: this.dateFormat(this.generateOL?.get('issueDate')?.value),
-                alignment: 'right'
+                alignment: 'right',
               },
-            ]
-          ]
-        },
-        {
-          margin: 0,
-          text: ['Dear', { text: ' ', fontSize: 10 }, { text: this.generateOL?.get('full_name')?.value, bold: true, fontSize: 14 }, { text: ', ', fontSize: 10 }]
-        },
-        {
-          // margin: [0, 0, 5, 0],
-          text: [,
-            'We are pleased to extend an offer of employment to you for the position of', { text: this.generateOL?.get('designation')?.value, fontSize: 10 }, 'at NG Info SOLUTIONS PVT LTD.',
-            'We believe that your skills and experience will be a valuable addition to our team. Please read through this letter and indicate your acceptance by signing this offer letter.'
-          ],
-        },
-        {
-          text: '',
-          style: 'sectionHeader',
-        },
-        {
-          style: 'tableExample',
-          table: {
-            widths: [200, '*'],
-            body: [
-              [{ text: '1.Employment Details:', bold: true, fontSize: 14 }, ''],
-              [{ text: 'a) Designation' }, { text: this.generateOL?.get('designation')?.value, bold: true }],
-              [' b) Reporting To', { text: this.generateOL?.get('reportingTo')?.value, bold: true }],
-              [' c) Place of Posting', { text: this.generateOL?.get('location')?.value, bold: true }],
-              // [' d) Date of Joining', this.generateOL?.get('designation')?.value],
-              [' d) Date of Joining', { text: this.dateFormat(this.generateOL?.get('doj')?.value), bold: true }],
-              [{ text: '2.Salary:', bold: true, fontSize: 14 }, 'Your salary will be ' + this.generateOL?.get('gross')?.value + '/- PA and will be Structured as per the attached Annexure- A Compensation Structure, Other Perquisites & Benefits'],
             ],
-          },
-          fontSize: 12,
-          layout: 'noBorders'
+          ],
         },
+
         {
-          margin: 10,
-          text:
-            'The above-mentioned salary is the total cost to the company and includes all payments made and benefits provided by the company directly or indirectly to or on your behalf, whether as salary or otherwise.',
-        },
-        {
-          text: 'TERMS AND CONDITIONS OF APPOINTMENT',
-          style: 'sectionHeader'
-        },
-        {
-          ol: [
-            'The employment is at-will, which means that either the company or the employee can terminate the employment relationship at any time, with or without cause and with or without notice. ',
-            'This offer of employment does not constitute a contract or guarantee of continued employment.It is not intended to create an employment relationship between you and NG Info SOLUTIONS PVT LTD until you have signed the necessary employment agreement and any other required documents.During the probationary period of', { text: this.generateOL?.get('probition')?.value }, 'days, your performance will be evaluated to determine your suitability for the role.',
-            'You will be required to sign Confidentiality/Non-Compete Agreement after accepting this offer letter to protect our company`s interests.',
+          margin: [0, 10, 0, 5],
+          text: [
+            'Dear ',
+            { text: this.generateOL?.get('full_name')?.value, bold: true },
+            ',',
           ],
         },
         {
-          text: 'Acceptance',
+          margin: [0, 0, 0, 10],
+          text: 'Congratulations on your success!',
+        },
+        {
+          text: [
+            'This is with reference to the interview you had with us. We are pleased to offer you an appointment in our organization as ',
+            { text: `"${this.generateOL?.get('designation')?.value}"`, bold: true },
+            ' with effect from ',
+            { text: this.generateOL?.get('doj')?.value, bold: true },
+            '. Your gross remuneration will be INR ',
+            { text: this.generateOL?.get('gross')?.value, bold: true },
+            '/- per Annum. You will be on a probation Period of ',
+            { text: this.generateOL?.get('probation')?.value, bold: true },
+            ' months from the date of commencement of work.'
+          ],
+          fontSize: 11,
+          margin: [0, 0, 0, 20],
+        },
+        {
+          text: [
+            'Your offer has been made based on information furnished by you. Offer stands cancelled in case of any',
+            'deviations in information provided by you orif you failto report on or before the pre-decided joining date. ',
+          ],
+          fontSize: 11,
+          margin: [0, 0, 0, 20],
+        },
+
+        // ANNEXURE TITLE
+        {
+          text: 'ANNEXURE - SALARY STRUCTURE',
           style: 'sectionHeader',
-
+          // pageBreak: 'before',
         },
 
+        // SALARY ANNEXURE (Combined Table)
+        // {
+        //   text: '\nAnnexure - I : Salary Structure',
+        //   fontSize: 13,
+        //   bold: true,
+        //   margin: [0, 15, 0, 10],
+        //   decoration: 'underline'
+        // },
         {
-          ol: [
-            'This Letter of Offer contains the proposed Terms and Conditions of your employment with the Employer and is subject to the preparation and execution of a formal Contract of Employment.',
-            'We look forward to your positive response and the opportunity to welcome you to  NG Info SOLUTIONS PVT LTD. If you have any questions or require further information, please feel free to contact', { text: this.generateOL?.get('reportingTo')?.value, fontSize: 10 }, 'at nginfosolutions2024@gmail.com.'
-
-          ]
-        },
-        {
-          text: 'Please note that the terms of employment detailed in this document and annexure are confidential. These contents should not be disclosed to third parties without prior approval from the Company.'
-        },
-        {
-          text: 'Compensation',
-          style: 'sectionHeader',
-        },
-        {
-          text: ['Your CTC will be INR ' + this.generateOL?.get('gross')?.value + '/- PA'],
-
-        },
-
-        {
-          text: 'Salary/Benifits:',
-          style: 'sectionHeader'
-        },
-        {
-
-          text: [
-            'Your monthly gross salary will be INR 39533/-. Break-up of salary is attached in Annexure - A. During the term of your employment, you will be entitled to the benefits provided by the applicable Indian labor and employment laws and you will be eligible to participate in all of the Company’s employee benefits plans as such are adopted by the NG Info SOLUTIONS PVT LTD.The Company shall reserve the right to modify, amend or terminate any employee benefits at any time for any reason, without compensation for any such change or discontinuance.'
-          ],
-        },
-        {
-          text: 'Terms and Conditions of Employment',
-          style: 'sectionHeader'
-        },
-        {
-          text: [
-            'Your employment with us will be governed by the specific terms and conditions referred to in Annexure -B.'
-          ],
-        },
-        {
-          text: 'Commencement of Employment',
-          style: 'sectionHeader'
-        },
-        {
-          text: [
-            'You are required to commence employment on ', { text: this.dateFormat(this.generateOL?.get('reportDate')?.value) }, ' This offer is not valid beyond the said date unless the date is extended by the Company and communicated to you in writing.'
-          ],
-        },
-        {
-          text: 'Probation period',
-          style: 'sectionHeader'
-        },
-        {
-          text: [
-            ' The employee has to undergo a probation evaluation for ', { text: this.generateOL?.get('probition')?.value }, ' months from the day of joining. Once the employee successfully completes the probation period the employee status is confirmed to a full - time employee of the Company.The salary structure during the probation period is mentioned in the Annexure – A.'
-          ],
-        },
-
-        {
-          text: 'Document Submission Requirements',
-          style: 'sectionHeader'
-        },
-        {
-          text: [
-            ' You are requested to report on your date of commencement of employment (as mentioned in clause 3 above) to complete the joining formalities.At the time of joining, you are requested to submit the documents as per Annexure - C. '
-          ],
-        },
-        {
-          text: 'Employment Invention Assignment Agreement',
-          style: 'sectionHeader'
-        },
-        {
-          text: [
-            'You will be required to execute and be bound by an Employment Invention Assignment Agreement given to you as in Annexure - D.The Employment Invention Assignment Agreement shall coexist with this Employment Agreement. '
-          ],
-        },
-        {
-          text: 'Entire Agreement',
-          style: 'sectionHeader'
-        },
-        {
-          text: [
-            'This letter agreement (together with the agreements and annexures referred to herein) supersedes any',
-            'prior agreements, representations or promises of any kind, whether written, oral, express or implied',
-            'between you and the Company with respect to the subject matters herein.This letter(together with the',
-            'agreements and annexures referred to herein) may not be modified or amended except by a written',
-            ' agreement, signed by the Company and by you.'
-          ]
-
-        },
-        {
-          text: [
-            'To indicate your agreement with all terms and your acceptance of this offer, please sign the duplicate',
-            'copy of the offer on all sheets at the bottom on the right corner and return the same to NG Info SOLUTIONS PVT LTD',
-            '.Also, please provide the date you will commence employment with NG Info SOLUTIONS PVT LTD.Once you accept',
-            'this offer and join the Company, this letter will serve as your formal Appointment Order.',
-          ]
-        },
-        {
-          text: [{ text: 'We welcome you to NG Info SOLUTIONS PVT LTD and look forward to a mutually rewarding association.For NG Info SOLUTIONS PVT LTD', bold: true }]
-        },
-        {
-          columns: [
-            [
-              {
-                text: `Yours faithfully,`,
-                alignment: 'left',
-                margin: 10
-              },
-              {
-                text: `For NG Info Solutions Pvt Ltd.,`,
-                alignment: 'left',
-
-              },
-              {
-                image: await this.getBase64ImageFromURL(
-                  "assets/img/ng-stamp.png"
-                ), height: 100, width: 150,
-                alignment: 'left'
-              },
-              {
-                text: { text: this.generateOL?.get('authoriserName')?.value },
-                alignment: 'left'
-              },
-              {
-                text: { text: this.generateOL?.get('authority')?.value },
-                alignment: 'left'
-              },
-              {
-                text: `I accept the above terms and conditions of Employment.`,
-                alignment: 'left'
-              },
-              // {
-              //   text: `(Signature and Date)`,
-              //   alignment: 'left',
-              //   horizontal: true,
-              //   margin: 10
-              // }
-            ]
-          ]
-        },
-        {
-          text: 'Annexure A',
-          fontSize: 20,
-          bold: true,
-          alignment: 'center',
-          decoration: 'underline',
-          color: 'black',
-          margin: 10
-        },
-
-        {
-          style: 'tableExample',
-
           table: {
-            widths: [200, '*'],
-
+            headerRows: 1,
+            widths: ['*', 'auto', '*', 'auto'], // Earnings column + amount + Deductions column + amount
             body: [
-              [{ text: 'Components', bold: true }, { text: 'Annual', bold: true, alignment: 'center' },],
-              ['Basic Pay', { text: '384400.00', alignment: 'right' }],
-              ['HRA', { text: '36000.00', alignment: 'right' }],
-              ['Engagement Bonus', { text: '24000.00', alignment: 'right' }],
-              ['Other Allowance', { text: '30000.00', alignment: 'right' }],
-              ['Medical Allowance', { text: 'As Per Company Norms', alignment: 'right' }],
-              ['Total Take Home', { text: '474400.00', alignment: 'right' }],
-              ['PF', { text: '43,200.00', alignment: 'right' }],
-              // ['ESI', { text: '9480.00', alignment: 'right' }],
-              ['Professional Tax', { text: '2400.00', alignment: 'right' }],
-              ['Cost of Company', { text: '5,20,000.00', alignment: 'right' }]
-            ],
-          },
-          fontSize: 12,
-        },
-        {
+              [
+                { text: 'EARNINGS', fillColor: '#000000', color: 'white', bold: true, alignment: 'center' },
+                { text: 'AMOUNT (₹)', fillColor: '#000000', color: 'white', bold: true, alignment: 'center' },
+                { text: 'DEDUCTIONS', fillColor: '#000000', color: 'white', bold: true, alignment: 'center' },
+                { text: 'AMOUNT (₹)', fillColor: '#000000', color: 'white', bold: true, alignment: 'center' },
+              ],
 
-          margin: 10,
-          text: [
-            '** Your Salary is strictly confidential. The above Break-up excludes Statutory Deductions such as Tax Deduction at Source  ',
-            '(TDS) that would be deducted at Applicable Rates.'
-          ],
+              // Row 1
+              ['Basic Pay', '25,000', 'Provident Fund (PF)', '1,800'],
+
+              // Row 2
+              ['House Rent Allowance (HRA)', '10,000', 'ESI', '500'],
+
+              // Row 3
+              ['Conveyance Allowance', '2,000', 'Professional Tax', '200'],
+
+              // Row 4
+              ['Medical Allowance', '1,000', '', ''],
+
+              // Row 5
+              ['Other Allowances', '2,000', '', ''],
+
+              // Totals
+              [
+                { text: 'Total Earnings', bold: true },
+                { text: '40,000', bold: true },
+                { text: 'Total Deductions', bold: true },
+                { text: '2,500', bold: true }
+              ],
+
+              // Final Net Pay
+              [
+                { text: 'Net Pay (CTC)', colSpan: 3, alignment: 'right', bold: true }, {}, {},
+                { text: '₹37,500', bold: true }
+              ]
+            ]
+          },
+          layout: {
+            fillColor: (rowIndex: number) => {
+              return rowIndex % 2 === 0 ? '#f5f5f5' : null;
+            },
+            hLineColor: () => '#bfbfbf',
+            vLineColor: () => '#bfbfbf'
+          },
+          margin: [0, 10, 0, 20]
         },
         {
-          text: 'Annexure B',
-          fontSize: 20,
-          bold: true,
-          alignment: 'center',
-          decoration: 'underline',
-          color: 'black',
-          margin: [10, 100, 10, 10],
+          text: 'This structure is subject to statutory deductions and company policies.',
+          fontSize: 10,
+          italics: true,
+          margin: [0, 0, 0, 10],
         },
+
+        // FOOTER NOTE
         {
-          text: 'TERMS AND CONDITIONS OF EMPLOYMENT',
-          fontSize: 17,
-          bold: true,
-          alignment: 'center',
-          decoration: 'underline',
-          color: 'black',
-          margin: 10
-        },
-        {
-          text: '1. Term of Employment',
-          style: 'sectionHeader'
-        },
-        {
-          text: ['Subject to Clauses 3 and 4 below, the term of your employment with NG Info SOLUTIONS PVT LTD is intended to be for',
-            'indefinite period subject to termination pursuant to the terms of this Agreement and the requirements of',
-            'applicable Indian laws.']
-        },
-        {
-          text: '2. Outside activities/Conflicts',
-          style: 'sectionHeader'
-        },
-        {
-          text: ['This position is for a full-time employment with NG Info SOLUTIONS PVT LTD and you shall exclusively devote',
-            'yourself to the business of the company.You shall not take on any other work for remuneration(part - time',
-            'or otherwise) or work in an advisory capacity, or be interested directly or indirectly(except as',
-            'shareholders or debenture holders) in any other trade or business, during your term of employment with',
-            'NG Info SOLUTIONS PVT LTD, without written permission from NG Info SOLUTIONS PVT LTD .Similarly, you agree not to bring',
-            'any third party confidential information to NG Info SOLUTIONS PVT LTD, including that of your former employer, and',
-            'that in performing your duties for the NG Info SOLUTIONS PVT LTD, you will not in any way utilize any such',
-            'information, other than in the manner that may be directed by NG Info SOLUTIONS PVT LTD while releasing such',
-            'information.']
-        },
-        {
-          text: ['You will be liable to be transferred in such capacity that the Company may determine, to any other',
-            'department, branch, manufacturing unit or establishment under the same management or same',
-            'principals, whether existing or to be set up in future.In addition, the Company reserves the right to assign',
-            'you to other such units or companies as may be determined from time to time.']
-        },
-        {
-          text: '3. Termination',
-          style: 'sectionHeader'
+          text: '\n\nPlease bring original and photocopies of the following documents at the time of joining:',
+          margin: [0, 20, 0, 10],
         },
         {
           ul: [
-            'During the term of your employment, should you desire to leave the services of NG Info SOLUTIONS PVT LTD , you shall be required to give ', { text: this.generateOL?.get('noticePeriod')?.value }, ' days’ notice or salary in lieu thereof.The company may, at its discretion, relieve you before the expiry of notice period without compensating for the remaining notice period.',
-            'NG Info SOLUTIONS PVT LTD shall be entitled to terminate your employment without cause at any time by giving you ', { text: this.generateOL?.get('noticePeriod')?.value }, ' days notice or salary in lieu thereof.',
-            'Notwithstanding anything mentioned in this Agreement, NG Info SOLUTIONS PVT LTD may terminate your employment, with immediate effect by a notice in writing(without salary in lieu of notice), in the event of your misconduct, including but not limited to, fraudulent, dishonest or undisciplined conduct of, or breach of integrity, or embezzlement, or misappropriation or misuse by you of NG Info SOLUTIONS PVT LTD ’s property, or insubordination or failure to comply with the directions given to you by persons so authorized, or your insolvency or conviction for any offence involving moral turpitude, or breach by you of any terms of this Agreement or NG Info SOLUTIONS PVT LTD Policy or other documents or directions of NG Info SOLUTIONS PVT LTD, or irregularity in payslipView, or your unauthorized absence from the place of work(or remote check in in case of work from home) for more than five(5) working days, or closure of the business of NG Info SOLUTIONS PVT LTD, or redundancy of your post in NG Info SOLUTIONS PVT LTD, or upon you conducting yourself in a manner which is regarded by NG Info SOLUTIONS PVT LTD as prejudicial to its own interests or to the interests of its clients and/ or customers.',
-            'Notwithstanding anything aforesaid, termination by you shall be subject to the satisfactory completion of all your existing duties, obligations and projects etc.',
-            'During the notice period, Company will continue to pay its share of insurance premiums, if applicable.',
-            'On acceptance of the resignation notice, you will be required to immediately give up to the company all correspondences, specifications, formulae, books, documents, market data, literature, drawings, effects or records, et al belonging to the company or relating to its business and shall not make or retain any copies of these items. '
-          ]
-        },
-        {
-          text: '4. Holidays / Leave',
-          style: 'sectionHeader'
-        },
-        {
-          text: 'General Holidays will be declared at the beginning of the Calendar year and all full-time employees are entitled to this benefit.You may be called upon to attend duties as and when required on holidays,  may be scheduled in accordance with the needs of the Company.You will be entitled to vacation and sick leave as per the company`s Paid Leave policy. Casual leave without notice will be considered as Leave against Loss- of - pay.Additional leave will be against Loss - of - Pay.Medical Leave has to be authenticated with Medical Report and is at the discretion of the Management. '
-        },
-        {
-          text: '5. Disclosure of Information',
-          style: 'sectionHeader'
-        },
-        {
-          text: ['During the term of your employment with NG Info SOLUTIONS PVT LTD, you are required to disclose all material and',
-            'relevant information, which may either affect your employment with NG Info SOLUTIONS PVT LTD currently or in the',
-            'future or may be in conflict with the terms of your employment with NG Info SOLUTIONS PVT LTD, either directly or',
-            'indirectly', 'including but not limited to any and all agreements relating to your current or prior',
-            'employment that may affect your eligibility to be employed by NG Info SOLUTIONS PVT LTD or limit the manner in',
-            'which you may be employed.It is NG Info SOLUTIONS PVT LTD ’s understanding that any such agreements or',
-            'information will not prevent you from performing the duties of your position and you represent that such',
-            'is the case.If at any time during your employment, NG Info SOLUTIONS PVT LTD becomes aware that you have',
-            'suppressed any material or relevant information required to be disclosed by you, NG Info SOLUTIONS PVT LTD',
-            'reserves the right to forthwith terminate your employment without any notice and without any obligation',
-            'or liability to pay any remuneration or other dues to you irrespective of the period that you may have',
-            'been employed by NG Info SOLUTIONS PVT LTD.'],
-        },
-        {
-          text: ['Any change in your personal information including residential address, marital status and educational',
-            'qualification should be notified to NG Info SOLUTIONS PVT LTD in writing within three(3) days from the start of such',
-            'change. Any notice required to be given to you shall be deemed to have been duly and properly given if delivered',
-            'to you personally or sent by post to you at your address as recorded in NG Info SOLUTIONS PVT LTD ’s records.']
-        },
-        {
-          text: '6. Adherence to Company Policy',
-          style: 'sectionHeader'
-        },
-        {
-          text: 'You agree to conform to and comply with NG Info SOLUTIONS PVT LTD Policies and such directions and orders as may from time to time be given by NG Info SOLUTIONS PVT LTD .'
-        },
-        {
-          text: '7. Travel',
-          style: 'sectionHeader'
-        },
-        {
-          text: 'You will be posted in HYDERABAD . But, you may be required to make visits and travel both within India and overseas, as necessary for the proper discharge of your duties.'
-        },
-        {
-          text: '8.Non-Solicitation',
-          style: "sectionHeader"
-        },
-        {
-          text: ['You agree that during and upon termination of your employment and for one year thereafter, you shall',
-            'not in any manner either directly or indirectly solicit or entice the other employees or customers of SN IT',
-            'SOLUTIONS to join or enter into transactions, as the case may be with either you directly or indirectly or',
-            'with other entities which are in direct or indirect competition with NG Info SOLUTIONS PVT LTD .']
-        },
-        {
-          text: '9. Assignment',
-          style: 'sectionHeader'
-        },
-        {
-          text: ['This Agreement is personal to you and will not be assigned by you. NG Info SOLUTIONS PVT LTD will have the right to',
-            'assign this letter of offer to its parent, subsidiaries, subdivisions, affiliates, successors and assigns, and all',
-            'covenants and agreements herein will inure to the benefit of and be enforceable as such.']
-        },
-        {
-          text: '10. Arbitration',
-          style: "sectionHeader"
-        },
-        {
-          text: ['You agree that the interpretation and enforcement of this Agreement shall be governed by the laws of',
-            'India and all disputes under this Agreement shall be governed by the provisions of the Indian Arbitration',
-            'and Conciliation Act, 1996. The venue for arbitration will be .']
-        },
-        {
-          text: ['This is to certify that I have read this Agreement and all Annexure and understood all the terms and',
-            'conditions mentioned therein and I hereby accept and agree to abide by them.']
-        },
-        {
-          text: 'Annexure C',
-          fontSize: 20,
-          bold: true,
-          alignment: 'center',
-          decoration: 'underline',
-          color: 'black',
-          margin: 10
-        },
-        {
-          text: 'List of Documents to be submitted by you before the day of joining.',
-          fontSize: 12,
-          bold: true,
-          alignment: 'center',
-          decoration: 'underline',
-          color: 'black',
-          margin: 10
-        },
-        {
-
-          ol: [
-            ' Certificates supporting your educational qualifications along with mark sheets (10+12+ Graduation+ Post Graduation + Course Certifications) ',
-            'Your latest salary slip from last employer and salary certificate',
-            'Your relieving letter from your last employer',
-            'Experience Certificates from all previous employers',
-            'Updated resume',
-            'Form 16 or Taxable Income Statement duly certified by previous employer (Statement showing deductions & Taxable Income with break-up) ',
-            '4 Passport size photographs (White Background)',
-            'Passport copy and Work Permit in case of foreign citizens',
-            'Proof of Age',
-            'Proof of Address',
-            'Copy of PAN Card'
-
-
+            '1 Passport Size Photographs',
+            'Educational Certificates',
+            'Experience Certificates',
+            'ID Proof (Aadhaar / PAN)',
+            'Passport-size Photographs',
+            'Bank Account Details',
+            'Vaccine Certificate',
+            'Two Professional References',
+            'Experience Letter, Pay Slips, Relieving Letter from past Two(2) employers. (If applicable)'
           ],
-          text: 'Please carry all the originals for validation.'
+          fontSize: 11,
         },
+        // Final Section: Closing & Signatures
         {
-          text: 'Annexure D',
-          // margin: [10, 100, 10, 10],
-          fontSize: 20,
+          text: '\nOffice Timings: ',
           bold: true,
-          alignment: 'center',
-          decoration: 'underline',
-          color: 'black',
+          fontSize: 11,
+          margin: [0, 5, 0, 0],
+          continued: true
+        },
+        { text: '10:00 AM To 07:00 PM.', fontSize: 11 },
+
+        {
+          text: '\n\nWe congratulate you and wish you a long and successful career with us. We are confident that your contribution will take us further on our journey towards becoming world leaders. We are excited about the potential that you will bring to our organization and assure you of our support for your professional development and growth. Please feel free to reach us if you have any queries or concerns.',
+          fontSize: 11,
+          margin: [0, 10, 0, 10],
+          alignment: 'justify'
+        },
+
+        {
+          text: '\nWith Best Wishes,',
+          fontSize: 11,
+          margin: [0, 10, 0, 5]
         },
         {
-          text: 'Declaration',
-          fontSize: 20,
+          text: 'From venkat Software Services Private Limited',
           bold: true,
-          alignment: 'center',
-          decoration: 'underline',
-          color: 'black',
-          margin: 10
+          fontSize: 11,
+          margin: [0, 0, 0, 30]
         },
-        {
 
-          margin: 10,
-          text: [
-            'I hereby represent and warrants, and undertakes, affirms, and agrees that as of the Date of Joining with NG Info Solutions Pvt Ltd.'
-          ],
-        },
-        {
-
-          ol: [
-            'I will have terminated my employment with all my previous employers',
-            'I have not entered into any agreement or arrangement which may restrict, prohibit, or debar or conflict or be inconsistent with my acceptance of the offer here under.',
-            'I am in good standing and that I have full capacity and authority to accept this offer letter, Non-Disclosure Agreement and Employment Agreement and to perform its obligations here under according to the terms hereof.',
-            'Neither the acceptance of this offer letter nor the execution and delivery of the agreement contemplated here under, or the fulfillment of or compliance with the terms and conditions thereof, conflict with or result in a breach of or a default under any of the terms, conditions or provisions of any legal restriction (including, without limitation, any judgment, order, injunction, decree or ruling of any court or governmental authority, or any federal, state, local or other law, statute, rule or regulation) or any covenant or agreement or instrument to which I am a party, or by which I am bound, nor does such execution, delivery, consummation or compliance violate or result in the violation any documents',
-
-
-
-          ],
-        },
+        // Signatures Row
         {
           columns: [
-
-
             [
-
-
-              {
-                text: `(Signature and Date)`,
-                alignment: 'left',
-                horizontal: true,
-                margin: 18
-              }
+              // {
+              //   // image: 'assets/img/company-seal.png', // replace with your base64 or path
+              //   width: 80,
+              //   margin: [0, 0, 0, 10]
+              // },
+              { text: 'Venkatesh', bold: true, fontSize: 11 },
+              { text: 'Human Resources - Manager', fontSize: 11, margin: [0, 2, 0, 0] }
+            ],
+            [
+              { text: 'Accepted By', alignment: 'right', bold: true, fontSize: 11, margin: [0, 0, 0, 40] },
+              { canvas: [{ type: 'line', x1: 0, y1: 0, x2: 200, y2: 0, lineWidth: 0.5 }] },
+              { text: 'Venkatesh Samithikota', alignment: 'right', bold: true, fontSize: 11, margin: [0, 2, 0, 0] }
             ]
           ]
         }
@@ -891,30 +760,29 @@ export class EmployeeDashboardComponent implements OnInit  {
       styles: {
         sectionHeader: {
           bold: true,
-          // decoration: 'underline',
+          decoration: 'underline',
           fontSize: 14,
-          margin: [0, 15, 0, 15]
-        }
-      }
+          alignment: 'center',
+          margin: [0, 15, 0, 15],
+        },
+      },
     };
+
     if (action === 'download') {
-      pdfMake.createPdf(docDefinition).download();
+      pdfMake.createPdf(docDefinition).download('Offer_Letter.pdf');
     } else if (action === 'print') {
       pdfMake.createPdf(docDefinition).print();
     } else {
       pdfMake.createPdf(docDefinition).open();
     }
   }
-
   // Payslip
   get allowances(): FormArray {
-    return this.payslipForm.get('allowances') as FormArray;
+    return this.payslipForm?.get('allowances') as FormArray;
   }
-
   get deductions(): FormArray {
-    return this.payslipForm.get('deductions') as FormArray;
+    return this.payslipForm?.get('deductions') as FormArray;
   }
-
   addAllowance() {
     this.allowances.push(this.formBuilder.group({
       name: ['', Validators.required],
@@ -970,12 +838,12 @@ export class EmployeeDashboardComponent implements OnInit  {
     // const decryptedUserId = this.util.decrypt_Text(localStorage.getItem('id') || '');
     const url = 'api/payroll/calculate-ctc';
     const body = {
-      employeeId: this.payslipForm.get('employeeId')?.value,
-      ctc: this.payslipForm.get('ctc')?.value,
-      otherAllowance: this.payslipForm.get('otherAllowance')?.value,
+      employeeId: this.payslipForm?.get('employeeId')?.value,
+      ctc: this.payslipForm?.get('ctc')?.value,
+      otherAllowance: this.payslipForm?.get('otherAllowance')?.value,
 
-      allowances: this.payslipForm.get('allowances')?.value || [],
-      deductions: this.payslipForm.get('deductions')?.value || [],
+      allowances: this.payslipForm?.get('allowances')?.value || [],
+      deductions: this.payslipForm?.get('deductions')?.value || [],
       total_Allowances: 0, // let backend calculate if not needed
       total_Deductions: 0,
       take_Home_Salary: 0
@@ -1072,7 +940,16 @@ export class EmployeeDashboardComponent implements OnInit  {
               ['Working Days', data.employee.workingDays, 'Paid Days', data.employee.paidDays]
             ]
           },
-          layout: 'lightHorizontalLines'
+          layout: {
+            // remove all lines (no borders)
+            hLineWidth: () => 0,
+            vLineWidth: () => 0,
+            paddingLeft: () => 2,
+            paddingRight: () => 2,
+            paddingTop: () => 3,
+            paddingBottom: () => 3
+          },
+          margin: [0, 10, 0, 10]
         },
 
         // { text: '\n' },
@@ -1099,7 +976,20 @@ export class EmployeeDashboardComponent implements OnInit  {
               ['', '', { text: 'Net Pay', bold: true }, { text: takeHome, bold: true }]
             ]
           },
-          layout: 'lightHorizontalLines'
+          layout: {
+            fillColor: function (rowIndex: number) {
+              return rowIndex % 2 === 0 ? null : '#f9f9f9'; // alternate row color
+            },
+            hLineColor: () => '#cccccc',
+            vLineColor: () => '#cccccc',
+            hLineWidth: () => 0.5,
+            vLineWidth: () => 0.5,
+            paddingLeft: () => 6,
+            paddingRight: () => 6,
+            paddingTop: () => 4,
+            paddingBottom: () => 4
+          },
+          margin: [0, 10, 0, 15]
         },
 
         { text: '\n' },
@@ -1120,79 +1010,11 @@ export class EmployeeDashboardComponent implements OnInit  {
     // 🔹 Generate or download
     const pdfDoc = pdfMake.createPdf(docDefinition);
     if (action === 'download') {
-      pdfDoc.download(`Payslip_${data.employee.id}.pdf`);
+      pdfDoc.download(`Payslip_${data.employee.name}.pdf`);
     } else {
       pdfDoc.open();
     }
   }
-
-  // async Payslip_generatePDF(action = 'open') {
-  //   const data = this.employeeDetails;
-  //   // const logo = await this.getBase64ImageFromURL(data.company.logo);
-
-  //   const earningsRows = data.payslip.earnings.map((e, i) => [
-  //     e.label, e.amount,
-  //     data.payslip.deductions[i]?.label || '', data.payslip.deductions[i]?.amount || ''
-  //   ]);
-
-  //   const docDefinition = {
-  //     pageSize: 'A4',
-  //     pageMargins: [50, 150, 50, 60],
-  //     content: [
-  //       {
-  //         style: 'tableExample',
-  //         table: {
-  //           widths: [100, '*', 100, '*'],
-  //           body: [
-  //             [
-  //               // { image: logo, height: 64, width: 64, colSpan: 2, rowSpan: 2, alignment: 'center', margin: [0, 20] }, '',
-  //               { text: data.company.name, fontSize: 16, bold: true, colSpan: 2, alignment: 'left', margin: [0, 5] }, ''
-  //             ],
-  //             ['', '', { text: data.company.address, colSpan: 2, alignment: 'left', margin: [0, 0, 0, 5] }, ''],
-  //             [{ text: `Salary Slip for the month of ${data.payslip.month}`, colSpan: 4, alignment: 'center', color: 'blue', bold: true, margin: [0, 5] }, '', '', ''],
-
-  //             ['Name', data.payslip.employee.name, 'Pan No', data.payslip.employee.pan],
-  //             ['Date of Joining', data.payslip.employee.doj, 'Gender', data.payslip.employee.gender],
-  //             ['Designation', data.payslip.employee.designation, 'Employment Type', data.payslip.employee.employmentType],
-  //             ['Emp No', data.payslip.employee.empNo, 'Working Days', data.payslip.employee.workingDays],
-  //             ['Location', data.payslip.employee.location, 'Paid Days', data.payslip.employee.paidDays],
-  //             ['Bank Name', data.payslip.employee.bankName, 'Account No', data.payslip.employee.accountNo],
-  //             ['EPF No', data.payslip.employee.epfNo, 'UAN No', data.payslip.employee.uanNo],
-
-  //             [{ text: 'EARNINGS', colSpan: 2, bold: true, alignment: 'center', margin: [0, 5] }, '',
-  //             { text: 'DEDUCTIONS', colSpan: 2, bold: true, alignment: 'center', margin: [0, 5] }, ''],
-
-  //             ...earningsRows,
-
-  //             [{ text: 'Total Earnings', bold: true }, data.payslip.totalEarnings,
-  //             { text: 'Total Deductions', bold: true }, data.payslip.totalDeductions],
-
-  //             ['', '', { text: 'Net Pay', bold: true }, { text: data.payslip.netPay, bold: true }],
-
-  //             [{
-  //               text: 'This is a computer generated document. Signature & seal not required. For any discrepancy contact accounts department within 3 days or email info@nginfosolutions.com',
-  //               colSpan: 4,
-  //               fillColor: '#eeeeee',
-  //               fontSize: 9,
-  //               alignment: 'center',
-  //               margin: [0, 10, 0, 0]
-  //             }, '', '', '']
-  //           ]
-  //         },
-  //         fontSize: 12
-  //       }
-  //     ]
-  //   };
-
-  //   if (action === 'download') {
-  //     pdfMake.createPdf(docDefinition).download(`Payslip_${data.payslip.month.replace(/ /g, '_')}.pdf`);
-  //   } else if (action === 'print') {
-  //     pdfMake.createPdf(docDefinition).print();
-  //   } else {
-  //     pdfMake.createPdf(docDefinition).open();
-  //   }
-  // }
-
   async Relieving_generatePDF(action = 'open') {
     let docDefinition = {
       pageMargins: [40, 160, 40, 140],
@@ -1252,10 +1074,10 @@ export class EmployeeDashboardComponent implements OnInit  {
           margin: 10,
           text: ['While we wish that this association could have been longer, we hope you achieve every success in your future endeavors. We also draw your attention to your continuing obligation of confidentiality with respect to any proprietary and confidential information of NG Info Solutions Pvt Ltd. that you may have had access to during your employment.'],
         },
-        {
-          margin: 10,
-          text: [' If You have any questions regarding the contents, please do not hesitate contact us on', this.relievingForm?.get('hr_mail')?.value, '. You can also contact on ', this.relievingForm?.get('hr_number')?.value, ''],
-        },
+        // {
+        //   margin: 10,
+        //   text: [' If You have any questions regarding the contents, please do not hesitate contact us on', this.relievingForm?.get('hr_mail')?.value, '. You can also contact on ', this.relievingForm?.get('hr_number')?.value, ''],
+        // },
         {
           columns: [
             [
@@ -1416,16 +1238,259 @@ export class EmployeeDashboardComponent implements OnInit  {
       pdfMake.createPdf(docDefinition).open();
     }
   }
-
   goToAttendance(id: number) {
     this.router.navigate(['/hrm/employee-attendance', id]).then(() => {
       window.location.reload();
     });
   }
-
   getMonthName(value: number): string {
     const month = this.months.find(m => m.value === value);
     return month ? month.name : '';
   }
-  
+  // Example form data (can be replaced with formGroup values)
+  employeeData = {
+    name: "Mr. Venkatesh Samithikota",
+    firstName: "Venkatesh",
+    designation: "Software Engineer",
+    joiningDate: "14th October 2024",
+    ctc: "8,13,013",
+    probation: "3",
+    ctcInWords: "Eight Lakhs Thirteen Thousand Thirteen Rupees ",
+    address: "13-9, Valasaguttapalli, Badikayalapalli, Chittoor, Andhra Pradesh - 517370",
+    email: "venkatesh.samithikota@example.com",
+    phone: "+91-9876543210",
+    department: "Development",
+    employeeCode: "EMP2024-032",
+    salaryBreakup: {
+      basicPay: 240000,
+      hra: 96000,
+      conveyance: 19200,
+      medicalAllowance: 15000,
+      specialAllowance: 408200,
+      epfEmployee: 21600,
+      professionalTax: 2400,
+      staffWelfare: 1200,
+      healthInsurance: 6000,
+      grossSalary: 778400,
+      totalDeductions: 31200,
+      netSalary: 747200,
+      epfEmployer: 21600,
+      fixedPayCtc: 800000,
+      variablePay: 0,
+      gratuity: 11538,
+      lifeInsurance: 1475,
+      totalCtc: 813013
+    },
+    reportingLocation: "AmpleLogic, Melange Tower, Wing-C, 2nd Floor, Patrika Nagar, Hitech City, Madhapur, Hyderabad - 500081, India",
+    officeTimings: "10:00 AM to 07:00 PM",
+    documentsRequired: [
+      "1 Passport Size Photograph",
+      "Photocopies of all Academic Certificates & Mark-sheets (10th, 12th, Graduation, Post-Graduation)",
+      "Passport Copy / Aadhar Card",
+      "PAN Card Copy",
+      "Two Professional References",
+      "Vaccine Certificate",
+      "Experience Letter, Pay Slips, Relieving Letter from past Two (2) employers"
+    ]
+  };
+  generateOfferPDF(employee: any) {
+    const doc = new jsPDF('p', 'pt', 'a4');
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 40;
+    let y = 80;
+
+    const safe = (val: any) => (val ? String(val) : '');
+
+    // ====== HEADER ======
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text('Offer Letter', pageWidth / 2, y, { align: 'center' });
+    y += 30;
+
+    // ====== ADDRESS ======
+    doc.setFont('helvetica', 'bold');
+
+    doc.setFontSize(11);
+    doc.text(`To,`, margin, y);
+    y += 20;
+    doc.text(`${safe(employee.name)}`, margin, y);
+    y += 15;
+    doc.setFont('helvetica', 'normal');
+    doc.text(`${safe(employee.address)}`, margin, y, { maxWidth: 500 });
+    y += 30;
+
+    // ====== GREETING ======
+    doc.setFont('helvetica', 'bold');
+
+    doc.text(`Dear ${safe(employee.firstName) || 'Employee'},`, margin, y);
+    y += 20;
+    doc.setFont('helvetica', 'normal');
+
+    doc.text(`Congratulations on your success!`, margin, y);
+    y += 30;
+
+    // ====== BODY ======
+    const bodyText = [
+      `This is with reference to the interview you had with us; we are pleased to offer you an appointment in our organization as "${safe(employee.designation)}" with effect from ${safe(employee.joiningDate)}.`,
+      `In this position your remuneration will be INR ${safe(employee.ctc)}/- per annum (${safe(employee.ctcInWords)} only).`,
+      `You will be on a probation period of Three (${safe(employee.probation)}) months from the date of commencement of work.`,
+      `Your offer has been made based on information furnished by you. Offer stands cancelled in case of any deviation in information or failure to report on or before the pre-decided joining date.`
+    ];
+    doc.text(bodyText, margin, y, { maxWidth: 520, lineHeightFactor: 1.5 });
+    y += 120;
+
+    // ====== ANNEXURE HEADING ======
+    doc.setFont('helvetica', 'bold');
+    doc.text('ANNEXURE', pageWidth / 2, y, { align: 'center' });
+    y += 15;
+
+    // ====== SALARY TABLE ======
+    autoTable(doc, {
+      startY: y + 10,
+      head: [['CTC Components', 'Rs. (Annual)', 'Deductions', 'Rs. (Annual)']],
+      body: [
+        ['Basic Pay', '240000', 'EPF - Employee Contribution', '21600'],
+        ['House Rent Allowance', '96000', 'Professional Tax', '2400'],
+        ['Conveyance Allowance', '19200', 'Staff Welfare', '1200'],
+        ['Medical Allowance', '15000', 'Health Insurance', '6000'],
+        ['Special Allowance', '408200', 'Total Deductions (B)', '31200'],
+        ['Gross Salary (A)', '778400', 'Net Salary Payment (A-B)', '747200'],
+        ['EPF - Employer Contribution', '21600', '', ''],
+        ['Fixed Pay CTC', '800000', '', ''],
+        ['Variable Pay per Annum', '0', '', ''],
+        ['Gratuity', '11538', '', ''],
+        ['Life Insurance', '1475', '', ''],
+        ['Total Cost to Company (CTC)', '813013', '', '']
+      ],
+      theme: 'grid',
+      styles: { fontSize: 9 },
+      headStyles: { fillColor: [230, 230, 230] },
+    });
+
+    // Move Y position after table
+    const finalY = (doc as any).lastAutoTable.finalY + 25;
+
+    // ====== REPORTING LOCATION ======
+    doc.setFont('helvetica', 'bold');
+    doc.text('Reporting Location:', margin, finalY);
+    doc.setFont('helvetica', 'normal');
+    doc.text('AmpleLogic, Melange Tower, Wing-C, 2nd Floor, Patrika Nagar,', margin, finalY + 15);
+    doc.text('Hitech City, Madhapur, Hyderabad - 500081, India', margin, finalY + 30);
+
+    // ====== DOCUMENTS REQUIRED ======
+    let docY = finalY + 55;
+    doc.setFont('helvetica', 'bold');
+    doc.text('Documents required at the time of joining (Originals with photocopy):', margin, docY);
+    docY += 15;
+
+    doc.setFont('helvetica', 'normal');
+    const docsList = [
+      '1 Passport Size Photograph',
+      'Photocopies of all Academic Certificates & Mark-sheets (10th, 12th, Graduation, Post-Graduation)',
+      'Passport Copy / Aadhar Card',
+      'PAN Card Copy',
+      'Two Professional References',
+      'Vaccine Certificate',
+      'Experience Letter, Pay Slips, Relieving Letter from past Two (2) employers'
+    ];
+    docsList.forEach((item, idx) => {
+      doc.text(`• ${item}`, margin + 10, docY + idx * 15);
+    });
+
+    // ====== OFFICE TIMINGS ======
+    const officeY = docY + docsList.length * 15 + 25;
+    doc.setFont('helvetica', 'bold');
+    doc.text('Office Timings:', margin, officeY);
+    doc.setFont('helvetica', 'normal');
+    doc.text('10:00 AM to 07:00 PM', margin + 90, officeY);
+
+    // ====== CLOSING PARAGRAPH ======
+    const closeText = [
+      `We congratulate you and wish you a long and successful career with us.`,
+      `We are confident that your contribution will take us further on our journey towards becoming world leaders.`,
+      `We are excited about the potential you bring and assure you of our full support for your professional development and growth.`,
+      `Please feel free to reach out if you have any queries or concerns.`
+    ];
+    doc.text(closeText, margin, officeY + 30, { maxWidth: 520, lineHeightFactor: 1.5 });
+
+    // ====== SIGNATURES ======
+    const signY = officeY + 130;
+    doc.text('With Best Wishes,', margin, signY);
+    doc.text('From Venkanna Software Services Private Limited', margin, signY + 15);
+
+    doc.text('_____________________________', margin, signY + 60);
+    doc.text('Preethi Gadila', margin, signY + 75);
+    doc.text('Human Resources - Manager', margin, signY + 90);
+
+    doc.text('Accepted By', pageWidth - 200, signY + 15);
+    doc.text('_____________________________', pageWidth - 200, signY + 60);
+    doc.text(`${safe(employee.name)}`, pageWidth - 200, signY + 75);
+
+    // ====== SAVE PDF ======
+    doc.save(`${safe(employee.name)}_OfferLetter.pdf`);
+  }
+  // raw data
+  experienceDetails = [
+    {
+      companyName: 'TechSoft Solutions Pvt Ltd',
+      designation: 'Software Developer',
+      fromDate: '01-Jan-2021',
+      toDate: '31-Dec-2023',
+      totalExperience: '3 Years',
+      certificateUrl: 'assets/certificates/experience_letter_techsoft.pdf'
+    },
+    {
+      companyName: 'Innova Technologies',
+      designation: 'Frontend Engineer',
+      fromDate: '15-Feb-2019',
+      toDate: '31-Dec-2020',
+      totalExperience: '1 Year 10 Months',
+      certificateUrl: 'assets/certificates/experience_letter_innova.pdf'
+    }
+  ];
+  viewCertificate(url: string) {
+    window.open(url, '_blank');
+  }
+  employeeCtc = {
+    employeeId: 1001,
+    ctc: 600000,
+    otherAllowance: 5000,
+    total_Allowances: 40000,
+    total_Deductions: 5000,
+    take_Home_Salary: 35500,
+    allowances: [
+      { name: 'Basic Pay', type: 'Earning', amount: 25000, enabled: true },
+      { name: 'HRA', type: 'Earning', amount: 10000, enabled: true },
+      { name: 'Conveyance', type: 'Earning', amount: 3000, enabled: true },
+      { name: 'Medical Allowance', type: 'Earning', amount: 2000, enabled: true }
+    ],
+    deductions: [
+      { name: 'Provident Fund', type: 'Deduction', amount: 1800, enabled: true },
+      { name: 'ESI', type: 'Deduction', amount: 500, enabled: true },
+      { name: 'Professional Tax', type: 'Deduction', amount: 200, enabled: true },
+      { name: 'TDS', type: 'Deduction', amount: 2500, enabled: true }
+
+    ]
+  };
+  toggleAllowance(index: number) {
+    this.employeeCtc.allowances[index].enabled = !this.employeeCtc.allowances[index].enabled;
+    this.calculateTotals();
+  }
+  toggleDeduction(index: number) {
+    this.employeeCtc.deductions[index].enabled = !this.employeeCtc.deductions[index].enabled;
+    this.calculateTotals();
+  }
+  calculateTotalss() {
+    const totalAllowances = this.employeeCtc.allowances
+      .filter(a => a.enabled)
+      .reduce((sum, a) => sum + a.amount, 0);
+
+    const totalDeductions = this.employeeCtc.deductions
+      .filter(d => d.enabled)
+      .reduce((sum, d) => sum + d.amount, 0);
+
+    this.employeeCtc.total_Allowances = totalAllowances + this.employeeCtc.otherAllowance;
+    this.employeeCtc.total_Deductions = totalDeductions;
+    this.employeeCtc.take_Home_Salary = this.employeeCtc.total_Allowances - this.employeeCtc.total_Deductions;
+  }
 }

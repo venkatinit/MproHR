@@ -32,7 +32,7 @@ export class EmployeeListComponent implements OnInit {
   dtOptions: DataTables.Settings = {};
   persons: any[] = [];
   dtTrigger: Subject<any> = new Subject<any>();
-  minDate: Date = new Date();
+  // minDate: Date = new Date();
   Students = {
     dob: ''
   }
@@ -45,8 +45,8 @@ export class EmployeeListComponent implements OnInit {
     private router: Router
   ) { }
   ngOnInit(): void {
-    this.minDate = new Date();
-    this.minDate.setDate(this.minDate.getDate());
+    // this.minDate = new Date();
+    // this.minDate.setDate(this.minDate.getDate());
     this.form = this.formBuilder.group({
       company: [{ value: '', disabled: true }, Validators.required],
     });

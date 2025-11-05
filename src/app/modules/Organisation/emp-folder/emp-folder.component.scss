@@ -30,12 +30,16 @@ img:hover {
 
 .input-group {
     .form-control {
-        border-top-left-radius: 50px;
-        border-bottom-left-radius: 50px;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 0px;
     }
 
     .btn {
-        border-top-right-radius: 50px;
-        border-bottom-right-radius: 50px;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 0px;
     }
+}
+.list-group-item.active {
+    background-color: #fd7400;
+    border-color: #fd7400;
 }

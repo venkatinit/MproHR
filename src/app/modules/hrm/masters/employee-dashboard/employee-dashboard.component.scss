@@ -30,7 +30,7 @@
 
 .dashboard {
     padding: 20px;
-    background: #f8f9fa;
+    // background: #f8f9fa;
 
     .stats-row {
         display: flex;
@@ -248,4 +248,30 @@ h4 {
         // border: solid 1px grey;
         border-radius: 10px 10px 0 0;
     }
+}
+
+table {
+
+    th,
+    td {
+        vertical-align: middle;
+    }
+
+    button {
+        transition: all 0.2s ease;
+
+        &:hover {
+            background-color: #0d6efd;
+            color: #fff;
+        }
+    }
+}
+
+.employee_name {
+    display: inline-block;
+    max-width: 365px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
 }

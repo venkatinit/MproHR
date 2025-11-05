@@ -1,0 +1,152 @@
+<div class="row ">
+    <div class="col-xs-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <!-- Title Column -->
+                <div class="col-lg-6">
+                    <strong>Prevention of Sexual Harassment</strong>
+                </div>
+
+                <!-- Buttons Column -->
+                <div class="text-end col-lg-6">
+                    <a class="btn btn-primary btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal">
+                         Raise a Complaint
+                    </a>
+                    <!-- <a class="btn btn-primary btn-sm me-2 text-white" role="button" (click)="toggleCompanyFilter()">
+                        <i class="fa-solid fa-filter"></i>
+                    </a> -->
+                </div>
+            </div>
+            <div class="card-body ">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-responsive table-hover"
+                    id="bankTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Created At</th>
+                            <th>Respondent Name</th>
+                            <th>Department</th>
+                            <th>Description</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="posh_list?.length != 0">
+                        <tr *ngFor="let item of posh_list; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ item.created_At | date:'dd-MM-YYYY' }}</td>
+                            <td>{{ item.bank_Name || '-' }}</td>
+                            <td>{{ item.branch || '-' }}</td>
+                            <td>{{ item.opening_Balance || 0 }}</td>
+                            <td>
+                                <button class="btn btn-sm" type="button" (click)="updateById(item.id)"
+                                    data-bs-toggle="modal" data-bs-target="#newModal" title="Edit">
+                                    <i class="bi bi-pencil-square text-success"></i> </button>
+                                <button class="btn  btn-sm " type="button" data-toggle="tooltip" data-placement="top"
+                                    (click)="deletePosh(item.id)" title="Delete"><i
+                                        class="bi bi-trash3-fill text-danger"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="posh_list?.length == 0">
+                        <tr>
+                            <td colspan="12" class="no-data-available">No data!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header" *ngIf="this.action !== 'update'">
+                            <strong>Add Posh</strong>
+                        </div>
+                        <div class="modal-header" *ngIf="this.action === 'update'">
+                            <strong>Update Posh</strong>
+                        </div>
+                        <div class="modal-body ">
+                            <form [formGroup]="poshForm" (ngSubmit)="action === 'update' ? updatePosh() : savePosh()">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Respondent Name</label>
+                                        <input type="text" class="form-control form-control-sm" name="respondentName"
+                                            id="respondentName" formControlName="respondentName"
+                                            [ngClass]="{ 'is-invalid': submitted && f.respondentName.errors }">
+                                        <div *ngIf="(submitted || f.respondentName.touched) && f.respondentName.errors?.required"
+                                            class="invalid-feedback">
+                                            Name is
+                                            required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Date of Incident</label>
+                                        <input type="date" class="form-control form-control-sm" name="incidentDate"
+                                            id="incidentDate" formControlName="incidentDate"
+                                            [ngClass]="{ 'is-invalid': submitted && f.incidentDate.errors }">
+                                        <div *ngIf="(submitted || f.incidentDate.touched) && f.incidentDate.errors?.required"
+                                            class="invalid-feedback">Date of Incident is
+                                            required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Time</label>
+                                        <input type="time" class="form-control form-control-sm" name="time" id="time"
+                                            formControlName="time"
+                                            [ngClass]="{ 'is-invalid': submitted && f.time.errors }">
+                                        <div *ngIf="(submitted || f.time.touched) && f.time.errors?.required"
+                                            class="invalid-feedback">Time is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Place Of Incident</label>
+                                        <input type="text" class="form-control form-control-sm" name="incident_place"
+                                            id="incident_place" formControlName="incident_place"
+                                            [ngClass]="{ 'is-invalid': submitted && f.incident_place.errors }">
+                                        <div *ngIf="(submitted || f.incident_place.touched) && f.incident_place.errors?.required"
+                                            class="invalid-feedback">Place Of Incident is required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Description of Incident</label>
+                                        <input type="text" class="form-control form-control-sm" name="description"
+                                            id="description" formControlName="description"
+                                            [ngClass]="{ 'is-invalid': submitted && f.description.errors }">
+                                        <div *ngIf="(submitted || f.description.touched) && f.description.errors?.required"
+                                            class="invalid-feedback">Description is
+                                            required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Witness</label>
+                                        <input type="text" class="form-control form-control-sm" name="witness"
+                                            id="witness" formControlName="witness"
+                                            [ngClass]="{ 'is-invalid': submitted && f.witness.errors }">
+                                        <div *ngIf="(submitted || f.witness.touched) && f.witness.errors?.required"
+                                            class="invalid-feedback">witness is
+                                            required
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Evidense (if any)</label>
+                                        <input type="file" class="form-control form-control-sm" name="evidense"
+                                            id="evidense" formControlName="evidense"
+                                            [ngClass]="{ 'is-invalid': submitted && f.evidense.errors }">
+                                        <div *ngIf="(submitted || f.evidense.touched) && f.evidense.errors?.required"
+                                            class="invalid-feedback">Evidense is
+                                            required
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-2 col-md-12 d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-success btn-sm"
+                                        *ngIf="action !== 'update'">Submit</button>
+                                    <button type="submit" class="btn btn-primary btn-sm"
+                                        *ngIf="action === 'update'">Update</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

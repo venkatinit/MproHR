@@ -56,7 +56,7 @@ export class DefaultLayoutComponent implements OnInit {
   do_logout() {
     localStorage.clear();
     // window.location.reload();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/auth/login']);
     // this.router.navigate(['/member_login']);
   }
 }

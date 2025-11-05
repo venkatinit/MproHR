@@ -33,7 +33,6 @@ import { AddQuotationComponent } from './modules/quotation/add-quotation/add-quo
 import { InvoiceComponent } from './modules/invoice/invoice/invoice.component';
 import { AddInvoiceComponent } from './modules/invoice/add-invoice/add-invoice.component';
 import { CompanyListComponent } from './modules/Admin/company-list/company.list.component';
-import { LeaveRequestComponent } from './modules/employee/leave-request/leave-request.component';
 import { BankListComponent } from './modules/Banks/bank-list/bank-list.component';
 import { ServiceListComponent } from './modules/services/service-list/service-list.component';
 import { SubServiceListComponent } from './modules/Subservices/sub-service-list/sub-service-list.component';
@@ -74,6 +73,7 @@ import { CaDashboardComponent } from './modules/Chartered Accountant/ca-dashboar
 import { OrgDashboardComponent } from './modules/Organisation/org-dashboard/org-dashboard.component';
 import { NgxEditorMenuComponent, NgxEditorModule } from "ngx-editor";
 import { HolidayCalenderComponent } from './modules/Organisation/holiday-calender/holiday-calender.component';
+import { NotificationsComponent } from './modules/notifications/notifications.component';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 const APP_CONTAINERS = [DefaultLayoutComponent];
 @NgModule({
@@ -91,7 +91,6 @@ const APP_CONTAINERS = [DefaultLayoutComponent];
     InvoiceComponent,
     AddInvoiceComponent,
     CompanyListComponent,
-    LeaveRequestComponent,
     BankListComponent,
     ServiceListComponent,
     SubServiceListComponent,
@@ -131,6 +130,7 @@ const APP_CONTAINERS = [DefaultLayoutComponent];
     CaDashboardComponent,
     OrgDashboardComponent,
     HolidayCalenderComponent,
+    NotificationsComponent,
    
   ],
   imports: [

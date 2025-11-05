@@ -51,12 +51,13 @@ import { CaDashboardComponent } from './modules/Chartered Accountant/ca-dashboar
 import { OrgDashboardComponent } from './modules/Organisation/org-dashboard/org-dashboard.component';
 import { HrDashboardComponent } from './modules/hrm/hr-dashboard/hr-dashboard.component';
 import { HolidayCalenderComponent } from './modules/Organisation/holiday-calender/holiday-calender.component';
+import { NotificationsComponent } from './modules/notifications/notifications.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
+  { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
+  { path: 'auth/login', component: LoginComponent },
   // { path: 'member_login', component: CompanyLoginPageComponent },
-  { path: 'register', component: RegisterComponent },
+  { path: 'auth/register', component: RegisterComponent },
   {
     path: '', component: DefaultLayoutComponent,
     data: {
@@ -138,6 +139,8 @@ export const routes: Routes = [
       { path: 'org_status', component: OrgStatusComponent },
       { path: 'work_location', component: WorkLocationComponent },
       { path: 'paySchedule', component: PayScheduleComponent },
+      { path: 'notifications', component: NotificationsComponent },
+
       // documents
       { path: 'org_folder', component: OrgFolderComponent },
       { path: 'emp_folder', component: EmpFolderComponent },
