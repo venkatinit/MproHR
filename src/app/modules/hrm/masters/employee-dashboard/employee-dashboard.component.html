@@ -250,9 +250,8 @@
                         </table>
                     </div>
                 </div>
-
                 <!-- SUMMARY -->
-                <div class="mt-3">
+                <div class="mt-3 d-flex">
                     <h6 class="fw-bold">Summary</h6>
                     <table class="table table-sm table-borderless w-50">
                         <tr>
@@ -265,7 +264,7 @@
                         </tr>
                         <tr class="table-light">
                             <td><strong>Take Home Salary:</strong></td>
-                            <td class="text-end text-success fw-bold fs-5">₹{{ employeeCtc.take_Home_Salary | number }}
+                            <td class="text-end text-primary fw-bold fs-5">₹{{ employeeCtc.take_Home_Salary | number }}
                             </td>
                         </tr>
                     </table>
@@ -275,7 +274,7 @@
     </div>
 </div>
 <!-- ==== Shared Modal ==== -->
-<div class="modal fade" id="Offer" tabindex="-1" aria-labelledby="OfferLabel" aria-hidden="true">
+<div class="modal  " id="Offer" tabindex="-1" aria-labelledby="OfferLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content">
             <div class="modal-body">
@@ -289,7 +288,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="attendances" tabindex="-1" aria-labelledby="attendancesLabel" aria-hidden="true">
+<div class="modal" id="attendances" tabindex="-1" aria-labelledby="attendancesLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content">
             <div class="modal-body">
@@ -301,7 +300,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="Relieving" tabindex="-1" aria-labelledby="RelievingLabel" aria-hidden="true">
+<div class="modal" id="Relieving" tabindex="-1" aria-labelledby="RelievingLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content">
             <div class="modal-body">
@@ -315,7 +314,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="Payslip" tabindex="-1" aria-labelledby="PayslipLabel" aria-hidden="true">
+<div class="modal" id="Payslip" tabindex="-1" aria-labelledby="PayslipLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content">
             <div class="modal-body">
@@ -330,7 +329,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="Service" tabindex="-1" aria-labelledby="ServiceLabel" aria-hidden="true">
+<div class="modal" id="Service" tabindex="-1" aria-labelledby="ServiceLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content">
             <div class="modal-body">
@@ -512,9 +511,9 @@
                         </div>
                     </div>
                     <div class="mt-2 col-md-12 d-flex justify-content-end">
-                        <!-- <button type="preview" class="btn btn-success btn-sm "
+                        <!-- <button type="preview" class="btn btn-primary btn-sm "
                             (click)="generateOfferPDF(employeeData)">Preview</button> -->
-                        <button type="submit" class="btn btn-success btn-sm">Submit</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
                     </div>
                 </form>
             </div>
@@ -561,7 +560,7 @@
                         </div>
                     </div>
                     <div class="mt-2 col-md-12 d-flex justify-content-end">
-                        <button type="submit" class="btn btn-success btn-sm">Submit</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
                     </div>
                 </form>
             </div>
@@ -609,7 +608,7 @@
 
                     </div>
                     <div class="mt-2 col-md-12 d-flex justify-content-end">
-                        <button type="submit" class="btn btn-success btn-sm">Submit</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
                     </div>
                 </form>
             </div>
@@ -715,7 +714,7 @@
                     <div class="d-flex flex-row justify-content-between">
                         <button type="button" class="btn btn-primary" (click)="Payslip_generatePDF()">Preview
                             PDF</button>
-                        <button type="submit" class="btn btn-success">Submit</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
                 </form>
             </div>
@@ -821,7 +820,7 @@
 
                     </div>
                     <div class="mt-2 col-md-12 d-flex justify-content-end">
-                        <button type="submit" class="btn btn-success btn-sm">Submit</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
                     </div>
                 </form>
             </div>
@@ -897,7 +896,7 @@
                         </div>
                     </div>
                     <div class="mt-2 col-md-12 d-flex justify-content-end">
-                        <button type="submit" class="btn btn-success btn-sm">Submit</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
                     </div>
                 </form>
             </div>
@@ -983,7 +982,7 @@
                     </div>
 
                     <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-success mt-3">Submit</button>
+                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
                     </div>
                 </form>
 
@@ -1065,7 +1064,7 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-success mt-3">Submit</button>
+                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
                     </div>
                 </form>
             </div>
@@ -1129,7 +1128,7 @@
                     </div>
 
                     <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-success mt-3">Submit</button>
+                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
                     </div>
                 </form>
             </div>
@@ -1249,7 +1248,7 @@
                         </div>
                 
                         <div class="mt-4 d-flex justify-content-end">
-                            <button type="submit" class="btn btn-success">Submit</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </div>
                 </form> -->

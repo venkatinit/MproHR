@@ -29,24 +29,7 @@ export class EmpFolderComponent implements OnInit {
     this.getEmployeeList();
   }
 
-  // getEmployeeList() {
-  //   this.loading = true;
-  //   const compannyId = this.util.decrypt_Text(localStorage.getItem('company_id')) || '';
-  //   const queryParams = new URLSearchParams({
-  //     compannyId: compannyId,
-  //   }).toString();
-  //   this.api.get(`all_employees?${queryParams}`).subscribe({
-  //     next: (res: any) => {
-  //       this.employees = res;
-  //       this.loading = false;
-  //     },
-  //     error: (err) => {
-  //       this.loading = false;
-  //       console.error('Error loading employees', err);
-  //       this.toast.error('Failed to load employees');
-  //     }
-  //   });
-  // }
+ 
   getEmployeeList() {
     this.loading = true;
     const compannyId = this.util.decrypt_Text(localStorage.getItem('company_id')) || '';

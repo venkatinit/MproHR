@@ -8,12 +8,13 @@
                 </div>
                 <!-- Buttons Column -->
                 <div ngClass="col-md-6 text-end">
-                    <a class="btn btn-primary btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal" (click)="openNewModal()">
-                        <i class="fa fa-plus" aria-hidden="true" ></i> New
+                    <a class="btn btn-primary btn-sm me-2 text-white" data-bs-toggle="modal" data-bs-target="#newModal"
+                        (click)="openNewModal()">
+                        <i class="fa fa-plus" aria-hidden="true"></i> New
                     </a>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body table-responsive">
                 <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table   table-hover"
                     id="planTable">
                     <thead>
@@ -38,8 +39,8 @@
                             <td>{{ item.end_Date | date:'dd-MMM-yyyy' }}</td>
                             <td>{{ item.chq_Status || '-' }}</td>
                             <td>
-                                <button class="btn btn-sm" type="button" (click)="updateById(item.id)" data-bs-toggle="modal"
-                                    data-bs-target="#newModal" title="Edit">
+                                <button class="btn btn-sm" type="button" (click)="updateById(item.id)"
+                                    data-bs-toggle="modal" data-bs-target="#newModal" title="Edit">
                                     <i class="bi bi-pencil-square text-success"></i>
                                 </button>
                                 <button class="btn btn-sm" type="button" (click)="deletePlan(item.id)" title="Delete">
@@ -76,10 +77,7 @@
                                                 {{ comp.CompanyName }}
                                             </option>
                                         </select>
-                                        <!-- <div *ngIf="(submitted || f.company.touched) && f.company.errors?.required"
-                                            class="invalid-feedback">
-                                            Company Name is required
-                                        </div> -->
+
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Mobile Number </label>
@@ -90,11 +88,7 @@
                                                 {{ comp.CompanyName }}-{{comp.MobileNumber}}
                                             </option>
                                         </select>
-                                        <!-- <div *ngIf="(submitted || f.mob_no.touched) && f.mob_no.errors?.required"
-                                            class="invalid-feedback">
-                                            Bank Name is
-                                            required
-                                        </div> -->
+
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Plan</label>
@@ -140,11 +134,7 @@
                                         <input type="text" class="form-control form-control-sm" name="payment_ref_no"
                                             id="payment_ref_no" formControlName="payment_ref_no" numbersOnly
                                             [ngClass]="{ 'is-invalid': submitted && f.payment_ref_no.errors }">
-                                        <!-- <div *ngIf="(submitted || f.payment_ref_no.touched) && f.payment_ref_no.errors?.required"
-                                            class="invalid-feedback">Bank
-                                            Name is
-                                            required
-                                        </div> -->
+
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Payment Mode</label>
@@ -154,12 +144,7 @@
                                             <option value="Cash">Cash</option>
                                             <option value="Online">Online</option>
                                         </select>
-                                        <!-- <div *ngIf="(submitted || f.payment_mode.touched) && f.payment_mode.errors?.required"
-                                            class="invalid-feedback">Bank
-                                            Manager
-                                            Name is
-                                            required
-                                        </div> -->
+
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Bank Name</label>
@@ -191,9 +176,9 @@
                                     </div>
 
                                     <div class="mt-2 col-md-12 d-flex justify-content-end">
-                                        <button type="submit" class="btn btn-success btn-sm"
-                                            *ngIf="action !== 'update'">Submit</button>
                                         <button type="submit" class="btn btn-primary btn-sm"
+                                            *ngIf="action !== 'update'">Submit</button>
+                                        <button type="submit" class="btn btn-success btn-sm"
                                             *ngIf="action === 'update'">Update</button>
                                     </div>
                                 </div>

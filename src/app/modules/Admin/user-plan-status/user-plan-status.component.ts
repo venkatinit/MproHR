@@ -91,14 +91,28 @@ export class UserPlanStatusComponent implements OnInit, OnDestroy {
   getPlans() {
     this.api.get('api/userplans').subscribe((res: any) => {
       this.plan_list = Array.isArray(res?.data?.data) ? res.data.data : [];
-      if (($.fn.DataTable as any).isDataTable('#plansTable')) {
-        $('#plansTable').DataTable().clear().destroy();
-        this.toast.success('UserPlans Retrived successfully', 'Success');
+      this.dtTrigger.next(null);
+      this.toast.success('Data Retrieved successfully', 'Success');
 
+      if (($.fn.DataTable as any).isDataTable('#PlanTable')) {
       }
       this.dtTrigger.next(null);
     });
   }
+  //  getBanks() {
+  //     if (this.form.invalid) return;
+  //     const companyId = this.util.decrypt_Text(localStorage.getItem('company_id')) || '';
+  //     const queryParams = new URLSearchParams({
+  //       companyId: companyId,
+  //     }).toString();
+  //     this.api.get(`api/accounting/banks/all?${queryParams}`).subscribe((res: ApiResponse<any>) => {
+  //       this.banks_list = Array.isArray(res.data) ? res.data : [res.data];
+  //       this.dtTrigger.next(null);
+  //       if (($.fn.DataTable as any).isDataTable('#bankTable')) {
+  //       }
+  //       this.dtTrigger.next(null); // initialize new
+  //     });
+  //   }
   savePlan() {
     this.action = 'create';
     console.log('✅ create form submitted');

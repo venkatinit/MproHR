@@ -1,41 +1,48 @@
 <div class="col-lg-12">
     <div class="card">
-        <div class="card-header">
-            <div class="row">
-                <div class="col-md-7"><strong>Cash Book </strong></div>
-                <div class="col-md-5" style=" display: flex; justify-content: space-between;">
-                    <form [formGroup]="filterForm" (ngSubmit)="getDayBook()">
-                        <div class="row">
-                            <div class="col-md-5">
-                                <label class="form-label">From Date</label>
-                                <input type="date" class="form-control form-control-sm" formControlName="from_date"
-                                    name="from_date" id="from_date"
-                                    [ngClass]="{ 'is-invalid': submitted && f.from_date.errors }">
-                                <div *ngIf="(submitted || f.from_date?.touched) && f.from_date.errors?.required"
-                                    class="invalid-feedback">
-                                    From Date is required
-                                </div>
-                            </div>
-
-                            <div class="col-md-5">
-                                <label class="form-label">To Date</label>
-                                <input type="date" class="form-control form-control-sm" formControlName="to_date"
-                                    name="to_date" id="to_date"
-                                    [ngClass]="{ 'is-invalid': submitted && f.to_date.errors }">
-                                <div *ngIf="(submitted || f.to_date?.touched) && f.to_date.errors?.required"
-                                    class="invalid-feedback">
-                                    To Date is required
-                                </div>
-                            </div>
-                            <div class="col-md-2" style="margin-top: 2rem;">
-                                <button type="submit" class="bg-success text-white rounded save"
-                                    [disabled]="filterForm.invalid">Search</button>
+        <div class="card-header d-flex align-items-center">
+            <!-- Title Column -->
+            <div [ngClass]="isFilterVisible ? 'col-md-4' : 'col-md-6'">
+                <strong>Cash Book</strong>
+            </div>
+            <!-- Company Filter (shown only if enabled) -->
+            <div class="col-md-5 d-flex flex-row align-items-center" *ngIf="isFilterVisible">
+                <form [formGroup]="filterForm" (ngSubmit)="getDayBook()">
+                    <div class="d-flex align-items-end gap-3 flex-wrap">
+                        <div class="flex-grow-1">
+                            <label class="form-label mb-1">From Date</label>
+                            <input type="date" class="form-control form-control-sm" formControlName="from_date"
+                                id="from_date" [ngClass]="{ 'is-invalid': submitted && f.from_date.errors }" />
+                            <div *ngIf="(submitted || f.from_date?.touched) && f.from_date.errors?.required"
+                                class="invalid-feedback">
+                                From Date is required
                             </div>
                         </div>
-                    </form>
 
-                </div>
+                        <div class="flex-grow-1">
+                            <label class="form-label mb-1">To Date</label>
+                            <input type="date" class="form-control form-control-sm" formControlName="to_date"
+                                id="to_date" [ngClass]="{ 'is-invalid': submitted && f.to_date.errors }" />
+                            <div *ngIf="(submitted || f.to_date?.touched) && f.to_date.errors?.required"
+                                class="invalid-feedback">
+                                To Date is required
+                            </div>
+                        </div>
 
+                        <div>
+                            <button type="submit" class="btn btn-sm btn-primary px-4" [disabled]="filterForm.invalid"
+                                style="margin-bottom: 2px;">
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Buttons Column -->
+            <div [ngClass]="isFilterVisible ? 'col-md-3' : 'col-md-6 text-end'" class="text-end">
+                <a class="btn btn-primary btn-sm me-2 text-white" role="button" (click)="toggleCompanyFilter()">
+                    <i class="fa-solid fa-filter"></i>
+                </a>
             </div>
         </div>
         <div class="card-body">
@@ -47,22 +54,108 @@
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                     [attr.data-bs-target]="'#flush-collapse' + i" aria-expanded="false"
                                     [attr.aria-controls]="'flush-collapse' + i">
-                                    {{ item.date | date: 'yyyy-MM-dd' }} - Opening: {{ item.openingBalance }} | Closing:
-                                    {{
-                                    item.closingBalance }}
+                                    {{ item.date | date: 'yyyy-MM-dd' }} - Opening: <span
+                                        class="btn btn-sm btn-success btn-pill"> {{ item.openingBalance }}</span> |
+                                    Closing:
+                                    <span class="btn btn-sm btn-danger btn-pill"> {{ item.closingBalance }}</span>
                                 </button>
                             </h2>
                             <div [id]="'flush-collapse' + i" class="accordion-collapse collapse"
                                 [attr.aria-labelledby]="'flush-heading' + i" data-bs-parent="#accordionFlushExample">
                                 <div class="accordion-body">
+                                    <div class="card shadow-sm border-0 mb-3">
+                                        <div
+                                            class="card-header bg-warning bg-opacity-75 d-flex justify-content-between align-items-center rounded-top">
+                                            <span class="fw-semibold">
+                                                <i class="bi bi-calendar-event me-2"></i>
+                                                Date: {{ item.date | date: 'yyyy-MM-dd' }}
+                                            </span>
+                                            <span class="fw-semibold">
+                                                <i class="bi bi-bank me-2"></i>
+                                                Bank: <span class="text-dark">NG Cash</span>
+                                            </span>
+                                        </div>
+
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between mb-3 flex-wrap">
+                                                <p class="mb-1 mb-md-0">
+                                                    <strong>Opening Balance:</strong>
+                                                    <span class="text-success">₹{{ item.openingBalance }}/-</span>
+                                                </p>
+                                                <p class="mb-1 mb-md-0">
+                                                    <strong>Closing Balance:</strong>
+                                                    <span class="text-primary">₹{{ item.closingBalance }}/-</span>
+                                                </p>
+                                            </div>
+
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered align-middle text-center mb-0">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th style="width: 5%">#</th>
+                                                            <th colspan="2" class="text-success">Collections</th>
+                                                            <th colspan="2" class="text-danger">Expenses</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngIf="!item.receipts.length && !item.payments.length">
+                                                            <td colspan="5" class="text-muted py-3">
+                                                                <i class="bi bi-exclamation-circle me-2"></i>No
+                                                                transactions
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr
+                                                            *ngFor="let _, let j = index of [].constructor(item.maxRows)">
+                                                            <td>{{ j + 1 }}</td>
+
+                                                            <td colspan="2">
+                                                                <ng-container *ngIf="item.receipts[j]">
+                                                                    <span class="text-success fw-medium">
+                                                                        {{ item.receipts[j].headOfAccount }}
+                                                                    </span>
+                                                                    <div>₹{{ item.receipts[j].amount }}/-</div>
+                                                                </ng-container>
+                                                            </td>
+
+                                                            <td colspan="2">
+                                                                <ng-container *ngIf="item.payments[j]">
+                                                                    <span class="text-danger fw-medium">
+                                                                        {{ item.payments[j].headOfAccount }}
+                                                                    </span>
+                                                                    <div>₹{{ item.payments[j].amount }}/-</div>
+                                                                </ng-container>
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr class="fw-semibold table-secondary">
+                                                            <td colspan="2" class="text-success">
+                                                                Total Collections: ₹{{ item.dayReceipts }}/-
+                                                            </td>
+                                                            <td colspan="2" class="text-danger">
+                                                                Total Expenses: ₹{{ item.dayPayments }}/-
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div [id]="'flush-collapse' + i" class="accordion-collapse collapse"
+                                [attr.aria-labelledby]="'flush-heading' + i" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">
                                     <div class="card-body dayCard">
-                                        <p><strong>Date:</strong> {{ item.date | date: 'yyyy-MM-dd' }}</p>
-                                        <p><strong>Bank:</strong>NG Cash</p>
+                                        <div
+                                            class="bg-warning p-1 rounded d-flex flex-row justify-content-between align-items-center">
+                                            <span><strong>Date:</strong> {{ item.date | date: 'yyyy-MM-dd' }}</span>
+                                            <span><strong>Bank:</strong>NG Cash</span>
+                                        </div>
                                         <div class="d-flex flex-row justify-content-between">
                                             <p><strong>Opening Balance:</strong> ₹{{ item.openingBalance }}/-</p>
                                             <p><strong>Closing Balance:</strong> ₹{{ item.closingBalance }}/-</p>
                                         </div>
-
                                         <table class="table">
                                             <thead>
                                                 <tr>
@@ -105,7 +198,7 @@
                                         </table>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>

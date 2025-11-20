@@ -26,9 +26,20 @@ export class CashBookComponent implements OnInit, OnDestroy {
     // private util: UtilsService
   ) { }
 
+   isFilterVisible: boolean = false;
+    toggleCompanyFilter() {
+      this.isFilterVisible = !this.isFilterVisible;
+      const companyControl = this.filterForm.get('company');
+      if (this.isFilterVisible) {
+        companyControl?.enable();
+      } else {
+        companyControl?.disable();
+        companyControl?.setValue('');
+      }
+    }
   ngOnInit(): void {
     this.filterForm = this.formBuilder.group({
-      from_date: ['2025-06-01', Validators.required],
+      from_date: ['2025-08-13', Validators.required],
       to_date: [this.getTodayDate(), Validators.required],
     });
 
@@ -71,4 +82,5 @@ export class CashBookComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
   }
+  
 }

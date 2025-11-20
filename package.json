@@ -30,7 +30,7 @@
     "angular-in-memory-web-api": "^0.17.0",
     "bootstrap": "^5.2.3",
     "bootstrap-icons": "^1.10.3",
-    "chart.js": "^4.5.0",
+    "chart.js": "^4.5.1",
     "core-js": "^2.6.12",
     "crypto-js": "^4.1.1",
     "datatables.net": "^1.13.8",

@@ -1,6 +1,5 @@
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { CommonModule } from '@angular/common';
-
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { AuthInterceptor } from "../app/interceptors/auth-inteceptor";
 import { LoaderInterceptor } from "./interceptors/loader-interceptor.service";
@@ -154,7 +153,6 @@ const APP_CONTAINERS = [DefaultLayoutComponent];
       progressBar: true
     }),
     AppRoutingModule,
-    NgxEditorMenuComponent
   ],
   providers: [
     AuthGuard,

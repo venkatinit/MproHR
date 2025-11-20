@@ -1,85 +1,137 @@
-<div class="container mt-4">
-    <div class="card p-3 shadow-sm">
-        <h5 class="mb-3">Generate Payslip</h5>
-
-        <form [formGroup]="payslipForm" (ngSubmit)="fetchPayslip()" class="d-flex gap-2">
-            <input formControlName="empId" class="form-control" placeholder="Enter Employee ID" />
-            <button type="submit" class="btn btn-primary" [disabled]="loading">
-                {{ loading ? 'Loading...' : 'Fetch Payslip' }}
-            </button>
-        </form>
+<!-- <div class="row mb-4">
+        <div class="col-lg-6 mx-auto">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search employee by name..."
+                    [(ngModel)]="searchTerm" (input)="filtercompany()" />
+                <button class="btn btn-primary" type="button" (click)="filtercompany()">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </div>
     </div>
+<div class="row">
+    <div class="col-md-6 col-lg-4 mt-3" *ngFor="let company of companyList">
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-body">
+               
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="card-title mb-0">{{ company.name }}</h5>
+                    <span class="badge" [ngClass]="company.status === 'Active' ? 'bg-success' : 'bg-danger'">
+                        {{ company.status }}
+                    </span>
+                </div>
 
-    <div *ngIf="payslipData" class="card mt-4 p-4 shadow payslip-card">
-        <div class="text-center mb-4">
-            <h4><strong>Company Name Pvt Ltd</strong></h4>
-            <p><strong>Payslip for {{ payslipData.payPeriod }}</strong></p>
-        </div>
+             
+                <p class="mb-1">
+                    <i class="bi bi-calendar-check text-primary me-2"></i>
+                    <strong>Start Date:</strong>
+                    {{ company.startDate | date: 'mediumDate' }}
+                </p>
 
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <p><strong>Employee ID:</strong> {{ payslipData.empId }}</p>
-                <p><strong>Name:</strong> {{ payslipData.empName }}</p>
-                <p><strong>Department:</strong> {{ payslipData.department }}</p>
+                <p class="mb-1">
+                    <i class="bi bi-calendar-x text-danger me-2"></i>
+                    <strong>Expiry Date:</strong>
+                    {{ company.expiryDate | date: 'mediumDate' }}
+                </p>
+ 
+                <p class="mb-2">
+                    <i class="bi bi-currency-rupee text-warning me-2"></i>
+                    <strong>Business Value:</strong> ₹{{ company.businessValue | number }}
+                </p>
+
+           
+                <div class="progress" style="height: 8px;" *ngIf="company.progress !== null">
+                    <div class="progress-bar" [ngClass]="{
+              'bg-success': company.progress >= 70,
+              'bg-warning': company.progress >= 30 && company.progress < 70,
+              'bg-danger': company.progress < 30
+            }" role="progressbar" [style.width.%]="company.progress" [attr.aria-valuenow]="company.progress"
+                        aria-valuemin="0" aria-valuemax="100">
+                    </div>
+                </div>
+
+               
+                <small [ngClass]="{
+            'text-success': company.daysLeft > 30,
+            'text-warning': company.daysLeft > 0 && company.daysLeft <= 30,
+            'text-danger': company.daysLeft <= 0
+          }">
+                    {{ company.daysLeft > 0 ? company.daysLeft + ' days remaining' : 'Expired' }}
+                </small>
             </div>
-            <div class="col-md-6">
-                <p><strong>Designation:</strong> {{ payslipData.designation }}</p>
-                <p><strong>Pay Period:</strong> {{ payslipData.payPeriod }}</p>
-            </div>
         </div>
-
-        <table class="table table-bordered text-center align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th>Earnings</th>
-                    <th>Amount (₹)</th>
-                    <th>Deductions</th>
-                    <th>Amount (₹)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Basic</td>
-                    <td>{{ payslipData.basic | number:'1.2-2' }}</td>
-                    <td>PF</td>
-                    <td>{{ payslipData.pf | number:'1.2-2' }}</td>
-                </tr>
-                <tr>
-                    <td>HRA</td>
-                    <td>{{ payslipData.hra | number:'1.2-2' }}</td>
-                    <td>ESIC</td>
-                    <td>{{ payslipData.esic | number:'1.2-2' }}</td>
-                </tr>
-                <tr>
-                    <td>Conveyance</td>
-                    <td>{{ payslipData.conveyance | number:'1.2-2' }}</td>
-                    <td>Tax</td>
-                    <td>{{ payslipData.tax | number:'1.2-2' }}</td>
-                </tr>
-                <tr>
-                    <td>Other Allowances</td>
-                    <td>{{ payslipData.allowances | number:'1.2-2' }}</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr class="table-secondary">
-                    <td><strong>Total Earnings</strong></td>
-                    <td><strong>{{ payslipData.grossEarnings | number:'1.2-2' }}</strong></td>
-                    <td><strong>Total Deductions</strong></td>
-                    <td><strong>{{ payslipData.deductions | number:'1.2-2' }}</strong></td>
-                </tr>
-                <tr class="table-success">
-                    <td colspan="4" class="text-end">
-                        <strong>Net Pay: ₹ {{ payslipData.netPay | number:'1.2-2' }}</strong>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="text-end mt-3">
-            <button class="btn btn-outline-secondary btn-sm me-2" (click)="printPayslip()">
-                <i class="bi bi-printer"></i> Print
+    </div>
+</div> -->
+<div class="row mb-4">
+    <div class="col-lg-6 mx-auto">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search company by name..." [(ngModel)]="searchTerm"
+                (input)="filtercompany()" />
+            <button class="btn btn-primary" type="button" (click)="filtercompany()">
+                <i class="bi bi-search"></i>
             </button>
         </div>
     </div>
+</div>
+
+<!-- ✅ Company Cards -->
+<div class="row">
+    <div class="col-md-6 col-lg-4 mt-3" *ngFor="let company of filterCompanies">
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-body">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="card-title mb-0">{{ company.name }}</h5>
+                    <span class="badge" [ngClass]="
+              company.status === 'Active' ? 'bg-success' : 'bg-danger'
+            ">
+                        {{ company.status }}
+                    </span>
+                </div>
+
+                <!-- Subscription Dates -->
+                <p class="mb-1">
+                    <i class="bi bi-calendar-check text-primary me-2"></i>
+                    <strong>Start Date:</strong>
+                    {{ company.startDate | date: 'mediumDate' }}
+                </p>
+
+                <p class="mb-1">
+                    <i class="bi bi-calendar-x text-danger me-2"></i>
+                    <strong>Expiry Date:</strong>
+                    {{ company.expiryDate | date: 'mediumDate' }}
+                </p>
+
+                <!-- Business Value -->
+                <p class="mb-2">
+                    <i class="bi bi-currency-rupee text-warning me-2"></i>
+                    <strong>Business Value:</strong> ₹{{ company.businessValue | number }}
+                </p>
+
+                <!-- ✅ Progress Bar -->
+                <div class="progress" style="height: 8px;" *ngIf="company.progress !== null">
+                    <div class="progress-bar" [ngClass]="{
+              'bg-success': company.progress >= 70,
+              'bg-warning': company.progress >= 30 && company.progress < 70,
+              'bg-danger': company.progress < 30
+            }" role="progressbar" [style.width.%]="company.progress" [attr.aria-valuenow]="company.progress"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+
+                <!-- ✅ Remaining Days -->
+                <small [ngClass]="{
+            'text-success': company.daysLeft > 30,
+            'text-warning': company.daysLeft > 0 && company.daysLeft <= 30,
+            'text-danger': company.daysLeft <= 0
+          }">
+                    {{ company.daysLeft > 0 ? company.daysLeft + ' days remaining' : 'Expired' }}
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ No Results Found -->
+<div class="text-center text-muted mt-4" *ngIf="filterCompanies.length === 0">
+    <i class="bi bi-exclamation-circle"></i> No companies found.
 </div>

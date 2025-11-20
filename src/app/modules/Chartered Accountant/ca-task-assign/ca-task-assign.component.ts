@@ -24,12 +24,12 @@ export class CaTaskAssignComponent implements OnInit, OnDestroy {
   submitted: boolean = false;
   errors: string[] = [];
   spinLoader = false;
-  banks_list: any[] = [];
+  task_list: any[] = [];
   cateId: any;
   companyList: any[] = [];
   companyFilter: string = '';
-  originalBankList: any[] = [];
-  filteredBankList: any[] = [];
+  originalTaskList: any[] = [];
+  filteredTaskList: any[] = [];
   companyId: number = 2;
   taskForm!: FormGroup;
   selectedFile: File | null = null;
@@ -69,7 +69,7 @@ export class CaTaskAssignComponent implements OnInit, OnDestroy {
       destroy: true,
       processing: true
     };
-    this.getBanks();
+    this.getTasks();
     this.getCompanyList();
 
   }
@@ -97,21 +97,21 @@ export class CaTaskAssignComponent implements OnInit, OnDestroy {
       this.companyList = res?.data?.data || [];
     });
   }
-  getBanks() {
+  getTasks() {
     if (this.form.invalid) return;
     const companyId = this.util.decrypt_Text(localStorage.getItem('company_id')) || '';
     const queryParams = new URLSearchParams({
       companyId: companyId,
     }).toString();
     this.api.get(`api/accounting/banks/all?${queryParams}`).subscribe((res: ApiResponse<any>) => {
-      this.banks_list = Array.isArray(res.data) ? res.data : [res.data];
+      this.task_list = Array.isArray(res.data) ? res.data : [res.data];
       this.dtTrigger.next(null);
-      if (($.fn.DataTable as any).isDataTable('#bankTable')) {
+      if (($.fn.DataTable as any).isDataTable('#taskTable')) {
       }
       this.dtTrigger.next(null); // initialize new
     });
   }
-  saveBank() {
+  saveTask() {
     console.log('✅ create form submitted');
     this.submitted = true;
     if (!this.assignTask.valid) {
@@ -142,15 +142,15 @@ export class CaTaskAssignComponent implements OnInit, OnDestroy {
         this.submitted = false;
         this.errors = [];
         this.spinLoader = false;
-        this.toast.success('Bank Saved successfully', 'Success');
+        this.toast.success('Task Saved successfully', 'Success');
         $('#newModal').modal('hide');
-        this.getBanks();
+        this.getTasks();
         window.location.reload();
       },
       (error: any) => {
         this.submitted = false;
         this.spinLoader = false;
-        const errorMessage = error?.error?.message || 'Bank not added successfully';
+        const errorMessage = error?.error?.message || 'Task not added successfully';
         this.errors = [errorMessage];
       }
     );
@@ -179,12 +179,12 @@ export class CaTaskAssignComponent implements OnInit, OnDestroy {
         console.log(error);
         this.submitted = false;
         this.errors = [error.error.Message];
-        this.toast.error(this.errors[0], 'Bank Not added successfully');
+        this.toast.error(this.errors[0], 'Task Not added successfully');
         this.spinLoader = false;
       }
     );
   }
-  updateBank() {
+  updateTask() {
     console.log('✅ Update form submitted');
     this.submitted = true;
     if (!this.assignTask.valid) {
@@ -214,22 +214,22 @@ export class CaTaskAssignComponent implements OnInit, OnDestroy {
         this.assignTask.reset();
         this.submitted = false;
         this.errors = [];
-        this.toast.success('Bank Updated successfully', 'Success');
+        this.toast.success('Task Updated successfully', 'Success');
         this.spinLoader = false;
         // window.location.reload();
         $('#newModal').modal('hide');
-        this.getBanks();
+        this.getTasks();
       },
       (error: any) => {
         console.log(error);
         this.submitted = false;
         this.errors = [error.error.Message];
-        this.toast.error(this.errors[0], 'Bank Not Updated successfully');
+        this.toast.error(this.errors[0], 'Task Not Updated successfully');
         this.spinLoader = false;
       }
     );
   }
-  deleteBank(id: number) {
+  deleteTask(id: number) {
     Swal.fire({
       position: 'center',
       title: 'Are you sure?',
@@ -242,9 +242,9 @@ export class CaTaskAssignComponent implements OnInit, OnDestroy {
       if (result.isConfirmed) {
         this.api.delete(`api/accounting/bank/delete/${id}`).subscribe({
           next: (res: any) => {
-            Swal.fire('Deleted!', 'The bank has been deleted.', 'success');
+            Swal.fire('Deleted!', 'The Task has been deleted.', 'success');
             window.location.reload();
-            this.getBanks(); // refresh list without reloading the page
+            this.getTasks(); // refresh list without reloading the page
           },
           error: (err: any) => {
             console.error('Delete failed:', err);

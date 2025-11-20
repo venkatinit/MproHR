@@ -19,9 +19,8 @@
                                     Excel</a> -->
                 </div>
             </div>
-
-            <div class="card-body  ">
-                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table  table-responsive   table-hover"
+            <div class="card-body table-responsive ">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-hover"
                     id="collectionTable">
                     <thead>
                         <tr>
@@ -48,7 +47,6 @@
                                 <button *ngIf="item.status !== 'Cancelled' && item.status !== 'Approved'"
                                     class="btn btn-sm text-success" type="button" role="button"
                                     (click)="approveId(item.id)"> <i class="fas fa-thumbs-up"></i>
-                                    <!-- <img src="../../../../assets/img/approved.png"> -->
                                 </button>
                                 <button class="btn   btn-sm  text-success" type="button" role="button"
                                     [disabled]="item.status === 'Cancelled' || item.status === 'Approved'"><i
@@ -180,10 +178,10 @@
                                             is required
                                         </div>
                                     </div>
-                                    <div class="col-lg-12 mt-3 d-flex justify-content-end">
-                                        <button type="submit" class="btn btn-success btn-sm"
-                                            *ngIf="action !== 'update'">Submit</button>
+                                    <div class="mt-2 col-md-12 d-flex justify-content-end">
                                         <button type="submit" class="btn btn-primary btn-sm"
+                                            *ngIf="action !== 'update'">Submit</button>
+                                        <button type="submit" class="btn btn-success btn-sm"
                                             *ngIf="action === 'update'">Update</button>
                                     </div>
                                 </div>

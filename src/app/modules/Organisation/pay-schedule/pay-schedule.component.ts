@@ -9,6 +9,14 @@ import Swal from 'sweetalert2';
 import { ApiResponse } from 'src/app/models/api-response';
 import { ToastrService } from 'ngx-toastr';
 declare var $: any;
+interface Payroll {
+  organization: string;
+  payFrequency: string;
+  workingDays: string;
+  paymentOn: string;
+  firstPaymentMonth: string;
+  firstPaymentDate: string;
+}
 @Component({
   selector: 'app-pay-schedule',
   templateUrl: './pay-schedule.component.html',
@@ -31,6 +39,7 @@ export class PayScheduleComponent implements OnInit, OnDestroy {
   originalBankList: any[] = [];
   filteredBankList: any[] = [];
   companyId: number = 2;
+  searchTerm: string = '';
   constructor(
     private toast: ToastrService,
     private util: UtilsServiceService,
@@ -38,6 +47,7 @@ export class PayScheduleComponent implements OnInit, OnDestroy {
     private api: ApiService
   ) {
     this.payrollForm = this.formBuilder.group({
+      companyId: ['', Validators.required],
       workingDaysInWeek: ['', [Validators.required, Validators.min(1), Validators.max(7)]],
       salaryCalculationBasis: ['monthDays', Validators.required],
       workingDaysInMonth: [''], // shown only if salaryCalculationBasis = workingDays
@@ -46,6 +56,47 @@ export class PayScheduleComponent implements OnInit, OnDestroy {
       payrollStartMonth: ['', Validators.required],
       payrollStartDate: ['', Validators.required]
     });
+  } 
+
+  payrolls: Payroll[] = [
+    {
+      organization: 'EmproHR',
+      payFrequency: 'Monthly',
+      workingDays: '6 working days',
+      paymentOn: '1st on every month',
+      firstPaymentMonth: 'September 2025',
+      firstPaymentDate: '1st October 2025'
+    },
+    {
+      organization: 'TechCorp',
+      payFrequency: 'Bi-Monthly',
+      workingDays: '5 working days',
+      paymentOn: '15th and 30th',
+      firstPaymentMonth: 'October 2025',
+      firstPaymentDate: '15th October 2025'
+    },
+    {
+      organization: 'FinServe',
+      payFrequency: 'Monthly',
+      workingDays: '5 working days',
+      paymentOn: '25th every month',
+      firstPaymentMonth: 'November 2025',
+      firstPaymentDate: '25th November 2025'
+    },
+    {
+      organization: 'GlobalSoft',
+      payFrequency: 'Weekly',
+      workingDays: '6 working days',
+      paymentOn: 'Every Friday',
+      firstPaymentMonth: 'October 2025',
+      firstPaymentDate: '3rd October 2025'
+    }
+  ];
+
+  get filteredPayrolls() {
+    return this.payrolls.filter(p =>
+      p.organization.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
   }
   ngOnInit(): void {
     this.form = this.formBuilder.group({
@@ -63,6 +114,8 @@ export class PayScheduleComponent implements OnInit, OnDestroy {
     this.getCompanyList();
 
   }
+
+
   isCompanyFilterVisible: boolean = false;
   toggleCompanyFilter() {
     this.isCompanyFilterVisible = !this.isCompanyFilterVisible;
